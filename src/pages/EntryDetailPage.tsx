@@ -92,17 +92,6 @@ const EntryDetailPage = () => {
           <p className="text-sm text-muted-foreground">记录于 {formatTime(entry.createdAt)}</p>
         </motion.div>
         
-        {/* Weather */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="flex justify-center"
-        >
-          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-card text-card-foreground shadow-sm">
-            {entry.weather}
-          </span>
-        </motion.div>
         
         {/* Rating */}
         <motion.div
@@ -111,9 +100,9 @@ const EntryDetailPage = () => {
           transition={{ delay: 0.2 }}
           className="py-4"
         >
-          <SmileRating value={entry.rating} onChange={() => {}} readonly size="lg" />
+        <SmileRating value={entry.rating} onChange={() => {}} readonly size="lg" />
           <p className="text-center text-sm text-muted-foreground mt-2">
-            {['', '很难过', '有点低落', '一般般', '还不错', '超开心'][entry.rating]}
+            {['', '嗨呀！', '嗨呀！！', '嗨呀呀呀！', '嗨--呀！！', '嗨呀！嗨呀！嗨呀！'][entry.rating]}
           </p>
         </motion.div>
         

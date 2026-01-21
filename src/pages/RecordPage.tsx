@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
-import { useApp, getRandomWeather } from '@/context/AppContext';
+import { useApp } from '@/context/AppContext';
 import SmileRating from '@/components/SmileRating';
 import PosterGenerator from '@/components/PosterGenerator';
 import { Entry } from '@/context/AppContext';
@@ -13,7 +13,6 @@ const RecordPage = () => {
   
   const [rating, setRating] = useState(3);
   const [content, setContent] = useState('');
-  const [weather] = useState(getRandomWeather());
   const [showPoster, setShowPoster] = useState(false);
   const [savedEntry, setSavedEntry] = useState<Entry | null>(null);
   
@@ -33,7 +32,6 @@ const RecordPage = () => {
       date: dateStr,
       rating,
       content,
-      weather,
     });
     setSavedEntry(entry);
     setShowPoster(true);
@@ -79,21 +77,10 @@ const RecordPage = () => {
           <h2 className="text-lg font-medium text-foreground text-center">今天的心情</h2>
           <SmileRating value={rating} onChange={setRating} />
           <p className="text-center text-sm text-muted-foreground">
-            {['', '很难过', '有点低落', '一般般', '还不错', '超开心'][rating]}
+            {['', '嗨呀！', '嗨呀！！', '嗨呀呀呀！', '嗨--呀！！', '嗨呀！嗨呀！嗨呀！'][rating]}
           </p>
         </motion.section>
         
-        {/* Weather Display */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15 }}
-          className="text-center"
-        >
-          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-card text-card-foreground shadow-sm">
-            {weather}
-          </span>
-        </motion.section>
         
         {/* Text Input */}
         <motion.section
