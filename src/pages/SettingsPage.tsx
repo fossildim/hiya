@@ -172,7 +172,7 @@ const SettingsPage = () => {
             className="w-full p-4 rounded-lg bg-card text-card-foreground border border-border flex items-center gap-3"
           >
             <Info className="w-5 h-5 text-primary" />
-            <p className="font-medium">关于嗨呀记录</p>
+            <p className="font-medium">关于嗨呀！</p>
           </motion.button>
         </motion.section>
       </div>
@@ -191,10 +191,10 @@ const SettingsPage = () => {
             className="bg-card rounded-2xl p-6 max-w-sm w-full shadow-xl text-center"
             onClick={(e) => e.stopPropagation()}
           >
-            <h2 className="text-2xl font-bold text-primary mb-2">嗨呀记录</h2>
-            <p className="text-muted-foreground mb-4">版本 1.0.0</p>
+            <h2 className="text-2xl font-bold text-primary mb-2">嗨呀！</h2>
+            <p className="text-muted-foreground mb-4">版本 0.1</p>
             <p className="text-card-foreground text-sm leading-relaxed mb-6">
-              一个简单温暖的心情日记应用，帮助你记录每一天的心情和故事。
+              嗨呀！只会帮助你记住开心的事，一定要嗨呀呀！
             </p>
             <button
               onClick={() => setShowAbout(false)}

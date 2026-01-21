@@ -8,11 +8,11 @@ interface SmileRatingProps {
 }
 
 const smileFaces = [
-  { emoji: '😢', label: '很难过' },
-  { emoji: '😕', label: '有点低落' },
-  { emoji: '😐', label: '一般般' },
-  { emoji: '😊', label: '还不错' },
-  { emoji: '🥳', label: '超开心' },
+  { emoji: '😊', label: '嗨呀！' },
+  { emoji: '😄', label: '嗨呀！！' },
+  { emoji: '🤗', label: '嗨呀呀呀！' },
+  { emoji: '🥰', label: '嗨--呀！！' },
+  { emoji: '🥳', label: '嗨呀！嗨呀！嗨呀！' },
 ];
 
 const sizeClasses = {

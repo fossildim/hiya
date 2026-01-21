@@ -5,7 +5,6 @@ export interface Entry {
   date: string;
   rating: number;
   content: string;
-  weather: string;
   createdAt: string;
 }
 
@@ -34,10 +33,6 @@ const STORAGE_KEYS = {
   SETTINGS: 'haiya_settings',
 };
 
-const getRandomWeather = () => {
-  const weathers = ['☀️ 晴天', '⛅ 多云', '🌧️ 小雨', '❄️ 下雪', '🌤️ 晴转多云', '🌈 雨后彩虹'];
-  return weathers[Math.floor(Math.random() * weathers.length)];
-};
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [entries, setEntries] = useState<Entry[]>([]);
@@ -153,4 +148,4 @@ export const useApp = () => {
   return context;
 };
 
-export { getRandomWeather };
+export { };

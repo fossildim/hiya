@@ -2,15 +2,13 @@ import { useState, useRef, useCallback, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Settings, Palette } from 'lucide-react';
-import { useApp, getRandomWeather } from '@/context/AppContext';
-import WeatherWidget from '@/components/WeatherWidget';
+import { useApp } from '@/context/AppContext';
 import WeekGrid from '@/components/WeekGrid';
 import SmileRating from '@/components/SmileRating';
 
 const Index = () => {
   const navigate = useNavigate();
   const { getTodayEntry, getWeekEntries, getDaysUsed } = useApp();
-  const [weather] = useState(getRandomWeather());
   const [isPressed, setIsPressed] = useState(false);
   const [progress, setProgress] = useState(0);
   const pressTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -76,11 +74,8 @@ const Index = () => {
         animate={{ opacity: 1, y: 0 }}
         className="p-6 space-y-2"
       >
-        <h1 className="text-2xl font-bold text-foreground">嗨呀记录</h1>
-        <div className="flex items-center gap-3">
-          <span className="text-sm text-muted-foreground">{formatDate(new Date())}</span>
-          <WeatherWidget weather={weather} />
-        </div>
+        <h1 className="text-2xl font-bold text-foreground">嗨呀！</h1>
+        <span className="text-sm text-muted-foreground">{formatDate(new Date())}</span>
       </motion.header>
       
       {/* Best Entry of the Week */}
@@ -139,7 +134,7 @@ const Index = () => {
           />
           <div className="relative z-10 flex flex-col items-center justify-center h-full">
             <span className="text-2xl mb-1">😊</span>
-            <span>{todayEntry ? '已记录' : '嗨呀！'}</span>
+            <span>{todayEntry ? '还有更嗨呀的！' : '嗨呀！'}</span>
             {isPressed && (
               <span className="text-xs mt-1 opacity-80">长按2秒...</span>
             )}

@@ -69,14 +69,10 @@ const PosterGenerator = ({ entry, userId, onClose }: PosterGeneratorProps) => {
           >
             <div className="bg-card rounded-xl p-6 shadow-lg">
               <div className="text-center space-y-4">
-                <h2 className="text-2xl font-bold text-primary">嗨呀记录</h2>
+                <h2 className="text-2xl font-bold text-primary">嗨呀！</h2>
                 
                 <div className="text-sm text-muted-foreground">
                   {formatDate(entry.date)}
-                </div>
-                
-                <div className="text-sm">
-                  {entry.weather}
                 </div>
                 
                 <div className="py-4">
@@ -89,7 +85,7 @@ const PosterGenerator = ({ entry, userId, onClose }: PosterGeneratorProps) => {
                 
                 <div className="pt-4 border-t border-border">
                   <span className="text-xs text-muted-foreground">
-                    {userId ? `@${userId}` : '嗨呀记录'}
+                    {userId ? `@${userId}` : '嗨呀！'}
                   </span>
                 </div>
               </div>

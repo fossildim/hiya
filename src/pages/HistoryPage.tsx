@@ -65,7 +65,7 @@ const HistoryPage = () => {
   const weekBestDays = getWeekBestDays();
   
   const getRatingEmoji = (rating: number) => {
-    return ['', '😢', '😕', '😐', '😊', '🥳'][rating];
+    return ['', '😊', '😄', '🤗', '🥰', '🥳'][rating];
   };
   
   const isToday = (day: number) => {
