@@ -5,6 +5,7 @@ import { Settings, Palette } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 import WeekGrid from '@/components/WeekGrid';
 import SmileRating from '@/components/SmileRating';
+import { playHaiya } from '@/lib/sfx';
 
 const Index = () => {
   const navigate = useNavigate();
@@ -33,6 +34,7 @@ const Index = () => {
   };
 
   const handlePressStart = useCallback(() => {
+    playHaiya();
     setIsPressed(true);
     setProgress(0);
     

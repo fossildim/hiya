@@ -197,8 +197,8 @@ const SettingsPage = () => {
             onClick={(e) => e.stopPropagation()}
           >
             <h2 className="text-2xl font-bold text-primary mb-2">嗨呀！</h2>
-            <p className="text-muted-foreground mb-2">版本 0.1</p>
-            <p className="text-sm text-muted-foreground mb-4">作者 @HiYaJoHn</p>
+            <p className="text-muted-foreground mb-2">版本呀！ 0.1</p>
+            <p className="text-sm text-muted-foreground mb-4">作者呀！ @HiYaJoHn</p>
             <p className="text-card-foreground text-sm leading-relaxed mb-6">
               嗨呀！只会帮助你记住开心的事，一定要嗨呀呀！
             </p>
@@ -206,7 +206,7 @@ const SettingsPage = () => {
               onClick={() => setShowAbout(false)}
               className={`px-6 py-2 rounded-lg ${yellowButton} font-medium`}
             >
-              好的
+              好呀！
             </button>
           </motion.div>
         </motion.div>
