@@ -33,12 +33,20 @@ const STORAGE_KEYS = {
   SETTINGS: 'haiya_settings',
 };
 
+const getLocalISODate = (d: Date = new Date()) => {
+  // Use local time (not UTC) to avoid date shifting around midnight.
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [entries, setEntries] = useState<Entry[]>([]);
   const [settings, setSettings] = useState<AppSettings>({
     userId: '',
-    firstUseDate: new Date().toISOString().split('T')[0],
+    firstUseDate: getLocalISODate(),
   });
 
   useEffect(() => {
@@ -79,7 +87,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const getTodayEntry = () => {
-    const today = new Date().toISOString().split('T')[0];
+    const today = getLocalISODate();
     return getEntryByDate(today);
   };
 

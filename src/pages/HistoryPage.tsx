@@ -73,6 +73,9 @@ const HistoryPage = () => {
     return today.getFullYear() === year && today.getMonth() === month && today.getDate() === day;
   };
 
+  const yellowIconButton =
+    'p-2 rounded-full bg-gradient-to-br from-accent to-accent/70 text-accent-foreground';
+
   const renderCalendarDays = () => {
     const days = [];
     
@@ -127,7 +130,7 @@ const HistoryPage = () => {
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={() => navigate('/')}
-          className="p-2 rounded-full bg-secondary text-secondary-foreground"
+          className={yellowIconButton}
         >
           <ArrowLeft className="w-5 h-5" />
         </motion.button>
@@ -140,7 +143,7 @@ const HistoryPage = () => {
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={prevMonth}
-          className="p-2 rounded-full bg-secondary text-secondary-foreground"
+          className={yellowIconButton}
         >
           <ChevronLeft className="w-5 h-5" />
         </motion.button>
@@ -153,7 +156,7 @@ const HistoryPage = () => {
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={nextMonth}
-          className="p-2 rounded-full bg-secondary text-secondary-foreground"
+          className={yellowIconButton}
         >
           <ChevronRight className="w-5 h-5" />
         </motion.button>

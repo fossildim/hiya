@@ -25,10 +25,15 @@ const SettingsPage = () => {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `haiya-backup-${new Date().toISOString().split('T')[0]}.json`;
+    const d = new Date();
+    const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    link.download = `haiya-backup-${dateStr}.json`;
     link.click();
     URL.revokeObjectURL(url);
   };
+
+  const yellowButton =
+    'bg-gradient-to-br from-accent to-accent/70 text-accent-foreground';
   
   const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -61,7 +66,7 @@ const SettingsPage = () => {
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={() => navigate('/')}
-          className="p-2 rounded-full bg-secondary text-secondary-foreground"
+          className={`p-2 rounded-full ${yellowButton}`}
         >
           <ArrowLeft className="w-5 h-5" />
         </motion.button>
@@ -88,7 +93,7 @@ const SettingsPage = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={handleSaveId}
-              className="px-4 py-3 rounded-lg bg-primary text-primary-foreground font-medium flex items-center gap-2"
+              className={`px-4 py-3 rounded-lg ${yellowButton} font-medium flex items-center gap-2`}
             >
               {saved ? <Check className="w-4 h-4" /> : '保存'}
             </motion.button>
@@ -128,7 +133,7 @@ const SettingsPage = () => {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={handleExport}
-            className="w-full p-4 rounded-lg bg-card text-card-foreground border border-border flex items-center gap-3"
+            className={`w-full p-4 rounded-lg ${yellowButton} border border-border flex items-center gap-3`}
           >
             <Download className="w-5 h-5 text-primary" />
             <div className="text-left">
@@ -141,7 +146,7 @@ const SettingsPage = () => {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => fileInputRef.current?.click()}
-            className="w-full p-4 rounded-lg bg-card text-card-foreground border border-border flex items-center gap-3"
+            className={`w-full p-4 rounded-lg ${yellowButton} border border-border flex items-center gap-3`}
           >
             <Upload className="w-5 h-5 text-primary" />
             <div className="text-left">
@@ -169,7 +174,7 @@ const SettingsPage = () => {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => setShowAbout(true)}
-            className="w-full p-4 rounded-lg bg-card text-card-foreground border border-border flex items-center gap-3"
+            className={`w-full p-4 rounded-lg ${yellowButton} border border-border flex items-center gap-3`}
           >
             <Info className="w-5 h-5 text-primary" />
             <p className="font-medium">关于嗨呀！</p>
@@ -199,7 +204,7 @@ const SettingsPage = () => {
             </p>
             <button
               onClick={() => setShowAbout(false)}
-              className="px-6 py-2 rounded-lg bg-primary text-primary-foreground font-medium"
+              className={`px-6 py-2 rounded-lg ${yellowButton} font-medium`}
             >
               好的
             </button>
