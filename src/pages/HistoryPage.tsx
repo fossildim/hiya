@@ -131,7 +131,7 @@ const HistoryPage = () => {
         >
           <ArrowLeft className="w-5 h-5" />
         </motion.button>
-        <h1 className="font-bold text-foreground">历史记录</h1>
+        <h1 className="font-bold text-foreground">之前好嗨呀！</h1>
       </header>
       
       {/* Month Navigation */}

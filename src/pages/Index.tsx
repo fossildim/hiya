@@ -86,7 +86,7 @@ const Index = () => {
         className="px-6 mb-6"
       >
         <div className="bg-card rounded-2xl p-5 shadow-md">
-          <h2 className="text-sm font-medium text-muted-foreground mb-3">上周最佳记录</h2>
+          <h2 className="text-sm font-medium text-muted-foreground mb-3">上周最嗨！</h2>
           {bestEntry ? (
             <div className="space-y-3">
               <SmileRating value={bestEntry.rating} onChange={() => {}} readonly size="sm" />
