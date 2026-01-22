@@ -12,6 +12,8 @@ const EntryDetailPage = () => {
   const { getEntryByDate, settings } = useApp();
   
   const [showPoster, setShowPoster] = useState(false);
+
+  const orangeIconButton = 'p-2 rounded-full bg-gradient-to-br from-primary to-chart-1 text-primary-foreground';
   
   const entry = date ? getEntryByDate(date) : null;
   
@@ -74,7 +76,7 @@ const EntryDetailPage = () => {
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={() => setShowPoster(true)}
-          className="p-2 rounded-full bg-primary text-primary-foreground"
+          className={orangeIconButton}
         >
           <Share2 className="w-5 h-5" />
         </motion.button>

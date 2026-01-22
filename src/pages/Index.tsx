@@ -66,6 +66,14 @@ const Index = () => {
     };
   }, []);
 
+  const yellowIconButton = (enabled = true) =>
+    `p-3 rounded-full bg-gradient-to-br from-accent to-accent/70 text-accent-foreground ${
+      enabled ? '' : 'opacity-50'
+    }`;
+
+  const orangeMainButton =
+    'relative w-40 h-40 rounded-full bg-gradient-to-br from-primary to-chart-1 text-primary-foreground font-bold text-xl shadow-lg overflow-hidden';
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
@@ -123,7 +131,7 @@ const Index = () => {
           onTouchStart={handlePressStart}
           onTouchEnd={handlePressEnd}
           whileHover={{ scale: 1.05 }}
-          className="relative w-40 h-40 rounded-full bg-primary text-primary-foreground font-bold text-xl shadow-lg overflow-hidden"
+          className={orangeMainButton}
         >
           <div
             className="absolute inset-0 bg-accent-foreground transition-all duration-100"
@@ -153,7 +161,7 @@ const Index = () => {
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={() => canAccessTheme ? navigate('/theme') : null}
-          className={`p-3 rounded-full ${canAccessTheme ? 'bg-accent text-accent-foreground' : 'bg-secondary text-secondary-foreground opacity-50'}`}
+          className={yellowIconButton(canAccessTheme)}
         >
           <Palette className="w-6 h-6" />
         </motion.button>
@@ -168,7 +176,7 @@ const Index = () => {
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={() => navigate('/settings')}
-          className="p-3 rounded-full bg-secondary text-secondary-foreground"
+          className={yellowIconButton(true)}
         >
           <Settings className="w-6 h-6" />
         </motion.button>

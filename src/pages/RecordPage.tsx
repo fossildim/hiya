@@ -17,7 +17,9 @@ const RecordPage = () => {
   const [savedEntry, setSavedEntry] = useState<Entry | null>(null);
   
   const today = new Date();
-  const dateStr = today.toISOString().split('T')[0];
+  const dateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+
+  const orangeButton = 'bg-gradient-to-br from-primary to-chart-1 text-primary-foreground';
   
   const formatDate = () => {
     return today.toLocaleDateString('zh-CN', {
@@ -115,7 +117,7 @@ const RecordPage = () => {
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           onClick={handleSubmit}
-          className="w-full py-4 rounded-xl bg-primary text-primary-foreground font-bold text-lg shadow-lg"
+          className={`w-full py-4 rounded-xl ${orangeButton} font-bold text-lg shadow-lg`}
         >
           嗨呀！✨
         </motion.button>
