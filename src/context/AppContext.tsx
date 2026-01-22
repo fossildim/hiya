@@ -85,12 +85,20 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
 
   const getWeekEntries = () => {
     const today = new Date();
-    const weekAgo = new Date(today);
-    weekAgo.setDate(today.getDate() - 7);
+    // 获取上周的日期范围（上周一到上周日）
+    const dayOfWeek = today.getDay();
+    const daysToLastSunday = dayOfWeek === 0 ? 7 : dayOfWeek;
+    const lastSunday = new Date(today);
+    lastSunday.setDate(today.getDate() - daysToLastSunday);
+    lastSunday.setHours(23, 59, 59, 999);
+    
+    const lastMonday = new Date(lastSunday);
+    lastMonday.setDate(lastSunday.getDate() - 6);
+    lastMonday.setHours(0, 0, 0, 0);
     
     return entries.filter(e => {
       const entryDate = new Date(e.date);
-      return entryDate >= weekAgo && entryDate <= today;
+      return entryDate >= lastMonday && entryDate <= lastSunday;
     }).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   };
 
