@@ -95,13 +95,24 @@ const HistoryPage = () => {
           key={day}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          onClick={() => entry && navigate(`/entry/${dateStr}`)}
+          onClick={() => {
+            if (entry) {
+              navigate(`/entry/${dateStr}`);
+            } else {
+              // 允许补录过去的日期
+              const clickedDate = new Date(year, month, day);
+              const today = new Date();
+              today.setHours(0, 0, 0, 0);
+              if (clickedDate <= today) {
+                navigate(`/record?date=${dateStr}`);
+              }
+            }
+          }}
           className={`
-            h-12 rounded-lg flex flex-col items-center justify-center relative
+            h-12 rounded-lg flex flex-col items-center justify-center relative cursor-pointer
             ${isToday(day) ? 'ring-2 ring-primary' : ''}
-            ${entry ? 'bg-primary/10' : 'bg-card'}
+            ${entry ? 'bg-primary/10' : 'bg-card hover:bg-muted'}
             ${isBest ? 'ring-2 ring-accent-foreground bg-accent' : ''}
-            ${entry ? 'cursor-pointer' : 'cursor-default'}
           `}
         >
           <span className={`text-sm font-medium ${isToday(day) ? 'text-primary' : 'text-foreground'}`}>

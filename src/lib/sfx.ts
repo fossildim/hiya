@@ -1,44 +1,46 @@
-let lastSpokenAt = 0;
+let lastPlayedAt = 0;
+const COOLDOWN_MS = 120; // 防止连续点击重复播放
 
-type SfxText = "嗨" | "呀" | "嗨呀";
+// 预加载音频以减少延迟
+const audioCache: Record<string, HTMLAudioElement> = {};
 
-function canSpeakNow() {
-  // small global cooldown to avoid machine-gun clicks
+function getAudio(src: string): HTMLAudioElement {
+  if (!audioCache[src]) {
+    audioCache[src] = new Audio(src);
+  }
+  return audioCache[src];
+}
+
+function canPlayNow(): boolean {
   const now = Date.now();
-  if (now - lastSpokenAt < 120) return false;
-  lastSpokenAt = now;
+  if (now - lastPlayedAt < COOLDOWN_MS) return false;
+  lastPlayedAt = now;
   return true;
 }
 
-function speak(text: SfxText) {
+function playAudio(src: string) {
   if (typeof window === "undefined") return;
-  if (!canSpeakNow()) return;
-  if (!("speechSynthesis" in window)) return;
+  if (!canPlayNow()) return;
 
-  // Stop previous utterance so it feels snappy.
-  window.speechSynthesis.cancel();
-
-  const utter = new SpeechSynthesisUtterance(text);
-  utter.lang = "zh-CN";
-  utter.rate = 1.15;
-  utter.pitch = 1.05;
-  utter.volume = 1;
-  window.speechSynthesis.speak(utter);
+  const audio = getAudio(src);
+  audio.currentTime = 0; // 允许快速重播
+  audio.play().catch(() => {
+    // 静默处理自动播放被阻止的情况
+  });
 }
 
 export function playHai() {
-  speak("嗨");
+  playAudio("/audio/hai.mp3");
 }
 
 export function playYa() {
-  speak("呀");
+  playAudio("/audio/ya.mp3");
 }
 
 export function playHaiya() {
-  speak("嗨呀");
+  playAudio("/audio/haiya.mp3");
 }
 
 export function playRandomSyllable() {
-  // 50/50
-  (Math.random() < 0.5 ? playHai : playYa)();
+  Math.random() < 0.5 ? playHai() : playYa();
 }
