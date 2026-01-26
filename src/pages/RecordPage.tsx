@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 import SmileRating from '@/components/SmileRating';
@@ -9,6 +9,7 @@ import { Entry } from '@/context/AppContext';
 
 const RecordPage = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { addEntry, settings } = useApp();
   
   const [rating, setRating] = useState(3);
@@ -16,13 +17,16 @@ const RecordPage = () => {
   const [showPoster, setShowPoster] = useState(false);
   const [savedEntry, setSavedEntry] = useState<Entry | null>(null);
   
-  const today = new Date();
-  const dateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+  // 支持通过 URL 参数指定日期（用于补录）
+  const urlDate = searchParams.get('date');
+  const targetDate = urlDate ? new Date(urlDate + 'T00:00:00') : new Date();
+  const dateStr = `${targetDate.getFullYear()}-${String(targetDate.getMonth() + 1).padStart(2, '0')}-${String(targetDate.getDate()).padStart(2, '0')}`;
+  const isBackfill = !!urlDate;
 
   const orangeButton = 'bg-gradient-to-br from-primary to-chart-1 text-primary-foreground';
   
   const formatDate = () => {
-    return today.toLocaleDateString('zh-CN', {
+    return targetDate.toLocaleDateString('zh-CN', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
@@ -62,7 +66,7 @@ const RecordPage = () => {
           <ArrowLeft className="w-5 h-5" />
         </motion.button>
         <div>
-          <h1 className="font-bold text-foreground">记录今天</h1>
+          <h1 className="font-bold text-foreground">{isBackfill ? '补充记录' : '记录今天'}</h1>
           <span className="text-sm text-muted-foreground">{formatDate()}</span>
         </div>
       </header>
