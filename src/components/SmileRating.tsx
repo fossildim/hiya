@@ -9,11 +9,11 @@ interface SmileRatingProps {
 }
 
 const smileFaces = [
-  { emoji: '😊', label: '嗨呀！', bg: 'bg-pink-200' },
-  { emoji: '😄', label: '嗨呀！！', bg: 'bg-pink-300' },
-  { emoji: '🥰', label: '嗨呀呀呀！', bg: 'bg-rose-200' },
-  { emoji: '😍', label: '嗨--呀！！', bg: 'bg-purple-200' },
-  { emoji: '🤩', label: '嗨呀！嗨呀！嗨呀！', bg: 'bg-amber-100' },
+  { emoji: '😊', label: '嗨呀！', bg: 'bg-orange-100' },
+  { emoji: '😄', label: '嗨呀！！', bg: 'bg-amber-100' },
+  { emoji: '🥰', label: '嗨呀呀呀！', bg: 'bg-orange-200' },
+  { emoji: '😍', label: '嗨--呀！！', bg: 'bg-amber-200' },
+  { emoji: '🤩', label: '嗨呀！嗨呀！嗨呀！', bg: 'bg-yellow-100' },
 ];
 
 const sizeClasses = {

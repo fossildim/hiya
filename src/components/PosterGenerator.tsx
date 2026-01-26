@@ -62,43 +62,43 @@ const PosterGenerator = ({ entry, userId, onClose }: PosterGeneratorProps) => {
           className="bg-card rounded-2xl overflow-hidden max-w-sm w-full shadow-xl"
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Poster Content - Pink gradient style like reference */}
+          {/* Poster Content - Orange gradient style */}
           <div
             ref={posterRef}
             className="relative overflow-hidden p-8"
             style={{
-              background: 'linear-gradient(135deg, #fdf2f8 0%, #fce7f3 30%, #fbcfe8 60%, #fdf2f8 100%)',
+              background: 'linear-gradient(135deg, #fffbf5 0%, #fff7ed 30%, #fed7aa 60%, #fffbf5 100%)',
             }}
           >
-            {/* Decorative blobs */}
+            {/* Decorative blobs - warm orange tones */}
             <div className="absolute inset-0 overflow-hidden">
               <div 
-                className="absolute w-24 h-24 rounded-full opacity-40"
-                style={{ background: 'rgba(255,255,255,0.8)', top: '10%', left: '5%', filter: 'blur(20px)' }}
+                className="absolute w-28 h-28 rounded-full"
+                style={{ background: 'rgba(251, 146, 60, 0.2)', top: '8%', left: '3%', filter: 'blur(25px)' }}
               />
               <div 
-                className="absolute w-32 h-32 rounded-full opacity-30"
-                style={{ background: 'rgba(255,255,255,0.9)', top: '60%', right: '-5%', filter: 'blur(25px)' }}
+                className="absolute w-36 h-36 rounded-full"
+                style={{ background: 'rgba(253, 186, 116, 0.3)', top: '55%', right: '-8%', filter: 'blur(30px)' }}
               />
               <div 
-                className="absolute w-20 h-20 rounded-full opacity-35"
-                style={{ background: 'rgba(255,255,255,0.7)', bottom: '15%', left: '10%', filter: 'blur(18px)' }}
+                className="absolute w-24 h-24 rounded-full"
+                style={{ background: 'rgba(255, 237, 213, 0.6)', bottom: '12%', left: '8%', filter: 'blur(20px)' }}
               />
               <div 
-                className="absolute w-16 h-16 rounded-full opacity-25"
-                style={{ background: 'rgba(255,255,255,0.8)', top: '30%', right: '15%', filter: 'blur(15px)' }}
+                className="absolute w-20 h-20 rounded-full"
+                style={{ background: 'rgba(251, 191, 36, 0.25)', top: '25%', right: '12%', filter: 'blur(18px)' }}
               />
             </div>
 
             <div className="relative z-10 text-center space-y-5">
-              {/* Title with gradient and stroke effect */}
+              {/* Title with orange gradient and stroke effect */}
               <h2 
                 className="text-5xl font-bold"
                 style={{
-                  background: 'linear-gradient(135deg, #fb923c 0%, #f472b6 50%, #fb7185 100%)',
+                  background: 'linear-gradient(135deg, #ea580c 0%, #f97316 40%, #fb923c 100%)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
-                  textShadow: '2px 2px 0 rgba(255,255,255,0.8), -1px -1px 0 rgba(255,255,255,0.8)',
+                  textShadow: '2px 2px 0 rgba(255,255,255,0.9), -1px -1px 0 rgba(255,255,255,0.9)',
                   letterSpacing: '0.05em',
                 }}
               >
@@ -108,7 +108,7 @@ const PosterGenerator = ({ entry, userId, onClose }: PosterGeneratorProps) => {
               {/* Date */}
               <div 
                 className="text-base font-medium"
-                style={{ color: '#9ca3af' }}
+                style={{ color: '#78716c' }}
               >
                 {formatDate(entry.date)}
               </div>
@@ -122,29 +122,29 @@ const PosterGenerator = ({ entry, userId, onClose }: PosterGeneratorProps) => {
               <div 
                 className="rounded-2xl p-5 mx-2"
                 style={{ 
-                  background: 'rgba(255,255,255,0.85)',
-                  boxShadow: '0 4px 20px rgba(0,0,0,0.05)'
+                  background: 'rgba(255,255,255,0.9)',
+                  boxShadow: '0 4px 20px rgba(234, 88, 12, 0.08)'
                 }}
               >
                 <p 
                   className="leading-relaxed text-sm"
-                  style={{ color: '#6b7280' }}
+                  style={{ color: '#57534e' }}
                 >
                   {entry.content || '今天没有写什么...'}
                 </p>
               </div>
               
-              {/* User ID with flower */}
+              {/* User ID with sun */}
               <div className="pt-2">
                 <span 
                   className="text-sm font-medium"
                   style={{ 
-                    background: 'linear-gradient(135deg, #9ca3af 0%, #f472b6 100%)',
+                    background: 'linear-gradient(135deg, #78716c 0%, #ea580c 100%)',
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
                   }}
                 >
-                  {userId ? `@${userId}` : '@HiYa'} 🌸
+                  {userId ? `@${userId}` : '@HiYa'} 🌻
                 </span>
               </div>
             </div>

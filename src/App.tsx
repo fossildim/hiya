@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { HashRouter, Routes, Route } from "react-router-dom";
 import { AppProvider } from "@/context/AppContext";
 import { playRandomSyllable } from "@/lib/sfx";
+import { useTheme } from "@/hooks/useTheme";
 import Index from "./pages/Index";
 import RecordPage from "./pages/RecordPage";
 import HistoryPage from "./pages/HistoryPage";
@@ -14,6 +15,12 @@ import SettingsPage from "./pages/SettingsPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
+
+// Theme wrapper component
+const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
+  useTheme(); // This applies theme on mount and listens for system changes
+  return <>{children}</>;
+};
 
 const App = () => {
   useEffect(() => {
@@ -39,22 +46,24 @@ const App = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <AppProvider>
-          <Toaster />
-          <Sonner />
-          <HashRouter>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/record" element={<RecordPage />} />
-              <Route path="/history" element={<HistoryPage />} />
-              <Route path="/entry/:date" element={<EntryDetailPage />} />
-              <Route path="/settings" element={<SettingsPage />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </HashRouter>
-        </AppProvider>
-      </TooltipProvider>
+      <ThemeProvider>
+        <TooltipProvider>
+          <AppProvider>
+            <Toaster />
+            <Sonner />
+            <HashRouter>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/record" element={<RecordPage />} />
+                <Route path="/history" element={<HistoryPage />} />
+                <Route path="/entry/:date" element={<EntryDetailPage />} />
+                <Route path="/settings" element={<SettingsPage />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </HashRouter>
+          </AppProvider>
+        </TooltipProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 };
