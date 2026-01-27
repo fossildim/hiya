@@ -1,7 +1,7 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Settings, Palette } from 'lucide-react';
+import { Settings, Palette, Calendar } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 import WeekGrid from '@/components/WeekGrid';
 import SmileRating from '@/components/SmileRating';
@@ -10,7 +10,7 @@ import { useNotificationReminder } from '@/hooks/useNotificationReminder';
 
 const Index = () => {
   const navigate = useNavigate();
-  const { getTodayEntry, getWeekEntries, getDaysUsed } = useApp();
+  const { getTodayEntry, getWeekEntries, getDaysUsed, entries } = useApp();
   const [isPressed, setIsPressed] = useState(false);
   const [progress, setProgress] = useState(0);
   const pressTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -81,7 +81,7 @@ const Index = () => {
     'relative w-44 h-44 rounded-full bg-gradient-to-br from-primary to-chart-1 text-primary-foreground font-bold text-xl shadow-xl overflow-hidden';
 
   return (
-    <div className="min-h-screen bg-background flex flex-col relative overflow-hidden">
+    <div className="min-h-screen max-w-[100vw] mx-auto bg-background flex flex-col relative overflow-hidden" style={{ maxWidth: 'min(100vw, calc(100vh * 9 / 16))' }}>
       {/* Decorative background blobs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div 
@@ -222,6 +222,15 @@ const Index = () => {
         transition={{ delay: 0.3 }}
         className="p-6 flex justify-between items-center relative z-10"
       >
+        <motion.button
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          onClick={() => navigate('/history')}
+          className={yellowIconButton(true)}
+        >
+          <Calendar className="w-6 h-6" />
+        </motion.button>
+        
         <motion.button
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
