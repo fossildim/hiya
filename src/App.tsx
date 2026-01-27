@@ -12,6 +12,7 @@ import RecordPage from "./pages/RecordPage";
 import HistoryPage from "./pages/HistoryPage";
 import EntryDetailPage from "./pages/EntryDetailPage";
 import SettingsPage from "./pages/SettingsPage";
+import ThemeStorePage from "./pages/ThemeStorePage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -58,6 +59,7 @@ const App = () => {
                 <Route path="/history" element={<HistoryPage />} />
                 <Route path="/entry/:date" element={<EntryDetailPage />} />
                 <Route path="/settings" element={<SettingsPage />} />
+                <Route path="/theme-store" element={<ThemeStorePage />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </HashRouter>

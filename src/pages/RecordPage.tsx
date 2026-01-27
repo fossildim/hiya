@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 import SmileRating from '@/components/SmileRating';
 import PosterGenerator from '@/components/PosterGenerator';
 import { Entry } from '@/context/AppContext';
+import { useSearchParams } from 'react-router-dom';
 
 const RecordPage = () => {
   const navigate = useNavigate();
@@ -53,13 +54,19 @@ const RecordPage = () => {
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -20 }}
-      className="min-h-screen bg-background flex flex-col mx-auto"
-      style={{ maxWidth: 'min(100vw, calc(100vh * 9 / 16))' }}
+      className="min-h-screen max-w-md mx-auto bg-background flex flex-col pt-safe pb-safe"
     >
+      {/* Decorative background */}
+      <div 
+        className="fixed inset-0 pointer-events-none"
+        style={{
+          background: 'linear-gradient(180deg, rgba(255,245,247,0.8) 0%, rgba(255,228,232,0.4) 50%, rgba(254,215,170,0.3) 100%)',
+        }}
+      />
+
       {/* Header */}
-      <header className="p-4 flex items-center gap-4 border-b border-border">
+      <header className="relative z-10 p-4 flex items-center gap-4 border-b border-border bg-card/80 backdrop-blur-sm">
         <motion.button
-          whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={() => navigate('/')}
           className="p-2 rounded-full bg-secondary text-secondary-foreground"
@@ -73,7 +80,7 @@ const RecordPage = () => {
       </header>
       
       {/* Content */}
-      <div className="flex-1 p-6 space-y-8">
+      <div className="relative z-10 flex-1 p-4 sm:p-6 space-y-6 sm:space-y-8">
         {/* Rating Section */}
         <motion.section
           initial={{ opacity: 0, y: 20 }}
@@ -81,9 +88,9 @@ const RecordPage = () => {
           transition={{ delay: 0.1 }}
           className="space-y-4"
         >
-          <h2 className="text-lg font-medium text-foreground text-center">今天的心情</h2>
+          <h2 className="text-base sm:text-lg font-medium text-foreground text-center">今天的心情</h2>
           <SmileRating value={rating} onChange={setRating} />
-          <p className="text-center text-sm text-muted-foreground">
+          <p className="text-center text-xs sm:text-sm text-muted-foreground">
             {['', '嗨呀！', '嗨呀！！', '嗨呀呀呀！', '嗨--呀！！', '嗨呀！嗨呀！嗨呀！'][rating]}
           </p>
         </motion.section>
@@ -96,14 +103,14 @@ const RecordPage = () => {
           transition={{ delay: 0.2 }}
           className="space-y-2"
         >
-          <label className="text-sm font-medium text-foreground">
+          <label className="text-xs sm:text-sm font-medium text-foreground">
             今天发生了什么？
           </label>
           <textarea
             value={content}
             onChange={(e) => setContent(e.target.value.slice(0, 200))}
             placeholder="记录一下今天的心情和事情..."
-            className="w-full h-40 p-4 rounded-xl bg-card text-card-foreground border border-border focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+            className="w-full h-32 sm:h-40 p-3 sm:p-4 rounded-xl bg-card text-card-foreground border border-border focus:outline-none focus:ring-2 focus:ring-primary resize-none text-sm sm:text-base"
           />
           <div className="text-right text-xs text-muted-foreground">
             {content.length}/200
@@ -116,13 +123,12 @@ const RecordPage = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        className="p-6"
+        className="relative z-10 p-4 sm:p-6"
       >
         <motion.button
-          whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           onClick={handleSubmit}
-          className={`w-full py-4 rounded-xl ${orangeButton} font-bold text-lg shadow-lg`}
+          className={`w-full py-3 sm:py-4 rounded-xl ${orangeButton} font-bold text-base sm:text-lg shadow-lg`}
         >
           嗨呀！✨
         </motion.button>
