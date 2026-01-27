@@ -58,13 +58,19 @@ const SettingsPage = () => {
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -20 }}
-      className="min-h-screen bg-background mx-auto"
-      style={{ maxWidth: 'min(100vw, calc(100vh * 9 / 16))' }}
+      className="min-h-screen max-w-md mx-auto bg-background pt-safe pb-safe"
     >
+      {/* Decorative background */}
+      <div 
+        className="fixed inset-0 pointer-events-none"
+        style={{
+          background: 'linear-gradient(180deg, rgba(255,245,247,0.8) 0%, rgba(255,228,232,0.4) 50%, rgba(254,215,170,0.3) 100%)',
+        }}
+      />
+
       {/* Header */}
-      <header className="p-4 flex items-center gap-4 border-b border-border">
+      <header className="relative z-10 p-4 flex items-center gap-4 border-b border-border bg-card/80 backdrop-blur-sm">
         <motion.button
-          whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={() => navigate('/')}
           className={`p-2 rounded-full ${yellowButton}`}
@@ -74,7 +80,7 @@ const SettingsPage = () => {
         <h1 className="font-bold text-foreground">设置</h1>
       </header>
       
-      <div className="p-6 space-y-6">
+      <div className="relative z-10 p-4 sm:p-6 space-y-4 sm:space-y-6">
         {/* User ID */}
         <motion.section
           initial={{ opacity: 0, y: 20 }}
@@ -88,13 +94,12 @@ const SettingsPage = () => {
               value={userId}
               onChange={(e) => setUserId(e.target.value)}
               placeholder="输入你的ID..."
-              className="flex-1 px-4 py-3 rounded-lg bg-card text-card-foreground border border-border focus:outline-none focus:ring-2 focus:ring-primary"
+              className="flex-1 px-4 py-3 rounded-lg bg-card text-card-foreground border border-border focus:outline-none focus:ring-2 focus:ring-primary text-sm"
             />
             <motion.button
-              whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={handleSaveId}
-              className={`px-4 py-3 rounded-lg ${yellowButton} font-medium flex items-center gap-2`}
+              className={`px-4 py-3 rounded-lg ${yellowButton} font-medium flex items-center gap-2 text-sm`}
             >
               {saved ? <Check className="w-4 h-4" /> : '保存'}
             </motion.button>
@@ -106,17 +111,17 @@ const SettingsPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-card rounded-xl p-5 shadow-sm"
+          className="bg-card/80 backdrop-blur-sm rounded-xl p-4 sm:p-5 shadow-sm border border-border/50"
         >
           <h2 className="text-sm font-medium text-muted-foreground mb-4">使用统计</h2>
           <div className="grid grid-cols-2 gap-4">
             <div className="text-center">
-              <p className="text-3xl font-bold text-primary">{getDaysUsed()}</p>
-              <p className="text-sm text-muted-foreground">使用天数</p>
+              <p className="text-2xl sm:text-3xl font-bold text-primary">{getDaysUsed()}</p>
+              <p className="text-xs sm:text-sm text-muted-foreground">使用天数</p>
             </div>
             <div className="text-center">
-              <p className="text-3xl font-bold text-primary">{entries.length}</p>
-              <p className="text-sm text-muted-foreground">记录条数</p>
+              <p className="text-2xl sm:text-3xl font-bold text-primary">{entries.length}</p>
+              <p className="text-xs sm:text-sm text-muted-foreground">记录条数</p>
             </div>
           </div>
         </motion.section>
@@ -131,28 +136,26 @@ const SettingsPage = () => {
           <h2 className="text-sm font-medium text-muted-foreground">数据管理</h2>
           
           <motion.button
-            whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={handleExport}
             className={`w-full p-4 rounded-lg ${yellowButton} border border-border flex items-center gap-3`}
           >
             <Download className="w-5 h-5 text-primary" />
             <div className="text-left">
-              <p className="font-medium">导出数据</p>
-              <p className="text-sm text-muted-foreground">备份所有记录到文件</p>
+              <p className="font-medium text-sm">导出数据</p>
+              <p className="text-xs text-muted-foreground">备份所有记录到文件</p>
             </div>
           </motion.button>
           
           <motion.button
-            whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => fileInputRef.current?.click()}
             className={`w-full p-4 rounded-lg ${yellowButton} border border-border flex items-center gap-3`}
           >
             <Upload className="w-5 h-5 text-primary" />
             <div className="text-left">
-              <p className="font-medium">导入数据</p>
-              <p className="text-sm text-muted-foreground">从备份文件恢复记录</p>
+              <p className="font-medium text-sm">导入数据</p>
+              <p className="text-xs text-muted-foreground">从备份文件恢复记录</p>
             </div>
           </motion.button>
           
@@ -172,13 +175,12 @@ const SettingsPage = () => {
           transition={{ delay: 0.3 }}
         >
           <motion.button
-            whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => setShowAbout(true)}
             className={`w-full p-4 rounded-lg ${yellowButton} border border-border flex items-center gap-3`}
           >
             <Info className="w-5 h-5 text-primary" />
-            <p className="font-medium">关于嗨呀！</p>
+            <p className="font-medium text-sm">关于嗨呀！</p>
           </motion.button>
         </motion.section>
       </div>
@@ -194,7 +196,7 @@ const SettingsPage = () => {
           <motion.div
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            className="bg-card rounded-2xl p-6 max-w-sm w-full shadow-xl text-center"
+            className="bg-card rounded-2xl p-6 max-w-xs w-full shadow-xl text-center"
             onClick={(e) => e.stopPropagation()}
           >
             <h2 className="text-2xl font-bold text-primary mb-2">嗨呀！</h2>
@@ -203,12 +205,13 @@ const SettingsPage = () => {
             <p className="text-card-foreground text-sm leading-relaxed mb-6">
               嗨呀！只会帮助你记住开心的事，一定要嗨呀呀！
             </p>
-            <button
+            <motion.button
+              whileTap={{ scale: 0.95 }}
               onClick={() => setShowAbout(false)}
               className={`px-6 py-2 rounded-lg ${yellowButton} font-medium`}
             >
               好呀！
-            </button>
+            </motion.button>
           </motion.div>
         </motion.div>
       )}

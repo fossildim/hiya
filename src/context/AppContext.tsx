@@ -11,6 +11,8 @@ export interface Entry {
 interface AppSettings {
   userId: string;
   firstUseDate: string;
+  unlockedThemes: string[];
+  currentTheme: string;
 }
 
 interface AppContextType {
@@ -47,6 +49,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [settings, setSettings] = useState<AppSettings>({
     userId: '',
     firstUseDate: getLocalISODate(),
+    unlockedThemes: ['default'],
+    currentTheme: 'default',
   });
 
   useEffect(() => {

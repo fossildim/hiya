@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
+import BottomTabBar from '@/components/BottomTabBar';
 
 const HistoryPage = () => {
   const navigate = useNavigate();
@@ -65,7 +66,7 @@ const HistoryPage = () => {
   const weekBestDays = getWeekBestDays();
   
   const getRatingEmoji = (rating: number) => {
-    return ['', '😊', '😄', '🤗', '🥰', '🥳'][rating];
+    return ['', '😊', '😄', '🥰', '😍', '🤩'][rating];
   };
   
   const isToday = (day: number) => {
@@ -81,7 +82,7 @@ const HistoryPage = () => {
     
     // Empty cells for days before the first day of month
     for (let i = 0; i < firstDay; i++) {
-      days.push(<div key={`empty-${i}`} className="h-12" />);
+      days.push(<div key={`empty-${i}`} className="aspect-square" />);
     }
     
     // Days of the month
@@ -93,8 +94,7 @@ const HistoryPage = () => {
       days.push(
         <motion.button
           key={day}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+          whileTap={{ scale: 0.9 }}
           onClick={() => {
             if (entry) {
               navigate(`/entry/${dateStr}`);
@@ -109,13 +109,13 @@ const HistoryPage = () => {
             }
           }}
           className={`
-            h-12 rounded-lg flex flex-col items-center justify-center relative cursor-pointer
+            aspect-square rounded-lg flex flex-col items-center justify-center relative cursor-pointer transition-all
             ${isToday(day) ? 'ring-2 ring-primary' : ''}
             ${entry ? 'bg-primary/10' : 'bg-card hover:bg-muted'}
             ${isBest ? 'ring-2 ring-accent-foreground bg-accent' : ''}
           `}
         >
-          <span className={`text-sm font-medium ${isToday(day) ? 'text-primary' : 'text-foreground'}`}>
+          <span className={`text-xs sm:text-sm font-medium ${isToday(day) ? 'text-primary' : 'text-foreground'}`}>
             {day}
           </span>
           {entry && (
@@ -129,30 +129,30 @@ const HistoryPage = () => {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -20 }}
-      className="min-h-screen bg-background mx-auto"
-      style={{ maxWidth: 'min(100vw, calc(100vh * 9 / 16))' }}
-    >
+    <div className="min-h-screen max-w-md mx-auto bg-background pt-safe pb-20">
+      {/* Decorative background */}
+      <div 
+        className="fixed inset-0 pointer-events-none"
+        style={{
+          background: 'linear-gradient(180deg, rgba(255,245,247,0.8) 0%, rgba(255,228,232,0.4) 50%, rgba(254,215,170,0.3) 100%)',
+        }}
+      />
+      
       {/* Header */}
-      <header className="p-4 flex items-center gap-4 border-b border-border">
+      <header className="relative z-10 p-4 flex items-center gap-4 border-b border-border bg-card/80 backdrop-blur-sm">
         <motion.button
-          whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={() => navigate('/')}
           className={yellowIconButton}
         >
           <ArrowLeft className="w-5 h-5" />
         </motion.button>
-        <h1 className="font-bold text-foreground">之前好嗨呀！</h1>
+        <h1 className="font-bold text-foreground">开心动态</h1>
       </header>
       
       {/* Month Navigation */}
-      <div className="p-4 flex items-center justify-between">
+      <div className="relative z-10 p-4 flex items-center justify-between">
         <motion.button
-          whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={prevMonth}
           className={yellowIconButton}
@@ -165,7 +165,6 @@ const HistoryPage = () => {
         </h2>
         
         <motion.button
-          whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={nextMonth}
           className={yellowIconButton}
@@ -175,11 +174,11 @@ const HistoryPage = () => {
       </div>
       
       {/* Calendar */}
-      <div className="p-4">
+      <div className="relative z-10 p-4">
         {/* Week Days Header */}
         <div className="grid grid-cols-7 gap-1 mb-2">
           {weekDays.map(day => (
-            <div key={day} className="h-8 flex items-center justify-center">
+            <div key={day} className="aspect-square flex items-center justify-center">
               <span className="text-xs font-medium text-muted-foreground">{day}</span>
             </div>
           ))}
@@ -192,7 +191,7 @@ const HistoryPage = () => {
       </div>
       
       {/* Legend */}
-      <div className="p-4 flex items-center justify-center gap-4 text-xs text-muted-foreground">
+      <div className="relative z-10 p-4 flex items-center justify-center gap-4 text-xs text-muted-foreground">
         <div className="flex items-center gap-1">
           <div className="w-3 h-3 rounded bg-primary/10" />
           <span>有记录</span>
@@ -202,7 +201,9 @@ const HistoryPage = () => {
           <span>本周最佳</span>
         </div>
       </div>
-    </motion.div>
+
+      <BottomTabBar />
+    </div>
   );
 };
 

@@ -1,16 +1,17 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Settings, Palette, Calendar } from 'lucide-react';
+import { Settings } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 import WeekGrid from '@/components/WeekGrid';
 import SmileRating from '@/components/SmileRating';
 import { playHaiya } from '@/lib/sfx';
 import { useNotificationReminder } from '@/hooks/useNotificationReminder';
+import BottomTabBar from '@/components/BottomTabBar';
 
 const Index = () => {
   const navigate = useNavigate();
-  const { getTodayEntry, getWeekEntries, getDaysUsed, entries } = useApp();
+  const { getTodayEntry, getWeekEntries } = useApp();
   const [isPressed, setIsPressed] = useState(false);
   const [progress, setProgress] = useState(0);
   const pressTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -21,8 +22,6 @@ const Index = () => {
   
   const todayEntry = getTodayEntry();
   const weekEntries = getWeekEntries();
-  const daysUsed = getDaysUsed();
-  const canAccessTheme = daysUsed >= 20;
   
   const bestEntry = weekEntries.length > 0 
     ? weekEntries.reduce((best, entry) => entry.rating > best.rating ? entry : best, weekEntries[0])
@@ -72,16 +71,19 @@ const Index = () => {
     };
   }, []);
 
-  const yellowIconButton = (enabled = true) =>
-    `p-3 rounded-full bg-gradient-to-br from-accent to-accent/70 text-accent-foreground ${
-      enabled ? '' : 'opacity-50'
-    }`;
-
   const orangeMainButton =
-    'relative w-44 h-44 rounded-full bg-gradient-to-br from-primary to-chart-1 text-primary-foreground font-bold text-xl shadow-xl overflow-hidden';
+    'relative w-36 h-36 sm:w-44 sm:h-44 rounded-full bg-gradient-to-br from-primary to-chart-1 text-primary-foreground font-bold text-xl shadow-xl overflow-hidden';
 
   return (
-    <div className="min-h-screen max-w-[100vw] mx-auto bg-background flex flex-col relative overflow-hidden" style={{ maxWidth: 'min(100vw, calc(100vh * 9 / 16))' }}>
+    <div className="min-h-screen max-w-md mx-auto bg-background flex flex-col relative overflow-hidden pt-safe pb-20">
+      {/* Decorative background - pink gradient */}
+      <div 
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: 'linear-gradient(180deg, rgba(255,245,247,0.8) 0%, rgba(255,228,232,0.4) 50%, rgba(254,215,170,0.3) 100%)',
+        }}
+      />
+      
       {/* Decorative background blobs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div 
@@ -97,7 +99,7 @@ const Index = () => {
           className="absolute w-48 h-48 rounded-full opacity-15"
           style={{ 
             background: 'hsl(var(--chart-1) / 0.4)', 
-            bottom: '20%', 
+            bottom: '25%', 
             left: '-8%', 
             filter: 'blur(50px)' 
           }}
@@ -117,19 +119,29 @@ const Index = () => {
       <motion.header
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="p-6 space-y-2 relative z-10"
+        className="p-4 sm:p-6 space-y-1 relative z-10 flex justify-between items-start"
       >
-        <h1 
-          className="text-3xl font-bold"
-          style={{
-            background: 'linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--chart-1)) 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
+        <div>
+          <h1 
+            className="text-2xl sm:text-3xl font-bold"
+            style={{
+              background: 'linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--chart-1)) 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+            }}
+          >
+            嗨呀！
+          </h1>
+          <span className="text-xs sm:text-sm text-muted-foreground">{formatDate(new Date())}</span>
+        </div>
+        <motion.button
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          onClick={() => navigate('/settings')}
+          className="p-2.5 rounded-full bg-gradient-to-br from-accent to-accent/70 text-accent-foreground"
         >
-          嗨呀！
-        </h1>
-        <span className="text-sm text-muted-foreground">{formatDate(new Date())}</span>
+          <Settings className="w-5 h-5" />
+        </motion.button>
       </motion.header>
       
       {/* Best Entry of the Week */}
@@ -137,19 +149,19 @@ const Index = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="px-6 mb-6 relative z-10"
+        className="px-4 sm:px-6 mb-4 sm:mb-6 relative z-10"
       >
         <div 
-          className="bg-card/80 backdrop-blur-sm rounded-2xl p-5 shadow-md border border-border/50"
+          className="bg-card/80 backdrop-blur-sm rounded-2xl p-4 sm:p-5 shadow-md border border-border/50"
           style={{ boxShadow: '0 4px 20px hsl(var(--primary) / 0.08)' }}
         >
-          <h2 className="text-sm font-medium text-muted-foreground mb-3 flex items-center gap-2">
+          <h2 className="text-xs sm:text-sm font-medium text-muted-foreground mb-2 sm:mb-3 flex items-center gap-2">
             <span>🌟</span> 上周最嗨！
           </h2>
           {bestEntry ? (
-            <div className="space-y-3">
+            <div className="space-y-2 sm:space-y-3">
               <SmileRating value={bestEntry.rating} onChange={() => {}} readonly size="sm" />
-              <p className="text-card-foreground text-sm line-clamp-2">
+              <p className="text-card-foreground text-xs sm:text-sm line-clamp-2">
                 {bestEntry.content || '没有写什么...'}
               </p>
               <span className="text-xs text-muted-foreground">
@@ -157,7 +169,7 @@ const Index = () => {
               </span>
             </div>
           ) : (
-            <p className="text-muted-foreground text-sm">还没有记录哦，快来记录吧！✨</p>
+            <p className="text-muted-foreground text-xs sm:text-sm">还没有记录哦，快来记录吧！✨</p>
           )}
         </div>
       </motion.section>
@@ -167,16 +179,16 @@ const Index = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="px-6 mb-8 relative z-10"
+        className="px-4 sm:px-6 mb-4 sm:mb-6 relative z-10"
       >
-        <h2 className="text-sm font-medium text-muted-foreground mb-3 flex items-center gap-2">
+        <h2 className="text-xs sm:text-sm font-medium text-muted-foreground mb-2 sm:mb-3 flex items-center gap-2">
           <span>📅</span> 过去一周
         </h2>
         <WeekGrid />
       </motion.section>
       
       {/* Center Record Button */}
-      <div className="flex-1 flex items-center justify-center px-6 relative z-10">
+      <div className="flex-1 flex items-center justify-center px-4 sm:px-6 relative z-10">
         <motion.div className="relative">
           {/* Glow effect behind button */}
           <div 
@@ -194,6 +206,7 @@ const Index = () => {
             onTouchStart={handlePressStart}
             onTouchEnd={handlePressEnd}
             whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             className={orangeMainButton}
             style={{ boxShadow: '0 8px 30px hsl(var(--primary) / 0.3)' }}
           >
@@ -205,8 +218,8 @@ const Index = () => {
               }}
             />
             <div className="relative z-10 flex flex-col items-center justify-center h-full">
-              <span className="text-3xl mb-1">😊</span>
-              <span className="text-lg">{todayEntry ? '还有更嗨呀的！' : '嗨呀！'}</span>
+              <span className="text-2xl sm:text-3xl mb-1">😊</span>
+              <span className="text-base sm:text-lg">{todayEntry ? '还有更嗨呀的！' : '嗨呀！'}</span>
               {isPressed && (
                 <span className="text-xs mt-1 opacity-80">长按2秒...</span>
               )}
@@ -214,47 +227,9 @@ const Index = () => {
           </motion.button>
         </motion.div>
       </div>
-      
-      {/* Footer Navigation */}
-      <motion.footer
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
-        className="p-6 flex justify-between items-center relative z-10"
-      >
-        <motion.button
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          onClick={() => navigate('/history')}
-          className={yellowIconButton(true)}
-        >
-          <Calendar className="w-6 h-6" />
-        </motion.button>
-        
-        <motion.button
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          onClick={() => canAccessTheme ? navigate('/theme') : null}
-          className={yellowIconButton(canAccessTheme)}
-        >
-          <Palette className="w-6 h-6" />
-        </motion.button>
-        
-        {!canAccessTheme && (
-          <span className="text-xs text-muted-foreground">
-            再使用 {20 - daysUsed} 天解锁主题
-          </span>
-        )}
-        
-        <motion.button
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          onClick={() => navigate('/settings')}
-          className={yellowIconButton(true)}
-        >
-          <Settings className="w-6 h-6" />
-        </motion.button>
-      </motion.footer>
+
+      {/* Bottom Tab Bar */}
+      <BottomTabBar />
     </div>
   );
 };
