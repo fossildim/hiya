@@ -56,7 +56,8 @@ const EntryDetailPage = () => {
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -20 }}
-      className="min-h-screen bg-background"
+      className="min-h-screen bg-background mx-auto"
+      style={{ maxWidth: 'min(100vw, calc(100vh * 9 / 16))' }}
     >
       {/* Header */}
       <header className="p-4 flex items-center justify-between border-b border-border">

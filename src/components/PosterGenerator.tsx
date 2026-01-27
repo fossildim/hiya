@@ -62,43 +62,21 @@ const PosterGenerator = ({ entry, userId, onClose }: PosterGeneratorProps) => {
           className="bg-card rounded-2xl overflow-hidden max-w-sm w-full shadow-xl"
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Poster Content - Orange gradient style */}
+          {/* Poster Content - Simple white-orange gradient */}
           <div
             ref={posterRef}
             className="relative overflow-hidden p-8"
             style={{
-              background: 'linear-gradient(135deg, #fffbf5 0%, #fff7ed 30%, #fed7aa 60%, #fffbf5 100%)',
+              background: 'linear-gradient(180deg, #ffffff 0%, #fff7ed 50%, #fed7aa 100%)',
             }}
           >
-            {/* Decorative blobs - warm orange tones */}
-            <div className="absolute inset-0 overflow-hidden">
-              <div 
-                className="absolute w-28 h-28 rounded-full"
-                style={{ background: 'rgba(251, 146, 60, 0.2)', top: '8%', left: '3%', filter: 'blur(25px)' }}
-              />
-              <div 
-                className="absolute w-36 h-36 rounded-full"
-                style={{ background: 'rgba(253, 186, 116, 0.3)', top: '55%', right: '-8%', filter: 'blur(30px)' }}
-              />
-              <div 
-                className="absolute w-24 h-24 rounded-full"
-                style={{ background: 'rgba(255, 237, 213, 0.6)', bottom: '12%', left: '8%', filter: 'blur(20px)' }}
-              />
-              <div 
-                className="absolute w-20 h-20 rounded-full"
-                style={{ background: 'rgba(251, 191, 36, 0.25)', top: '25%', right: '12%', filter: 'blur(18px)' }}
-              />
-            </div>
-
             <div className="relative z-10 text-center space-y-5">
-              {/* Title with orange gradient and stroke effect */}
+              {/* Title - smaller with orange stroke */}
               <h2 
-                className="text-5xl font-bold"
+                className="text-3xl font-bold"
                 style={{
-                  background: 'linear-gradient(135deg, #ea580c 0%, #f97316 40%, #fb923c 100%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  textShadow: '2px 2px 0 rgba(255,255,255,0.9), -1px -1px 0 rgba(255,255,255,0.9)',
+                  color: '#ea580c',
+                  textShadow: '1px 1px 0 #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 2px 2px 0 #fdba74',
                   letterSpacing: '0.05em',
                 }}
               >
@@ -138,11 +116,7 @@ const PosterGenerator = ({ entry, userId, onClose }: PosterGeneratorProps) => {
               <div className="pt-2">
                 <span 
                   className="text-sm font-medium"
-                  style={{ 
-                    background: 'linear-gradient(135deg, #78716c 0%, #ea580c 100%)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                  }}
+                  style={{ color: '#ea580c' }}
                 >
                   {userId ? `@${userId}` : '@HiYa'} 🌻
                 </span>
