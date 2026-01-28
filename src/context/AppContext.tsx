@@ -52,26 +52,61 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     unlockedThemes: ['default'],
     currentTheme: 'default',
   });
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
-    const savedEntries = localStorage.getItem(STORAGE_KEYS.ENTRIES);
-    const savedSettings = localStorage.getItem(STORAGE_KEYS.SETTINGS);
+    const safeParse = <T,>(raw: string | null): T | null => {
+      if (!raw) return null;
+      try {
+        return JSON.parse(raw) as T;
+      } catch {
+        return null;
+      }
+    };
 
-    if (savedEntries) {
-      setEntries(JSON.parse(savedEntries));
+    // Primary keys
+    const savedEntries = safeParse<Entry[]>(localStorage.getItem(STORAGE_KEYS.ENTRIES));
+    const savedSettings = safeParse<Partial<AppSettings>>(localStorage.getItem(STORAGE_KEYS.SETTINGS));
+
+    // Legacy compatibility (in case older builds used different keys)
+    const legacyEntries =
+      safeParse<Entry[]>(localStorage.getItem('entries')) ||
+      safeParse<Entry[]>(localStorage.getItem('haiyaEntries'));
+    const legacySettings =
+      safeParse<Partial<AppSettings>>(localStorage.getItem('settings')) ||
+      safeParse<Partial<AppSettings>>(localStorage.getItem('haiyaSettings'));
+
+    const finalEntries = savedEntries ?? legacyEntries;
+    const finalSettings = savedSettings ?? legacySettings;
+
+    if (finalEntries) {
+      setEntries(finalEntries);
+      // Migrate legacy -> current key
+      if (!savedEntries && legacyEntries) {
+        localStorage.setItem(STORAGE_KEYS.ENTRIES, JSON.stringify(legacyEntries));
+      }
     }
-    if (savedSettings) {
-      setSettings(JSON.parse(savedSettings));
+
+    if (finalSettings) {
+      setSettings((prev) => ({ ...prev, ...finalSettings }));
+      // Migrate legacy -> current key
+      if (!savedSettings && legacySettings) {
+        localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify({ ...settings, ...legacySettings }));
+      }
     }
+
+    setHydrated(true);
   }, []);
 
   useEffect(() => {
+    if (!hydrated) return;
     localStorage.setItem(STORAGE_KEYS.ENTRIES, JSON.stringify(entries));
-  }, [entries]);
+  }, [entries, hydrated]);
 
   useEffect(() => {
+    if (!hydrated) return;
     localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings));
-  }, [settings]);
+  }, [settings, hydrated]);
 
   const addEntry = (entryData: Omit<Entry, 'id' | 'createdAt'>) => {
     const newEntry: Entry = {
