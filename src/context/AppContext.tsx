@@ -13,6 +13,8 @@ interface AppSettings {
   firstUseDate: string;
   unlockedThemes: string[];
   currentTheme: string;
+  devMode?: boolean;
+  haiyaPoints?: number;
 }
 
 interface AppContextType {
@@ -51,6 +53,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     firstUseDate: getLocalISODate(),
     unlockedThemes: ['default'],
     currentTheme: 'default',
+    devMode: false,
+    haiyaPoints: 0,
   });
   const [hydrated, setHydrated] = useState(false);
 

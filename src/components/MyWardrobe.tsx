@@ -1,0 +1,100 @@
+import { motion } from 'framer-motion';
+import { Check, Lock } from 'lucide-react';
+import { themes, ThemeDefinition, applyTheme } from '@/lib/themes';
+import { useApp } from '@/context/AppContext';
+
+const MyWardrobe = () => {
+  const { settings, updateSettings } = useApp();
+  const unlockedThemes = settings.unlockedThemes || ['default'];
+  const currentTheme = settings.currentTheme || 'default';
+
+  const handleApplyTheme = (theme: ThemeDefinition) => {
+    if (!unlockedThemes.includes(theme.id)) return;
+
+    updateSettings({ currentTheme: theme.id });
+    applyTheme(theme.id);
+
+    // Haptic feedback
+    if ('vibrate' in navigator) {
+      navigator.vibrate(30);
+    }
+  };
+
+  const isUnlocked = (themeId: string) => unlockedThemes.includes(themeId);
+  const isActive = (themeId: string) => currentTheme === themeId;
+
+  return (
+    <motion.section
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="px-4"
+    >
+      <h2 className="text-lg font-bold text-foreground mb-3 flex items-center gap-2">
+        👗 我的衣橱
+      </h2>
+      <p className="text-sm text-muted-foreground mb-4">
+        已解锁 {unlockedThemes.length}/{themes.length} 个主题
+      </p>
+
+      <div className="grid grid-cols-2 gap-3">
+        {themes.map((theme, index) => {
+          const unlocked = isUnlocked(theme.id);
+          const active = isActive(theme.id);
+
+          return (
+            <motion.div
+              key={theme.id}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: index * 0.05 }}
+              whileTap={{ scale: unlocked ? 0.95 : 1 }}
+              onClick={() => handleApplyTheme(theme)}
+              className={`relative rounded-xl overflow-hidden cursor-pointer transition-all ${
+                active ? 'ring-2 ring-primary ring-offset-2' : ''
+              } ${!unlocked ? 'opacity-60' : ''}`}
+            >
+              {/* Theme preview background */}
+              <div
+                className="h-20 p-3"
+                style={{ background: theme.gradient }}
+              >
+                <p
+                  className="text-xs font-bold truncate"
+                  style={{ color: theme.preview.primary }}
+                >
+                  {theme.name}
+                </p>
+              </div>
+
+              {/* Color dots */}
+              <div className="bg-card p-2 flex gap-1.5">
+                {Object.values(theme.preview).map((color, i) => (
+                  <div
+                    key={i}
+                    className="w-5 h-5 rounded-full border border-border/50"
+                    style={{ backgroundColor: color }}
+                  />
+                ))}
+              </div>
+
+              {/* Status indicator */}
+              <div className="absolute top-2 right-2">
+                {active ? (
+                  <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center">
+                    <Check className="w-3 h-3 text-primary-foreground" />
+                  </div>
+                ) : !unlocked ? (
+                  <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center">
+                    <Lock className="w-3 h-3 text-muted-foreground" />
+                  </div>
+                ) : null}
+              </div>
+            </motion.div>
+          );
+        })}
+      </div>
+    </motion.section>
+  );
+};
+
+export default MyWardrobe;

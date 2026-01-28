@@ -8,11 +8,12 @@ import UnlockModal from './UnlockModal';
 const BottomTabBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { getDaysUsed } = useApp();
+  const { getDaysUsed, settings } = useApp();
   const [showUnlockModal, setShowUnlockModal] = useState(false);
 
   const daysUsed = getDaysUsed();
-  const canAccessTheme = daysUsed >= 20;
+  const devMode = settings.devMode ?? false;
+  const canAccessTheme = devMode || daysUsed >= 20;
   const daysRemaining = Math.max(0, 20 - daysUsed);
 
   const handleThemeClick = () => {
@@ -25,8 +26,8 @@ const BottomTabBar = () => {
 
   const tabs = [
     { id: 'home', label: '今日记录', icon: Smile, path: '/' },
-    { id: 'history', label: '开心动态', icon: Calendar, path: '/history' },
-    { id: 'theme', label: '主题商店', icon: Sparkles, path: '/theme-store', onClick: handleThemeClick },
+    { id: 'history', label: '嗨呀！动态', icon: Calendar, path: '/history' },
+    { id: 'theme', label: '嗨呀！商店', icon: Sparkles, path: '/theme-store', onClick: handleThemeClick },
   ];
 
   const isActive = (path: string) => {
