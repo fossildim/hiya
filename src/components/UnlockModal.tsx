@@ -25,16 +25,17 @@ const UnlockModal = ({ isOpen, onClose, daysRemaining }: UnlockModalProps) => {
             transition={{ type: 'spring', stiffness: 400, damping: 25 }}
             className="relative overflow-hidden rounded-3xl max-w-xs w-full shadow-2xl"
             style={{
-              background: 'linear-gradient(135deg, #fff5f7 0%, #ffe4e8 50%, #ffd4dc 100%)',
+              background:
+                'linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--background)) 55%, hsl(var(--primary) / 0.14) 100%)',
             }}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Decorative elements */}
             <div className="absolute top-4 right-4 opacity-20">
-              <Sparkles className="w-12 h-12 text-pink-400" />
+              <Sparkles className="w-12 h-12 text-primary" />
             </div>
             <div className="absolute bottom-4 left-4 opacity-20">
-              <Heart className="w-8 h-8 text-pink-400" />
+              <Heart className="w-8 h-8 text-primary" />
             </div>
 
             <div className="relative z-10 p-8 text-center">
@@ -51,35 +52,33 @@ const UnlockModal = ({ isOpen, onClose, daysRemaining }: UnlockModalProps) => {
                 }}
                 className="inline-flex items-center justify-center w-20 h-20 rounded-full mb-6"
                 style={{
-                  background: 'linear-gradient(135deg, #ffb3c1 0%, #ff8fa3 100%)',
-                  boxShadow: '0 8px 24px rgba(255, 143, 163, 0.3)'
+                  background:
+                    'linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--chart-1)) 100%)',
+                  boxShadow: '0 10px 26px hsl(var(--primary) / 0.22)',
                 }}
               >
-                <Sparkles className="w-10 h-10 text-white" />
+                <Sparkles className="w-10 h-10 text-primary-foreground" />
               </motion.div>
 
               {/* Title */}
               <h2 
-                className="text-2xl font-bold mb-3"
-                style={{ color: '#d63384' }}
+                className="text-2xl font-bold mb-3 text-foreground"
               >
-                嗨呀宝藏商店
+                嗨呀！商店
               </h2>
 
               {/* Message */}
               <p 
-                className="text-base mb-6 leading-relaxed"
-                style={{ color: '#6b4c5a' }}
+                className="text-base mb-6 leading-relaxed text-muted-foreground"
               >
-                还差 <span className="font-bold text-xl" style={{ color: '#ff6b9d' }}>{daysRemaining}</span> 天
+                还差 <span className="font-bold text-xl text-primary">{daysRemaining}</span> 天
                 <br />
-                即可开启嗨呀宝藏商店！
+                即可开启嗨呀！商店！
               </p>
 
               {/* Encouragement */}
               <p 
-                className="text-sm mb-6"
-                style={{ color: '#a67c8a' }}
+                className="text-sm mb-6 text-muted-foreground"
               >
                 坚持记录每天的开心事~
                 <br />
@@ -91,13 +90,9 @@ const UnlockModal = ({ isOpen, onClose, daysRemaining }: UnlockModalProps) => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={onClose}
-                className="px-8 py-3 rounded-full font-bold text-white shadow-lg"
-                style={{
-                  background: 'linear-gradient(135deg, #ff8fa3 0%, #ff6b9d 100%)',
-                  boxShadow: '0 4px 16px rgba(255, 107, 157, 0.4)'
-                }}
+                className="px-8 py-3 rounded-full font-bold text-primary-foreground shadow-lg bg-gradient-to-br from-primary to-chart-1"
               >
-                好的呀！💕
+                好嗨呀！🧡
               </motion.button>
             </div>
           </motion.div>

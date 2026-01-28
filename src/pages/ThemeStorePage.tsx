@@ -113,7 +113,7 @@ const ThemeStorePage = () => {
         >
           <div className="inline-flex items-center gap-2 mb-2">
             <Sparkles className="w-6 h-6 text-primary" />
-            <h1 className="text-2xl font-bold text-foreground">嗨呀宝藏商店</h1>
+             <h1 className="text-2xl font-bold text-foreground">嗨呀！商店</h1>
             <Sparkles className="w-6 h-6 text-primary" />
           </div>
           <p className="text-sm text-muted-foreground">选择你喜欢的主题风格</p>

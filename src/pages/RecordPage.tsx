@@ -74,7 +74,7 @@ const RecordPage = () => {
           <ArrowLeft className="w-5 h-5" />
         </motion.button>
         <div>
-          <h1 className="font-bold text-foreground">{isBackfill ? '补充记录' : '记录今天'}</h1>
+          <h1 className="font-bold text-foreground">{isBackfill ? '补充嗨呀！' : '记录今天'}</h1>
           <span className="text-sm text-muted-foreground">{formatDate()}</span>
         </div>
       </header>
