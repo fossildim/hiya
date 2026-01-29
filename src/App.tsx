@@ -13,6 +13,8 @@ import HistoryPage from "./pages/HistoryPage";
 import EntryDetailPage from "./pages/EntryDetailPage";
 import SettingsPage from "./pages/SettingsPage";
 import ThemeStorePage from "./pages/ThemeStorePage";
+import AdminLoginPage from "./pages/AdminLoginPage";
+import AdminPage from "./pages/AdminPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -54,12 +56,14 @@ const App = () => {
             <Sonner />
             <HashRouter>
               <Routes>
-                <Route path="/" element={<Index />} />
+              <Route path="/" element={<Index />} />
                 <Route path="/record" element={<RecordPage />} />
                 <Route path="/history" element={<HistoryPage />} />
                 <Route path="/entry/:date" element={<EntryDetailPage />} />
                 <Route path="/settings" element={<SettingsPage />} />
                 <Route path="/theme-store" element={<ThemeStorePage />} />
+                <Route path="/admin-login" element={<AdminLoginPage />} />
+                <Route path="/admin" element={<AdminPage />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </HashRouter>
