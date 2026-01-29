@@ -1,9 +1,10 @@
 import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Download, Upload, Info, Check, Code } from 'lucide-react';
+import { ArrowLeft, Download, Upload, Info, Check, Code, Shield } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 import { Switch } from '@/components/ui/switch';
+import { useAdmin } from '@/hooks/useAdmin';
 
 const SettingsPage = () => {
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ const SettingsPage = () => {
   const [saved, setSaved] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { isAdmin } = useAdmin();
   
   const handleSaveId = () => {
     updateSettings({ userId });
@@ -191,11 +193,30 @@ const SettingsPage = () => {
           </div>
         </motion.section>
         
-        {/* About */}
+        {/* Admin Panel Entry */}
         <motion.section
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
+        >
+          <motion.button
+            whileTap={{ scale: 0.98 }}
+            onClick={() => navigate(isAdmin ? '/admin' : '/admin-login')}
+            className="w-full p-4 rounded-lg bg-card/80 backdrop-blur-sm border border-border flex items-center gap-3"
+          >
+            <Shield className="w-5 h-5 text-primary" />
+            <div className="text-left">
+              <p className="font-medium text-sm text-foreground">管理后台</p>
+              <p className="text-xs text-muted-foreground">管理主题和用户上传</p>
+            </div>
+          </motion.button>
+        </motion.section>
+
+        {/* About */}
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.35 }}
         >
           <motion.button
             whileTap={{ scale: 0.98 }}
