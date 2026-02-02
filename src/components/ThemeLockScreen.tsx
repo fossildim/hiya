@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 
 interface ThemeLockScreenProps {
   daysRecorded: number;
@@ -16,6 +17,10 @@ const ThemeLockScreen = ({ daysRecorded, onClose }: ThemeLockScreenProps) => {
     navigate('/');
   };
 
+  const handleBackdropClick = () => {
+    navigate('/');
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -23,8 +28,20 @@ const ThemeLockScreen = ({ daysRecorded, onClose }: ThemeLockScreenProps) => {
       exit={{ opacity: 0 }}
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
     >
-      {/* Backdrop blur */}
-      <div className="absolute inset-0 bg-background/60 backdrop-blur-md" onClick={onClose} />
+      {/* Backdrop blur - clicking anywhere outside modal returns to home */}
+      <div className="absolute inset-0 bg-background/60 backdrop-blur-md" onClick={handleBackdropClick} />
+      
+      {/* Back button - top left */}
+      <motion.button
+        initial={{ opacity: 0, x: -10 }}
+        animate={{ opacity: 1, x: 0 }}
+        whileTap={{ scale: 0.9 }}
+        onClick={() => navigate('/')}
+        className="absolute left-4 top-6 z-50 p-2 rounded-full bg-gradient-to-br from-primary to-accent text-white shadow-lg"
+        data-testid="button-lock-back"
+      >
+        <ArrowLeft className="w-5 h-5" />
+      </motion.button>
       
       {/* Modal content with bounce animation */}
       <motion.div
@@ -75,7 +92,7 @@ const ThemeLockScreen = ({ daysRecorded, onClose }: ThemeLockScreenProps) => {
           {/* Motivation text */}
           <p className="text-card-foreground mb-6">
             你已经坚持了 <span className="font-bold text-primary">{daysRecorded}</span> 天！
-            再坚持 <span className="font-bold text-accent">{remainingDays}</span> 天，
+            再坚持 <span className="font-bold text-primary">{remainingDays}</span> 天，
             独家主题库将为你开通！
           </p>
           

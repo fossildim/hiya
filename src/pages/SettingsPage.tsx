@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Download, Upload, Info, Check, Eye } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
-import qrcodeImage from '@/assets/qrcode.png';
+import coffeeQrcode from '@/assets/coffee-qrcode.png';
 
 const SettingsPage = () => {
   const navigate = useNavigate();
@@ -207,48 +207,117 @@ const SettingsPage = () => {
         </motion.section>
       </div>
       
-      {/* About Modal */}
+      {/* About Modal - Vibrant Orange Theme */}
       {showAbout && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="fixed inset-0 bg-foreground/50 flex items-center justify-center z-50 p-4"
+          className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4"
           onClick={() => setShowAbout(false)}
         >
           <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            className="bg-card rounded-2xl p-6 max-w-xs w-full shadow-xl text-center max-h-[90vh] overflow-y-auto"
+            initial={{ scale: 0.8, opacity: 0, y: 20 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            className="relative rounded-2xl p-6 max-w-sm w-full shadow-2xl text-center max-h-[90vh] overflow-y-auto overflow-x-hidden"
+            style={{
+              background: 'linear-gradient(145deg, #FFF7ED 0%, #FFEDD5 50%, #FED7AA 100%)',
+              boxShadow: '0 20px 60px rgba(251, 146, 60, 0.3), 0 10px 30px rgba(249, 115, 22, 0.2)',
+            }}
             onClick={(e) => e.stopPropagation()}
           >
-            <h2 className="text-2xl font-bold text-primary mb-2">嗨呀！</h2>
-            <p className="text-muted-foreground mb-2">版本呀！ 0.1</p>
-            <p className="text-sm text-muted-foreground mb-4">作者呀！ @HiYaJoHn</p>
-            <p className="text-card-foreground text-sm leading-relaxed mb-4">
-              嗨呀！只会帮助你记住开心的事，一定要嗨呀呀！
-            </p>
+            {/* Floating orange decorations */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                className="absolute -top-4 -right-4 text-4xl opacity-30"
+              >
+                <span role="img" aria-label="orange">🍊</span>
+              </motion.div>
+              <motion.div
+                animate={{ rotate: -360 }}
+                transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+                className="absolute -bottom-2 -left-2 text-3xl opacity-20"
+              >
+                <span role="img" aria-label="sun">☀️</span>
+              </motion.div>
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+                className="absolute top-1/3 -right-6 text-2xl opacity-20"
+              >
+                <span role="img" aria-label="orange">🍊</span>
+              </motion.div>
+            </div>
             
-            {/* Coffee donation section - shown after 20 days */}
-            {getDaysUsed() >= 20 && (
-              <div className="mb-4 p-3 bg-primary/10 rounded-xl">
-                <p className="text-sm text-card-foreground mb-3">
+            {/* Content */}
+            <div className="relative z-10">
+              {/* Title with sparkles */}
+              <div className="mb-4">
+                <span className="text-4xl font-black" style={{ color: '#EA580C' }}>
+                  嗨呀！
+                </span>
+                <span className="text-2xl ml-1">✨</span>
+              </div>
+              
+              {/* Main message */}
+              <p className="text-lg mb-2 leading-relaxed" style={{ color: '#9A3412' }}>
+                只会帮助你记住开心的事 <span className="text-xl">🌈</span>，
+              </p>
+              
+              {/* Animated "嗨呀呀！" */}
+              <motion.div
+                animate={{ 
+                  scale: [1, 1.05, 1],
+                  rotate: [0, -2, 2, 0],
+                }}
+                transition={{ 
+                  duration: 0.8, 
+                  repeat: Infinity, 
+                  repeatDelay: 2,
+                }}
+                className="mb-4"
+              >
+                <span className="text-2xl font-black" style={{ color: '#EA580C' }}>
+                  一定要嗨呀呀！
+                </span>
+                <span className="text-xl ml-1">🧡🍊⚡️</span>
+              </motion.div>
+              
+              {/* QR Code Section */}
+              <div 
+                className="mb-4 p-4 rounded-xl"
+                style={{ 
+                  background: 'linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(255,237,213,0.8) 100%)',
+                  border: '2px solid rgba(251, 146, 60, 0.3)',
+                }}
+              >
+                <p className="text-sm mb-3 font-medium" style={{ color: '#9A3412' }}>
                   嗨呀！你还可以请@HiYaJoHn喝杯咖啡豆浆！
                 </p>
                 <img 
-                  src={qrcodeImage} 
+                  src={coffeeQrcode} 
                   alt="打赏二维码" 
-                  className="w-32 h-32 mx-auto rounded-lg"
+                  className="w-40 h-auto mx-auto rounded-lg shadow-md"
+                  style={{ border: '3px solid rgba(251, 146, 60, 0.3)' }}
                 />
               </div>
-            )}
-            
-            <motion.button
-              whileTap={{ scale: 0.95 }}
-              onClick={() => setShowAbout(false)}
-              className={`px-6 py-2 rounded-lg ${yellowButton} font-medium`}
-            >
-              好呀！
-            </motion.button>
+              
+              {/* Close button */}
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setShowAbout(false)}
+                className="px-8 py-3 rounded-xl font-bold text-white text-lg shadow-lg"
+                style={{
+                  background: 'linear-gradient(135deg, #FB923C 0%, #EA580C 100%)',
+                  boxShadow: '0 4px 15px rgba(251, 146, 60, 0.4)',
+                }}
+              >
+                好呀！
+              </motion.button>
+            </div>
           </motion.div>
         </motion.div>
       )}
