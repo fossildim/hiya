@@ -14,7 +14,6 @@ interface AppSettings {
   unlockedThemes: string[];
   currentTheme: string;
   devMode?: boolean;
-  haiyaPoints?: number;
 }
 
 interface AppContextType {
@@ -51,10 +50,9 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [settings, setSettings] = useState<AppSettings>({
     userId: '',
     firstUseDate: getLocalISODate(),
-    unlockedThemes: ['default'],
-    currentTheme: 'default',
+    unlockedThemes: ['white-orange', 'white-black', 'white-red', 'white-green', 'white-blue'],
+    currentTheme: 'white-orange',
     devMode: false,
-    haiyaPoints: 0,
   });
   const [hydrated, setHydrated] = useState(false);
 
@@ -92,10 +90,18 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     }
 
     if (finalSettings) {
-      setSettings((prev) => ({ ...prev, ...finalSettings }));
+      // Migrate old theme IDs to new ones
+      let migratedSettings = { ...finalSettings };
+      if (migratedSettings.currentTheme === 'default') {
+        migratedSettings.currentTheme = 'white-orange';
+      }
+      // All themes are now free
+      migratedSettings.unlockedThemes = ['white-orange', 'white-black', 'white-red', 'white-green', 'white-blue'];
+      
+      setSettings((prev) => ({ ...prev, ...migratedSettings }));
       // Migrate legacy -> current key
       if (!savedSettings && legacySettings) {
-        localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify({ ...settings, ...legacySettings }));
+        localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify({ ...settings, ...migratedSettings }));
       }
     }
 

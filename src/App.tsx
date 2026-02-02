@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { HashRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AppProvider } from "@/context/AppContext";
 import { playRandomSyllable } from "@/lib/sfx";
 import { useTheme } from "@/hooks/useTheme";
@@ -13,8 +13,7 @@ import HistoryPage from "./pages/HistoryPage";
 import EntryDetailPage from "./pages/EntryDetailPage";
 import SettingsPage from "./pages/SettingsPage";
 import ThemeStorePage from "./pages/ThemeStorePage";
-import AdminLoginPage from "./pages/AdminLoginPage";
-import AdminPage from "./pages/AdminPage";
+import WelcomePage from "./pages/WelcomePage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -22,6 +21,17 @@ const queryClient = new QueryClient();
 // Theme wrapper component
 const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   useTheme(); // This applies theme on mount and listens for system changes
+  return <>{children}</>;
+};
+
+// Welcome guard component
+const WelcomeGuard = ({ children }: { children: React.ReactNode }) => {
+  const hasSeenWelcome = localStorage.getItem('haiya_welcome_seen') === 'true';
+  
+  if (!hasSeenWelcome && window.location.hash !== '#/welcome') {
+    return <Navigate to="/welcome" replace />;
+  }
+  
   return <>{children}</>;
 };
 
@@ -56,14 +66,13 @@ const App = () => {
             <Sonner />
             <HashRouter>
               <Routes>
-              <Route path="/" element={<Index />} />
-                <Route path="/record" element={<RecordPage />} />
-                <Route path="/history" element={<HistoryPage />} />
-                <Route path="/entry/:date" element={<EntryDetailPage />} />
-                <Route path="/settings" element={<SettingsPage />} />
-                <Route path="/theme-store" element={<ThemeStorePage />} />
-                <Route path="/admin-login" element={<AdminLoginPage />} />
-                <Route path="/admin" element={<AdminPage />} />
+                <Route path="/welcome" element={<WelcomePage />} />
+                <Route path="/" element={<WelcomeGuard><Index /></WelcomeGuard>} />
+                <Route path="/record" element={<WelcomeGuard><RecordPage /></WelcomeGuard>} />
+                <Route path="/history" element={<WelcomeGuard><HistoryPage /></WelcomeGuard>} />
+                <Route path="/entry/:date" element={<WelcomeGuard><EntryDetailPage /></WelcomeGuard>} />
+                <Route path="/settings" element={<WelcomeGuard><SettingsPage /></WelcomeGuard>} />
+                <Route path="/theme-store" element={<WelcomeGuard><ThemeStorePage /></WelcomeGuard>} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </HashRouter>

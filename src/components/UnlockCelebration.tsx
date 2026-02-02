@@ -1,13 +1,13 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, Heart } from 'lucide-react';
+import qrcode from '@/assets/qrcode.png';
 
-interface UnlockModalProps {
+interface UnlockCelebrationProps {
   isOpen: boolean;
   onClose: () => void;
-  daysRemaining: number;
 }
 
-const UnlockModal = ({ isOpen, onClose, daysRemaining }: UnlockModalProps) => {
+const UnlockCelebration = ({ isOpen, onClose }: UnlockCelebrationProps) => {
   return (
     <AnimatePresence>
       {isOpen && (
@@ -57,33 +57,34 @@ const UnlockModal = ({ isOpen, onClose, daysRemaining }: UnlockModalProps) => {
                   boxShadow: '0 10px 26px hsl(var(--primary) / 0.22)',
                 }}
               >
-                <Sparkles className="w-10 h-10 text-primary-foreground" />
+                <span className="text-4xl">🎉</span>
               </motion.div>
 
               {/* Title */}
               <h2 
-                className="text-2xl font-bold mb-3 text-foreground"
+                className="text-xl font-bold mb-3 text-foreground leading-relaxed"
               >
-                嗨呀！商店
+                嗨呀！你已经度过了嗨呀的20天！
               </h2>
 
               {/* Message */}
               <p 
                 className="text-base mb-6 leading-relaxed text-muted-foreground"
               >
-                还差 <span className="font-bold text-xl text-primary">{daysRemaining}</span> 天
-                <br />
-                即可开启嗨呀！商店！
+                感受<span className="font-bold text-primary">【嗨呀!】</span>给你带来的变化吧！
               </p>
 
-              {/* Encouragement */}
-              <p 
-                className="text-sm mb-6 text-muted-foreground"
-              >
-                坚持记录每天的开心事~
-                <br />
-                好东西在等着你哦 ✨
-              </p>
+              {/* QR Code */}
+              <div className="flex flex-col items-center mb-6">
+                <img 
+                  src={qrcode} 
+                  alt="打赏二维码" 
+                  className="w-24 h-24 rounded-lg mb-2"
+                />
+                <p className="text-xs text-muted-foreground">
+                  你也可以请HiYaJoHn喝杯咖啡豆浆！
+                </p>
+              </div>
 
               {/* Button */}
               <motion.button
@@ -102,4 +103,4 @@ const UnlockModal = ({ isOpen, onClose, daysRemaining }: UnlockModalProps) => {
   );
 };
 
-export default UnlockModal;
+export default UnlockCelebration;

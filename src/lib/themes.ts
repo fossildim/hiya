@@ -1,9 +1,8 @@
-// Theme definitions for the app
+// Theme definitions for the app - 5 gradient themes
 export interface ThemeDefinition {
   id: string;
   name: string;
   description: string;
-  price: number;
   preview: {
     primary: string;
     background: string;
@@ -18,16 +17,15 @@ export interface ThemeDefinition {
 
 export const themes: ThemeDefinition[] = [
   {
-    id: 'default',
-    name: '默认嗨呀粉',
-    description: '清新少女感，温馨可爱的粉橙色调',
-    price: 0,
+    id: 'white-orange',
+    name: '白橙渐变',
+    description: '默认主题，温暖活力的橙色调',
     preview: {
       primary: '#ea580c',
       background: '#fffbf5',
       accent: '#fef3c7',
     },
-    gradient: 'linear-gradient(135deg, #fff5f7 0%, #ffe4e8 50%, #fed7aa 100%)',
+    gradient: 'linear-gradient(180deg, #ffffff 0%, #ffffff 67%, #ea580c 100%)',
     cssVariables: {
       light: {
         '--primary': '20 90% 48%',
@@ -35,6 +33,10 @@ export const themes: ThemeDefinition[] = [
         '--accent': '47 100% 96%',
         '--accent-foreground': '37 92% 50%',
         '--chart-1': '27 95% 60%',
+        '--chart-2': '43 96% 56%',
+        '--chart-3': '47 95% 53%',
+        '--chart-4': '24 94% 53%',
+        '--ring': '20 90% 48%',
       },
       dark: {
         '--primary': '27 95% 60%',
@@ -42,118 +44,150 @@ export const themes: ThemeDefinition[] = [
         '--accent': '20 91% 14%',
         '--accent-foreground': '43 96% 56%',
         '--chart-1': '30 97% 72%',
+        '--chart-2': '45 96% 64%',
+        '--chart-3': '48 96% 76%',
+        '--chart-4': '27 95% 60%',
+        '--ring': '27 95% 60%',
       },
     },
   },
   {
-    id: 'midnight-blue',
-    name: '静谧午夜蓝',
-    description: '暗色模式，带深蓝色渐变，宁静深邃',
-    price: 6,
+    id: 'white-black',
+    name: '白黑渐变',
+    description: '简约经典，黑白极简风格',
     preview: {
-      primary: '#6366f1',
-      background: '#1e1b4b',
-      accent: '#312e81',
+      primary: '#1f2937',
+      background: '#ffffff',
+      accent: '#f3f4f6',
     },
-    gradient: 'linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%)',
+    gradient: 'linear-gradient(180deg, #ffffff 0%, #ffffff 67%, #1f2937 100%)',
     cssVariables: {
       light: {
-        '--primary': '239 84% 67%',
-        '--primary-foreground': '226 100% 97%',
-        '--accent': '244 47% 20%',
-        '--accent-foreground': '243 75% 59%',
-        '--chart-1': '245 58% 51%',
+        '--primary': '220 13% 18%',
+        '--primary-foreground': '0 0% 98%',
+        '--accent': '220 14% 96%',
+        '--accent-foreground': '220 13% 18%',
+        '--chart-1': '220 9% 46%',
+        '--chart-2': '215 14% 34%',
+        '--chart-3': '216 12% 54%',
+        '--chart-4': '218 11% 65%',
+        '--ring': '220 13% 18%',
       },
       dark: {
-        '--primary': '239 84% 67%',
-        '--primary-foreground': '226 100% 97%',
-        '--accent': '244 47% 20%',
-        '--accent-foreground': '243 75% 59%',
-        '--chart-1': '245 58% 51%',
+        '--primary': '0 0% 80%',
+        '--primary-foreground': '220 13% 10%',
+        '--accent': '220 13% 20%',
+        '--accent-foreground': '0 0% 90%',
+        '--chart-1': '0 0% 70%',
+        '--chart-2': '0 0% 60%',
+        '--chart-3': '0 0% 50%',
+        '--chart-4': '0 0% 40%',
+        '--ring': '0 0% 80%',
       },
     },
   },
   {
-    id: 'dopamine-green',
-    name: '多巴胺嫩绿',
-    description: '明快活泼，充满能量的清新绿色',
-    price: 6,
+    id: 'white-red',
+    name: '白红渐变',
+    description: '热情洋溢，充满活力的红色调',
     preview: {
-      primary: '#22c55e',
+      primary: '#dc2626',
+      background: '#fffbfb',
+      accent: '#fee2e2',
+    },
+    gradient: 'linear-gradient(180deg, #ffffff 0%, #ffffff 67%, #dc2626 100%)',
+    cssVariables: {
+      light: {
+        '--primary': '0 72% 51%',
+        '--primary-foreground': '0 86% 97%',
+        '--accent': '0 93% 94%',
+        '--accent-foreground': '0 72% 51%',
+        '--chart-1': '0 84% 60%',
+        '--chart-2': '0 74% 42%',
+        '--chart-3': '0 65% 48%',
+        '--chart-4': '0 91% 71%',
+        '--ring': '0 72% 51%',
+      },
+      dark: {
+        '--primary': '0 72% 60%',
+        '--primary-foreground': '0 86% 10%',
+        '--accent': '0 50% 15%',
+        '--accent-foreground': '0 93% 85%',
+        '--chart-1': '0 74% 65%',
+        '--chart-2': '0 72% 50%',
+        '--chart-3': '0 65% 55%',
+        '--chart-4': '0 84% 75%',
+        '--ring': '0 72% 60%',
+      },
+    },
+  },
+  {
+    id: 'white-green',
+    name: '白绿渐变',
+    description: '清新自然，充满生机的绿色调',
+    preview: {
+      primary: '#16a34a',
       background: '#f0fdf4',
-      accent: '#bbf7d0',
+      accent: '#dcfce7',
     },
-    gradient: 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 50%, #bbf7d0 100%)',
+    gradient: 'linear-gradient(180deg, #ffffff 0%, #ffffff 67%, #16a34a 100%)',
     cssVariables: {
       light: {
-        '--primary': '142 71% 45%',
+        '--primary': '142 71% 37%',
         '--primary-foreground': '138 76% 97%',
-        '--accent': '141 79% 85%',
-        '--accent-foreground': '142 76% 36%',
-        '--chart-1': '142 69% 58%',
+        '--accent': '141 79% 93%',
+        '--accent-foreground': '142 71% 37%',
+        '--chart-1': '142 69% 45%',
+        '--chart-2': '142 76% 30%',
+        '--chart-3': '141 64% 38%',
+        '--chart-4': '142 77% 55%',
+        '--ring': '142 71% 37%',
       },
       dark: {
-        '--primary': '142 69% 58%',
-        '--primary-foreground': '144 61% 10%',
-        '--accent': '143 64% 20%',
+        '--primary': '142 69% 50%',
+        '--primary-foreground': '142 61% 10%',
+        '--accent': '143 64% 15%',
         '--accent-foreground': '141 79% 85%',
-        '--chart-1': '142 71% 45%',
+        '--chart-1': '142 71% 55%',
+        '--chart-2': '142 76% 40%',
+        '--chart-3': '141 64% 48%',
+        '--chart-4': '142 77% 65%',
+        '--ring': '142 69% 50%',
       },
     },
   },
   {
-    id: 'starry-purple',
-    name: '幻彩星空紫',
-    description: '神秘浪漫，带有星星点缀的梦幻紫色',
-    price: 6,
+    id: 'white-blue',
+    name: '白蓝渐变',
+    description: '宁静淡雅，清爽的蓝色调',
     preview: {
-      primary: '#a855f7',
-      background: '#faf5ff',
-      accent: '#e9d5ff',
+      primary: '#2563eb',
+      background: '#eff6ff',
+      accent: '#dbeafe',
     },
-    gradient: 'linear-gradient(135deg, #faf5ff 0%, #f3e8ff 50%, #e9d5ff 100%)',
+    gradient: 'linear-gradient(180deg, #ffffff 0%, #ffffff 67%, #2563eb 100%)',
     cssVariables: {
       light: {
-        '--primary': '271 91% 65%',
-        '--primary-foreground': '270 100% 98%',
-        '--accent': '270 95% 91%',
-        '--accent-foreground': '271 81% 56%',
-        '--chart-1': '272 91% 65%',
+        '--primary': '221 83% 53%',
+        '--primary-foreground': '214 100% 97%',
+        '--accent': '214 95% 93%',
+        '--accent-foreground': '221 83% 53%',
+        '--chart-1': '221 83% 60%',
+        '--chart-2': '224 76% 48%',
+        '--chart-3': '217 91% 60%',
+        '--chart-4': '213 94% 68%',
+        '--ring': '221 83% 53%',
       },
       dark: {
-        '--primary': '271 91% 65%',
-        '--primary-foreground': '273 67% 10%',
-        '--accent': '272 47% 25%',
-        '--accent-foreground': '270 95% 91%',
-        '--chart-1': '272 91% 65%',
-      },
-    },
-  },
-  {
-    id: 'sunset-orange',
-    name: '日落晚霞橙',
-    description: '温暖疗愈，如日落般的橙黄渐变',
-    price: 6,
-    preview: {
-      primary: '#f97316',
-      background: '#fffbeb',
-      accent: '#fed7aa',
-    },
-    gradient: 'linear-gradient(135deg, #fffbeb 0%, #fef3c7 50%, #fed7aa 100%)',
-    cssVariables: {
-      light: {
-        '--primary': '25 95% 53%',
-        '--primary-foreground': '33 100% 96%',
-        '--accent': '27 96% 83%',
-        '--accent-foreground': '21 90% 48%',
-        '--chart-1': '33 95% 55%',
-      },
-      dark: {
-        '--primary': '25 95% 53%',
-        '--primary-foreground': '20 14% 4%',
-        '--accent': '20 91% 18%',
-        '--accent-foreground': '27 96% 83%',
-        '--chart-1': '33 95% 55%',
+        '--primary': '217 91% 60%',
+        '--primary-foreground': '221 83% 10%',
+        '--accent': '221 50% 15%',
+        '--accent-foreground': '214 95% 85%',
+        '--chart-1': '221 83% 65%',
+        '--chart-2': '224 76% 55%',
+        '--chart-3': '217 91% 65%',
+        '--chart-4': '213 94% 75%',
+        '--ring': '217 91% 60%',
       },
     },
   },
@@ -174,4 +208,13 @@ export const applyTheme = (themeId: string) => {
   Object.entries(vars).forEach(([key, value]) => {
     root.style.setProperty(key, value);
   });
+};
+
+// Get the gradient background based on theme
+export const getThemeGradient = (themeId: string): string => {
+  const theme = getThemeById(themeId);
+  if (!theme) return 'linear-gradient(180deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.4) 67%, hsl(var(--primary) / 0.3) 100%)';
+  
+  // Use primary color for gradient
+  return `linear-gradient(180deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.4) 67%, hsl(var(--primary) / 0.3) 100%)`;
 };

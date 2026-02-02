@@ -1,16 +1,13 @@
 import { motion } from 'framer-motion';
-import { Check, Lock } from 'lucide-react';
+import { Check } from 'lucide-react';
 import { themes, ThemeDefinition, applyTheme } from '@/lib/themes';
 import { useApp } from '@/context/AppContext';
 
 const MyWardrobe = () => {
   const { settings, updateSettings } = useApp();
-  const unlockedThemes = settings.unlockedThemes || ['default'];
-  const currentTheme = settings.currentTheme || 'default';
+  const currentTheme = settings.currentTheme || 'white-orange';
 
   const handleApplyTheme = (theme: ThemeDefinition) => {
-    if (!unlockedThemes.includes(theme.id)) return;
-
     updateSettings({ currentTheme: theme.id });
     applyTheme(theme.id);
 
@@ -20,7 +17,6 @@ const MyWardrobe = () => {
     }
   };
 
-  const isUnlocked = (themeId: string) => unlockedThemes.includes(themeId);
   const isActive = (themeId: string) => currentTheme === themeId;
 
   return (
@@ -30,15 +26,14 @@ const MyWardrobe = () => {
       className="px-4"
     >
       <h2 className="text-lg font-bold text-foreground mb-3 flex items-center gap-2">
-        👗 我的衣橱
+        🎨 选择主题
       </h2>
       <p className="text-sm text-muted-foreground mb-4">
-        已解锁 {unlockedThemes.length}/{themes.length} 个主题
+        点击切换主题风格
       </p>
 
       <div className="grid grid-cols-2 gap-3">
         {themes.map((theme, index) => {
-          const unlocked = isUnlocked(theme.id);
           const active = isActive(theme.id);
 
           return (
@@ -47,11 +42,11 @@ const MyWardrobe = () => {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: index * 0.05 }}
-              whileTap={{ scale: unlocked ? 0.95 : 1 }}
+              whileTap={{ scale: 0.95 }}
               onClick={() => handleApplyTheme(theme)}
               className={`relative rounded-xl overflow-hidden cursor-pointer transition-all ${
                 active ? 'ring-2 ring-primary ring-offset-2' : ''
-              } ${!unlocked ? 'opacity-60' : ''}`}
+              }`}
             >
               {/* Theme preview background */}
               <div
@@ -78,17 +73,13 @@ const MyWardrobe = () => {
               </div>
 
               {/* Status indicator */}
-              <div className="absolute top-2 right-2">
-                {active ? (
+              {active && (
+                <div className="absolute top-2 right-2">
                   <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center">
                     <Check className="w-3 h-3 text-primary-foreground" />
                   </div>
-                ) : !unlocked ? (
-                  <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center">
-                    <Lock className="w-3 h-3 text-muted-foreground" />
-                  </div>
-                ) : null}
-              </div>
+                </div>
+              )}
             </motion.div>
           );
         })}

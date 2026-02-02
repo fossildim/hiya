@@ -1,10 +1,9 @@
 import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Download, Upload, Info, Check, Code, Shield } from 'lucide-react';
+import { ArrowLeft, Download, Upload, Info, Check, Code, Eye } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 import { Switch } from '@/components/ui/switch';
-import { useAdmin } from '@/hooks/useAdmin';
 
 const SettingsPage = () => {
   const navigate = useNavigate();
@@ -13,8 +12,8 @@ const SettingsPage = () => {
   const [userId, setUserId] = useState(settings.userId);
   const [saved, setSaved] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { isAdmin } = useAdmin();
   
   const handleSaveId = () => {
     updateSettings({ userId });
@@ -56,6 +55,10 @@ const SettingsPage = () => {
     reader.readAsText(file);
   };
 
+  const handleShowWelcome = () => {
+    navigate('/welcome');
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, x: 20 }}
@@ -67,7 +70,7 @@ const SettingsPage = () => {
       <div 
         className="fixed inset-0 pointer-events-none"
         style={{
-          background: 'linear-gradient(180deg, rgba(255,245,247,0.8) 0%, rgba(255,228,232,0.4) 50%, rgba(254,215,170,0.3) 100%)',
+          background: 'linear-gradient(180deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.4) 67%, hsl(var(--primary) / 0.3) 100%)',
         }}
       />
 
@@ -171,7 +174,7 @@ const SettingsPage = () => {
           />
         </motion.section>
 
-        {/* Developer Mode (Hidden unless tapped 5 times on version) */}
+        {/* Developer Mode */}
         <motion.section
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -183,7 +186,7 @@ const SettingsPage = () => {
               <Code className="w-5 h-5 text-primary" />
               <div>
                 <p className="font-medium text-sm text-foreground">开发者模式</p>
-                <p className="text-xs text-muted-foreground">跳过商店20天限制</p>
+                <p className="text-xs text-muted-foreground">跳过20天限制</p>
               </div>
             </div>
             <Switch
@@ -192,8 +195,8 @@ const SettingsPage = () => {
             />
           </div>
         </motion.section>
-        
-        {/* Admin Panel Entry */}
+
+        {/* View Welcome Page */}
         <motion.section
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -201,14 +204,11 @@ const SettingsPage = () => {
         >
           <motion.button
             whileTap={{ scale: 0.98 }}
-            onClick={() => navigate(isAdmin ? '/admin' : '/admin-login')}
-            className="w-full p-4 rounded-lg bg-card/80 backdrop-blur-sm border border-border flex items-center gap-3"
+            onClick={handleShowWelcome}
+            className={`w-full p-4 rounded-lg ${yellowButton} border border-border flex items-center gap-3`}
           >
-            <Shield className="w-5 h-5 text-primary" />
-            <div className="text-left">
-              <p className="font-medium text-sm text-foreground">管理后台</p>
-              <p className="text-xs text-muted-foreground">管理主题和用户上传</p>
-            </div>
+            <Eye className="w-5 h-5 text-primary" />
+            <p className="font-medium text-sm">再看看👀嗨呀！欢迎页</p>
           </motion.button>
         </motion.section>
 

@@ -6,13 +6,20 @@ const WeekGrid = () => {
   const { getEntryByDate } = useApp();
   const navigate = useNavigate();
   
+  // Get dates from this Sunday to next Saturday
   const getWeekDates = () => {
     const dates = [];
     const today = new Date();
+    const dayOfWeek = today.getDay(); // 0 = Sunday, 6 = Saturday
     
-    for (let i = 6; i >= 0; i--) {
-      const date = new Date(today);
-      date.setDate(today.getDate() - i);
+    // Find this week's Sunday
+    const sunday = new Date(today);
+    sunday.setDate(today.getDate() - dayOfWeek);
+    
+    // Generate Sunday to Saturday
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(sunday);
+      date.setDate(sunday.getDate() + i);
       dates.push(date);
     }
     
@@ -33,13 +40,18 @@ const WeekGrid = () => {
     ];
     return colors[rating] || colors[0];
   };
+
+  const isToday = (date: Date) => {
+    const today = new Date();
+    return date.toDateString() === today.toDateString();
+  };
   
   return (
     <div className="grid grid-cols-7 gap-2">
-      {weekDates.map((date, index) => {
+      {weekDates.map((date) => {
         const dateStr = date.toISOString().split('T')[0];
         const entry = getEntryByDate(dateStr);
-        const isToday = index === 6;
+        const today = isToday(date);
         
         return (
           <motion.button
@@ -49,7 +61,7 @@ const WeekGrid = () => {
             whileTap={{ scale: 0.95 }}
             className={`
               flex flex-col items-center p-2 rounded-lg transition-all
-              ${isToday ? 'ring-2 ring-primary' : ''}
+              ${today ? 'ring-2 ring-primary' : ''}
               ${entry ? getRatingColor(entry.rating) : 'bg-card'}
             `}
           >
