@@ -76,11 +76,11 @@ const Index = () => {
 
   return (
     <div className="min-h-screen max-w-md mx-auto bg-background flex flex-col relative overflow-hidden pt-safe pb-20">
-      {/* Decorative background - pink gradient */}
+      {/* Decorative background - theme gradient */}
       <div 
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: 'linear-gradient(180deg, rgba(255,245,247,0.8) 0%, rgba(255,228,232,0.4) 50%, rgba(254,215,170,0.3) 100%)',
+          background: 'linear-gradient(180deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.4) 67%, hsl(var(--primary) / 0.3) 100%)',
         }}
       />
       
@@ -182,7 +182,7 @@ const Index = () => {
         className="px-4 sm:px-6 mb-4 sm:mb-6 relative z-10"
       >
         <h2 className="text-xs sm:text-sm font-medium text-muted-foreground mb-2 sm:mb-3 flex items-center gap-2">
-          <span>📅</span> 过去一周
+          <span>📅</span> 本周嗨呀！
         </h2>
         <WeekGrid />
       </motion.section>

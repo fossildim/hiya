@@ -62,12 +62,12 @@ const PosterGenerator = ({ entry, userId, onClose }: PosterGeneratorProps) => {
           className="bg-card rounded-2xl overflow-hidden max-w-sm w-full shadow-xl"
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Poster Content - Simple white-orange gradient */}
+          {/* Poster Content - Theme gradient */}
           <div
             ref={posterRef}
             className="relative overflow-hidden p-8"
             style={{
-              background: 'linear-gradient(180deg, #ffffff 0%, #fff7ed 50%, #fed7aa 100%)',
+              background: 'linear-gradient(180deg, #ffffff 0%, #ffffff 67%, hsl(var(--primary) / 0.3) 100%)',
             }}
           >
             <div className="relative z-10 text-center space-y-5">

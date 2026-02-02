@@ -134,7 +134,7 @@ const HistoryPage = () => {
       <div 
         className="fixed inset-0 pointer-events-none"
         style={{
-          background: 'linear-gradient(180deg, rgba(255,245,247,0.8) 0%, rgba(255,228,232,0.4) 50%, rgba(254,215,170,0.3) 100%)',
+          background: 'linear-gradient(180deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.4) 67%, hsl(var(--primary) / 0.3) 100%)',
         }}
       />
       
