@@ -1,19 +1,32 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Sparkles } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Sparkles, ArrowLeft } from 'lucide-react';
 import BottomTabBar from '@/components/BottomTabBar';
 import MyWardrobe from '@/components/MyWardrobe';
 import UnlockCelebration from '@/components/UnlockCelebration';
+import ThemeLockScreen from '@/components/ThemeLockScreen';
 import { useApp } from '@/context/AppContext';
 
 const ThemeStorePage = () => {
-  const { getDaysUsed, settings } = useApp();
+  const navigate = useNavigate();
+  const { entries } = useApp();
   const [showCelebration, setShowCelebration] = useState(false);
+  const [showLockScreen, setShowLockScreen] = useState(false);
   const [lastTapTime, setLastTapTime] = useState(0);
 
-  const daysUsed = getDaysUsed();
-  const devMode = settings.devMode ?? false;
-  const isUnlocked = devMode || daysUsed >= 20;
+  // Developer backdoor: uncomment the line below to skip the 20-day check
+  // const daysRecorded = 20;
+  const daysRecorded = entries.length;
+  
+  const isUnlocked = daysRecorded >= 20;
+
+  // Show lock screen on mount if not unlocked
+  useEffect(() => {
+    if (!isUnlocked) {
+      setShowLockScreen(true);
+    }
+  }, [isUnlocked]);
 
   // Check if we should show celebration on first unlock
   useEffect(() => {
@@ -52,11 +65,23 @@ const ThemeStorePage = () => {
       />
 
       {/* Header */}
-      <header className="relative z-10 p-6 pt-8">
+      <header className="relative z-10 p-4 pt-6">
+        {/* Back button */}
+        <motion.button
+          initial={{ opacity: 0, x: -10 }}
+          animate={{ opacity: 1, x: 0 }}
+          whileTap={{ scale: 0.9 }}
+          onClick={() => navigate('/')}
+          className="absolute left-4 top-6 p-2 rounded-full bg-gradient-to-br from-accent to-accent/70 text-accent-foreground"
+          data-testid="button-back"
+        >
+          <ArrowLeft className="w-5 h-5" />
+        </motion.button>
+
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center"
+          className="text-center pt-2"
         >
           <div className="inline-flex items-center gap-2 mb-2">
             <Sparkles className="w-6 h-6 text-primary" />
@@ -83,6 +108,14 @@ const ThemeStorePage = () => {
         isOpen={showCelebration}
         onClose={() => setShowCelebration(false)}
       />
+
+      {/* Lock Screen Modal */}
+      {showLockScreen && !isUnlocked && (
+        <ThemeLockScreen 
+          daysRecorded={daysRecorded} 
+          onClose={() => setShowLockScreen(false)} 
+        />
+      )}
     </div>
   );
 };

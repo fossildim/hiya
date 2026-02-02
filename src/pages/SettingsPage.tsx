@@ -1,9 +1,9 @@
 import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Download, Upload, Info, Check, Code, Eye } from 'lucide-react';
+import { ArrowLeft, Download, Upload, Info, Check, Eye } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
-import { Switch } from '@/components/ui/switch';
+import qrcodeImage from '@/assets/qrcode.png';
 
 const SettingsPage = () => {
   const navigate = useNavigate();
@@ -174,28 +174,6 @@ const SettingsPage = () => {
           />
         </motion.section>
 
-        {/* Developer Mode */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.25 }}
-          className="bg-card/80 backdrop-blur-sm rounded-xl p-4 sm:p-5 shadow-sm border border-border/50"
-        >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Code className="w-5 h-5 text-primary" />
-              <div>
-                <p className="font-medium text-sm text-foreground">开发者模式</p>
-                <p className="text-xs text-muted-foreground">跳过20天限制</p>
-              </div>
-            </div>
-            <Switch
-              checked={settings.devMode ?? false}
-              onCheckedChange={(checked) => updateSettings({ devMode: checked })}
-            />
-          </div>
-        </motion.section>
-
         {/* View Welcome Page */}
         <motion.section
           initial={{ opacity: 0, y: 20 }}
@@ -240,15 +218,30 @@ const SettingsPage = () => {
           <motion.div
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            className="bg-card rounded-2xl p-6 max-w-xs w-full shadow-xl text-center"
+            className="bg-card rounded-2xl p-6 max-w-xs w-full shadow-xl text-center max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <h2 className="text-2xl font-bold text-primary mb-2">嗨呀！</h2>
             <p className="text-muted-foreground mb-2">版本呀！ 0.1</p>
             <p className="text-sm text-muted-foreground mb-4">作者呀！ @HiYaJoHn</p>
-            <p className="text-card-foreground text-sm leading-relaxed mb-6">
+            <p className="text-card-foreground text-sm leading-relaxed mb-4">
               嗨呀！只会帮助你记住开心的事，一定要嗨呀呀！
             </p>
+            
+            {/* Coffee donation section - shown after 20 days */}
+            {getDaysUsed() >= 20 && (
+              <div className="mb-4 p-3 bg-primary/10 rounded-xl">
+                <p className="text-sm text-card-foreground mb-3">
+                  嗨呀！你还可以请@HiYaJoHn喝杯咖啡豆浆！
+                </p>
+                <img 
+                  src={qrcodeImage} 
+                  alt="打赏二维码" 
+                  className="w-32 h-32 mx-auto rounded-lg"
+                />
+              </div>
+            )}
+            
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={() => setShowAbout(false)}

@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { Check } from 'lucide-react';
 import { themes, ThemeDefinition, applyTheme } from '@/lib/themes';
 import { useApp } from '@/context/AppContext';
+import { playRandomSyllable } from '@/lib/sfx';
 
 const MyWardrobe = () => {
   const { settings, updateSettings } = useApp();
@@ -10,6 +11,9 @@ const MyWardrobe = () => {
   const handleApplyTheme = (theme: ThemeDefinition) => {
     updateSettings({ currentTheme: theme.id });
     applyTheme(theme.id);
+
+    // Play sound effect
+    playRandomSyllable();
 
     // Haptic feedback
     if ('vibrate' in navigator) {
