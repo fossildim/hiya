@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
+import { playRandomSyllable } from '@/lib/sfx';
 
 interface ThemeLockScreenProps {
   daysRecorded: number;
@@ -18,6 +19,7 @@ const ThemeLockScreen = ({ daysRecorded, onClose }: ThemeLockScreenProps) => {
   };
 
   const handleBackdropClick = () => {
+    playRandomSyllable();
     navigate('/');
   };
 

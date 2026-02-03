@@ -19,7 +19,11 @@ const ThemeStorePage = () => {
   // const daysRecorded = 20;
   const daysRecorded = entries.length;
   
-  const isUnlocked = daysRecorded >= 20;
+  // Check if user is HiYaJoHn - special privilege
+  const { settings } = useApp();
+  const isHiYaJoHn = settings.userId.toLowerCase() === 'hiyajohn';
+  
+  const isUnlocked = daysRecorded >= 20 || isHiYaJoHn;
 
   // Show lock screen on mount if not unlocked
   useEffect(() => {

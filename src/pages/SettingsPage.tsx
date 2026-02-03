@@ -93,13 +93,13 @@ const SettingsPage = () => {
           animate={{ opacity: 1, y: 0 }}
           className="space-y-3"
         >
-          <h2 className="text-sm font-medium text-muted-foreground">用户ID</h2>
+          <h2 className="text-sm font-medium text-muted-foreground">你的嗨呀名！</h2>
           <div className="flex gap-2">
             <input
               type="text"
               value={userId}
               onChange={(e) => setUserId(e.target.value)}
-              placeholder="输入你的ID..."
+              placeholder="嗨呀名会显示在分享页面呀！"
               className="flex-1 px-4 py-3 rounded-lg bg-card text-card-foreground border border-border focus:outline-none focus:ring-2 focus:ring-primary text-sm"
             />
             <motion.button

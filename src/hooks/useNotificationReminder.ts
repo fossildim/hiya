@@ -35,7 +35,7 @@ export const useNotificationReminder = () => {
   const showNotification = useCallback(() => {
     if (Notification.permission === 'granted') {
       new Notification('嗨呀！📝', {
-        body: '昨天忘记记录了哦，快来补录一下吧！',
+        body: '嗨呀！来记录一下昨日的嗨呀！时刻呀！',
         icon: '/favicon.ico',
         tag: 'haiya-reminder',
       });
@@ -47,8 +47,8 @@ export const useNotificationReminder = () => {
     const hours = now.getHours();
     const minutes = now.getMinutes();
     
-    // Check if it's around 9:09 AM (between 9:09 and 9:10)
-    if (hours !== 9 || minutes !== 9) {
+    // Check if it's around 9:33 AM (between 9:33 and 9:34)
+    if (hours !== 9 || minutes !== 33) {
       return;
     }
     
