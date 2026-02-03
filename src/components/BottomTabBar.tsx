@@ -29,19 +29,29 @@ const BottomTabBar = () => {
               key={tab.id}
               whileTap={{ scale: 0.9 }}
               onClick={() => navigate(tab.path)}
-              className={`flex flex-col items-center justify-center flex-1 h-full transition-colors ${
+              className={`flex flex-col items-center justify-center flex-1 h-full transition-colors relative ${
                 active 
                   ? 'text-primary' 
                   : 'text-muted-foreground hover:text-foreground'
               }`}
             >
               <motion.div
-                animate={{ scale: active ? 1.1 : 1 }}
+                animate={{ 
+                  scale: active ? 1.2 : 1,
+                  y: active ? -4 : 0,
+                }}
                 transition={{ type: 'spring', stiffness: 400, damping: 17 }}
               >
                 <Icon className="w-5 h-5 mb-1" />
               </motion.div>
-              <span className="text-xs font-medium">{tab.label}</span>
+              <motion.span 
+                className="text-xs font-medium"
+                animate={{
+                  fontWeight: active ? 700 : 500,
+                }}
+              >
+                {tab.label}
+              </motion.span>
               {active && (
                 <motion.div
                   layoutId="activeTab"

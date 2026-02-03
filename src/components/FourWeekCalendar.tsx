@@ -106,11 +106,7 @@ const FourWeekCalendar = () => {
         </div>
       ))}
       
-      {/* Legend */}
-      <div className="flex items-center justify-center gap-2 mt-3 text-xs text-muted-foreground">
-        <span>📅</span>
-        <span>第三行 = 本周</span>
-      </div>
+      {/* Legend removed as requested */}
     </div>
   );
 };

@@ -182,7 +182,7 @@ const Index = () => {
         className="px-4 sm:px-6 mb-4 sm:mb-6 relative z-10"
       >
         <h2 className="text-xs sm:text-sm font-medium text-muted-foreground mb-2 sm:mb-3 flex items-center gap-2">
-          <span>📆</span> 这是你的嗨呀！
+          <span>🗓️</span> 这是你的嗨呀！
         </h2>
         <div className="bg-card/80 backdrop-blur-sm rounded-2xl p-3 sm:p-4 shadow-md border border-border/50">
           <FourWeekCalendar />
