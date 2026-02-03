@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Settings } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
-import WeekGrid from '@/components/WeekGrid';
+import FourWeekCalendar from '@/components/FourWeekCalendar';
 import SmileRating from '@/components/SmileRating';
 import { playHaiya } from '@/lib/sfx';
 import { useNotificationReminder } from '@/hooks/useNotificationReminder';
@@ -174,7 +174,7 @@ const Index = () => {
         </div>
       </motion.section>
       
-      {/* Week Grid */}
+      {/* Four Week Calendar */}
       <motion.section
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -182,9 +182,11 @@ const Index = () => {
         className="px-4 sm:px-6 mb-4 sm:mb-6 relative z-10"
       >
         <h2 className="text-xs sm:text-sm font-medium text-muted-foreground mb-2 sm:mb-3 flex items-center gap-2">
-          <span>📅</span> 本周嗨呀！
+          <span>📆</span> 这是你的嗨呀！
         </h2>
-        <WeekGrid />
+        <div className="bg-card/80 backdrop-blur-sm rounded-2xl p-3 sm:p-4 shadow-md border border-border/50">
+          <FourWeekCalendar />
+        </div>
       </motion.section>
       
       {/* Center Record Button */}
