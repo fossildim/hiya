@@ -3,6 +3,10 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Download, Upload, Info, Check, Eye } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
+import CandyBackground from '@/components/CandyBackground';
+import BounceTitle from '@/components/BounceTitle';
+import BubbleCard from '@/components/BubbleCard';
+import BubbleButton from '@/components/BubbleButton';
 import coffeeQrcode from '@/assets/coffee-qrcode.png';
 
 const SettingsPage = () => {
@@ -33,9 +37,6 @@ const SettingsPage = () => {
     link.click();
     URL.revokeObjectURL(url);
   };
-
-  const yellowButton =
-    'bg-gradient-to-br from-accent to-accent/70 text-accent-foreground';
   
   const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -64,106 +65,119 @@ const SettingsPage = () => {
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -20 }}
-      className="min-h-screen max-w-md mx-auto bg-background pt-safe pb-safe"
+      className="min-h-screen max-w-md mx-auto pt-safe pb-safe relative"
     >
-      {/* Decorative background */}
-      <div 
-        className="fixed inset-0 pointer-events-none"
-        style={{
-          background: 'linear-gradient(180deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.4) 67%, hsl(var(--primary) / 0.3) 100%)',
-        }}
-      />
+      <CandyBackground />
 
       {/* Header */}
-      <header className="relative z-10 p-4 flex items-center gap-4 border-b border-border bg-card/80 backdrop-blur-sm">
+      <header className="relative z-10 p-4 flex items-center gap-4">
         <motion.button
+          whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={() => navigate('/')}
-          className={`p-2 rounded-full ${yellowButton}`}
+          className="p-3 rounded-full shadow-lg"
+          style={{
+            background: 'linear-gradient(135deg, #FB923C 0%, #EA580C 100%)',
+            boxShadow: '0 4px 15px rgba(251, 146, 60, 0.4)',
+          }}
+          data-testid="button-back"
         >
-          <ArrowLeft className="w-5 h-5" />
+          <ArrowLeft className="w-5 h-5 text-white" />
         </motion.button>
-        <h1 className="font-bold text-foreground">设置</h1>
+        <BounceTitle className="text-xl">
+          设置
+        </BounceTitle>
       </header>
       
       <div className="relative z-10 p-4 sm:p-6 space-y-4 sm:space-y-6">
         {/* User ID */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="space-y-3"
-        >
-          <h2 className="text-sm font-medium text-muted-foreground">你的嗨呀名！</h2>
+        <BubbleCard delay={0.1}>
+          <h2 className="text-sm font-bold mb-3" style={{ color: '#EA580C' }}>用户ID</h2>
           <div className="flex gap-2">
             <input
               type="text"
               value={userId}
               onChange={(e) => setUserId(e.target.value)}
-              placeholder="嗨呀名会显示在分享页面呀！"
-              className="flex-1 px-4 py-3 rounded-lg bg-card text-card-foreground border border-border focus:outline-none focus:ring-2 focus:ring-primary text-sm"
+              placeholder="输入你的ID..."
+              className="flex-1 px-4 py-3 rounded-2xl text-sm focus:outline-none"
+              style={{
+                background: 'linear-gradient(145deg, rgba(254,237,213,0.8) 0%, rgba(255,251,245,0.9) 100%)',
+                border: '2px solid rgba(251, 146, 60, 0.3)',
+                color: '#78350F',
+              }}
             />
-            <motion.button
-              whileTap={{ scale: 0.95 }}
+            <BubbleButton
               onClick={handleSaveId}
-              className={`px-4 py-3 rounded-lg ${yellowButton} font-medium flex items-center gap-2 text-sm`}
+              size="sm"
+              data-testid="button-save-id"
             >
               {saved ? <Check className="w-4 h-4" /> : '保存'}
-            </motion.button>
+            </BubbleButton>
           </div>
-        </motion.section>
+        </BubbleCard>
         
         {/* Stats */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="bg-card/80 backdrop-blur-sm rounded-xl p-4 sm:p-5 shadow-sm border border-border/50"
-        >
-          <h2 className="text-sm font-medium text-muted-foreground mb-4">使用统计</h2>
+        <BubbleCard glow delay={0.15}>
+          <h2 className="text-sm font-bold mb-4" style={{ color: '#EA580C' }}>使用统计</h2>
           <div className="grid grid-cols-2 gap-4">
             <div className="text-center">
-              <p className="text-2xl sm:text-3xl font-bold text-primary">{getDaysUsed()}</p>
-              <p className="text-xs sm:text-sm text-muted-foreground">使用天数</p>
+              <motion.p 
+                className="text-3xl sm:text-4xl font-black"
+                animate={{ scale: [1, 1.05, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                style={{ color: '#EA580C' }}
+              >
+                {getDaysUsed()}
+              </motion.p>
+              <p className="text-xs sm:text-sm" style={{ color: '#9A3412' }}>使用天数</p>
             </div>
             <div className="text-center">
-              <p className="text-2xl sm:text-3xl font-bold text-primary">{entries.length}</p>
-              <p className="text-xs sm:text-sm text-muted-foreground">记录条数</p>
+              <motion.p 
+                className="text-3xl sm:text-4xl font-black"
+                animate={{ scale: [1, 1.05, 1] }}
+                transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
+                style={{ color: '#EA580C' }}
+              >
+                {entries.length}
+              </motion.p>
+              <p className="text-xs sm:text-sm" style={{ color: '#9A3412' }}>记录条数</p>
             </div>
           </div>
-        </motion.section>
+        </BubbleCard>
         
         {/* Data Management */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="space-y-3"
-        >
-          <h2 className="text-sm font-medium text-muted-foreground">数据管理</h2>
+        <div className="space-y-3">
+          <h2 className="text-sm font-bold" style={{ color: '#EA580C' }}>数据管理</h2>
           
-          <motion.button
-            whileTap={{ scale: 0.98 }}
-            onClick={handleExport}
-            className={`w-full p-4 rounded-lg ${yellowButton} border border-border flex items-center gap-3`}
-          >
-            <Download className="w-5 h-5 text-primary" />
-            <div className="text-left">
-              <p className="font-medium text-sm">导出数据</p>
-              <p className="text-xs text-muted-foreground">备份所有记录到文件</p>
+          <BubbleCard delay={0.2} onClick={handleExport}>
+            <div className="flex items-center gap-3">
+              <div 
+                className="p-2 rounded-xl"
+                style={{ background: 'linear-gradient(135deg, #FB923C 0%, #EA580C 100%)' }}
+              >
+                <Download className="w-5 h-5 text-white" />
+              </div>
+              <div className="text-left">
+                <p className="font-bold text-sm" style={{ color: '#EA580C' }}>导出数据</p>
+                <p className="text-xs" style={{ color: '#9A3412' }}>备份所有记录到文件</p>
+              </div>
             </div>
-          </motion.button>
+          </BubbleCard>
           
-          <motion.button
-            whileTap={{ scale: 0.98 }}
-            onClick={() => fileInputRef.current?.click()}
-            className={`w-full p-4 rounded-lg ${yellowButton} border border-border flex items-center gap-3`}
-          >
-            <Upload className="w-5 h-5 text-primary" />
-            <div className="text-left">
-              <p className="font-medium text-sm">导入数据</p>
-              <p className="text-xs text-muted-foreground">从备份文件恢复记录</p>
+          <BubbleCard delay={0.25} onClick={() => fileInputRef.current?.click()}>
+            <div className="flex items-center gap-3">
+              <div 
+                className="p-2 rounded-xl"
+                style={{ background: 'linear-gradient(135deg, #FB923C 0%, #EA580C 100%)' }}
+              >
+                <Upload className="w-5 h-5 text-white" />
+              </div>
+              <div className="text-left">
+                <p className="font-bold text-sm" style={{ color: '#EA580C' }}>导入数据</p>
+                <p className="text-xs" style={{ color: '#9A3412' }}>从备份文件恢复记录</p>
+              </div>
             </div>
-          </motion.button>
+          </BubbleCard>
           
           <input
             ref={fileInputRef}
@@ -172,39 +186,33 @@ const SettingsPage = () => {
             onChange={handleImport}
             className="hidden"
           />
-        </motion.section>
+        </div>
 
         {/* View Welcome Page */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-        >
-          <motion.button
-            whileTap={{ scale: 0.98 }}
-            onClick={handleShowWelcome}
-            className={`w-full p-4 rounded-lg ${yellowButton} border border-border flex items-center gap-3`}
-          >
-            <Eye className="w-5 h-5 text-primary" />
-            <p className="font-medium text-sm">再看看👀嗨呀！欢迎页</p>
-          </motion.button>
-        </motion.section>
+        <BubbleCard delay={0.3} onClick={handleShowWelcome}>
+          <div className="flex items-center gap-3">
+            <div 
+              className="p-2 rounded-xl"
+              style={{ background: 'linear-gradient(135deg, #FB923C 0%, #EA580C 100%)' }}
+            >
+              <Eye className="w-5 h-5 text-white" />
+            </div>
+            <p className="font-bold text-sm" style={{ color: '#EA580C' }}>再看看嗨呀！欢迎页</p>
+          </div>
+        </BubbleCard>
 
         {/* About */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.35 }}
-        >
-          <motion.button
-            whileTap={{ scale: 0.98 }}
-            onClick={() => setShowAbout(true)}
-            className={`w-full p-4 rounded-lg ${yellowButton} border border-border flex items-center gap-3`}
-          >
-            <Info className="w-5 h-5 text-primary" />
-            <p className="font-medium text-sm">关于嗨呀！</p>
-          </motion.button>
-        </motion.section>
+        <BubbleCard delay={0.35} onClick={() => setShowAbout(true)}>
+          <div className="flex items-center gap-3">
+            <div 
+              className="p-2 rounded-xl"
+              style={{ background: 'linear-gradient(135deg, #FB923C 0%, #EA580C 100%)' }}
+            >
+              <Info className="w-5 h-5 text-white" />
+            </div>
+            <p className="font-bold text-sm" style={{ color: '#EA580C' }}>关于嗨呀！</p>
+          </div>
+        </BubbleCard>
       </div>
       
       {/* About Modal - Vibrant Orange Theme */}
@@ -219,10 +227,11 @@ const SettingsPage = () => {
             initial={{ scale: 0.8, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
-            className="relative rounded-2xl p-6 max-w-sm w-full shadow-2xl text-center max-h-[90vh] overflow-y-auto overflow-x-hidden"
+            className="relative rounded-3xl p-6 max-w-sm w-full shadow-2xl text-center max-h-[90vh] overflow-y-auto overflow-x-hidden"
             style={{
               background: 'linear-gradient(145deg, #FFF7ED 0%, #FFEDD5 50%, #FED7AA 100%)',
               boxShadow: '0 20px 60px rgba(251, 146, 60, 0.3), 0 10px 30px rgba(249, 115, 22, 0.2)',
+              border: '3px solid rgba(251, 146, 60, 0.3)',
             }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -255,9 +264,14 @@ const SettingsPage = () => {
             <div className="relative z-10">
               {/* Title with sparkles */}
               <div className="mb-4">
-                <span className="text-4xl font-black" style={{ color: '#EA580C' }}>
+                <motion.span 
+                  className="text-4xl font-black inline-block"
+                  animate={{ scale: [1, 1.05, 1] }}
+                  transition={{ duration: 1.5, repeat: Infinity }}
+                  style={{ color: '#EA580C' }}
+                >
                   嗨呀！
-                </span>
+                </motion.span>
                 <span className="text-2xl ml-1">✨</span>
               </div>
               
@@ -287,7 +301,7 @@ const SettingsPage = () => {
               
               {/* QR Code Section */}
               <div 
-                className="mb-4 p-4 rounded-xl"
+                className="mb-4 p-4 rounded-2xl"
                 style={{ 
                   background: 'linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(255,237,213,0.8) 100%)',
                   border: '2px solid rgba(251, 146, 60, 0.3)',
@@ -299,24 +313,19 @@ const SettingsPage = () => {
                 <img 
                   src={coffeeQrcode} 
                   alt="打赏二维码" 
-                  className="w-40 h-auto mx-auto rounded-lg shadow-md"
+                  className="w-40 h-auto mx-auto rounded-xl shadow-md"
                   style={{ border: '3px solid rgba(251, 146, 60, 0.3)' }}
                 />
               </div>
               
               {/* Close button */}
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.95 }}
+              <BubbleButton
                 onClick={() => setShowAbout(false)}
-                className="px-8 py-3 rounded-xl font-bold text-white text-lg shadow-lg"
-                style={{
-                  background: 'linear-gradient(135deg, #FB923C 0%, #EA580C 100%)',
-                  boxShadow: '0 4px 15px rgba(251, 146, 60, 0.4)',
-                }}
+                size="lg"
+                data-testid="button-close-about"
               >
                 好呀！
-              </motion.button>
+              </BubbleButton>
             </div>
           </motion.div>
         </motion.div>

@@ -7,6 +7,10 @@ import SmileRating from '@/components/SmileRating';
 import PosterGenerator from '@/components/PosterGenerator';
 import { Entry } from '@/context/AppContext';
 import { useSearchParams } from 'react-router-dom';
+import CandyBackground from '@/components/CandyBackground';
+import BounceTitle from '@/components/BounceTitle';
+import BubbleCard from '@/components/BubbleCard';
+import BubbleButton from '@/components/BubbleButton';
 
 const RecordPage = () => {
   const navigate = useNavigate();
@@ -17,14 +21,12 @@ const RecordPage = () => {
   const [content, setContent] = useState('');
   const [showPoster, setShowPoster] = useState(false);
   const [savedEntry, setSavedEntry] = useState<Entry | null>(null);
+  const [isFocused, setIsFocused] = useState(false);
   
-  // 支持通过 URL 参数指定日期（用于补录）
   const urlDate = searchParams.get('date');
   const targetDate = urlDate ? new Date(urlDate + 'T00:00:00') : new Date();
   const dateStr = `${targetDate.getFullYear()}-${String(targetDate.getMonth() + 1).padStart(2, '0')}-${String(targetDate.getDate()).padStart(2, '0')}`;
   const isBackfill = !!urlDate;
-
-  const orangeButton = 'bg-gradient-to-br from-primary to-chart-1 text-primary-foreground';
   
   const formatDate = () => {
     return targetDate.toLocaleDateString('zh-CN', {
@@ -54,68 +56,90 @@ const RecordPage = () => {
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -20 }}
-      className="min-h-screen max-w-md mx-auto bg-background flex flex-col pt-safe pb-safe"
+      className="min-h-screen max-w-md mx-auto flex flex-col pt-safe pb-safe"
     >
-      {/* Decorative background */}
-      <div 
-        className="fixed inset-0 pointer-events-none"
-        style={{
-          background: 'linear-gradient(180deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.4) 67%, hsl(var(--primary) / 0.3) 100%)',
-        }}
-      />
+      <CandyBackground />
 
       {/* Header */}
-      <header className="relative z-10 p-4 flex items-center gap-4 border-b border-border bg-card/80 backdrop-blur-sm">
+      <header className="relative z-10 p-4 flex items-center gap-4">
         <motion.button
+          whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={() => navigate('/')}
-          className="p-2 rounded-full bg-secondary text-secondary-foreground"
+          className="p-3 rounded-full shadow-lg"
+          style={{
+            background: 'linear-gradient(135deg, #FB923C 0%, #EA580C 100%)',
+            boxShadow: '0 4px 15px rgba(251, 146, 60, 0.4)',
+          }}
+          data-testid="button-back"
         >
-          <ArrowLeft className="w-5 h-5" />
+          <ArrowLeft className="w-5 h-5 text-white" />
         </motion.button>
         <div>
-          <h1 className="font-bold text-foreground">{isBackfill ? '补充嗨呀！' : '记录今天'}</h1>
-          <span className="text-sm text-muted-foreground">{formatDate()}</span>
+          <BounceTitle className="text-xl">
+            {isBackfill ? '补充嗨呀！' : '记录今天'}
+          </BounceTitle>
+          <span className="text-sm" style={{ color: '#9A3412' }}>{formatDate()}</span>
         </div>
       </header>
       
       {/* Content */}
       <div className="relative z-10 flex-1 p-4 sm:p-6 space-y-6 sm:space-y-8">
         {/* Rating Section */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="space-y-4"
-        >
-          <h2 className="text-base sm:text-lg font-medium text-foreground text-center">今天的心情</h2>
+        <BubbleCard glow delay={0.1}>
+          <h2 className="text-base sm:text-lg font-bold text-center mb-4" style={{ color: '#EA580C' }}>
+            今天的心情
+          </h2>
           <SmileRating value={rating} onChange={setRating} />
-          <p className="text-center text-xs sm:text-sm text-muted-foreground">
+          <motion.p 
+            key={rating}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center text-sm mt-4 font-bold"
+            style={{ color: '#9A3412' }}
+          >
             {['', '嗨呀！', '嗨呀！！', '嗨呀呀呀！', '嗨--呀！！', '嗨呀！嗨呀！嗨呀！'][rating]}
-          </p>
-        </motion.section>
+          </motion.p>
+        </BubbleCard>
         
-        
-        {/* Text Input */}
-        <motion.section
+        {/* Text Input - Bubble Style */}
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
           className="space-y-2"
         >
-          <label className="text-xs sm:text-sm font-medium text-foreground">
+          <label className="text-sm font-bold" style={{ color: '#EA580C' }}>
             今天发生了什么？
           </label>
-          <textarea
-            value={content}
-            onChange={(e) => setContent(e.target.value.slice(0, 200))}
-            placeholder="记录一下今天的心情和事情..."
-            className="w-full h-32 sm:h-40 p-3 sm:p-4 rounded-xl bg-card text-card-foreground border border-border focus:outline-none focus:ring-2 focus:ring-primary resize-none text-sm sm:text-base"
-          />
-          <div className="text-right text-xs text-muted-foreground">
+          <motion.div
+            animate={isFocused ? { 
+              boxShadow: '0 0 30px rgba(251, 146, 60, 0.4), 0 10px 40px rgba(251, 146, 60, 0.2)',
+              scale: 1.01,
+            } : {
+              boxShadow: '0 8px 30px rgba(0, 0, 0, 0.08)',
+              scale: 1,
+            }}
+            className="rounded-3xl overflow-hidden"
+            style={{
+              background: 'linear-gradient(145deg, rgba(255,251,245,0.95) 0%, rgba(254,237,213,0.9) 100%)',
+              border: isFocused ? '3px solid rgba(251, 146, 60, 0.5)' : '3px solid rgba(255, 255, 255, 0.5)',
+            }}
+          >
+            <textarea
+              value={content}
+              onChange={(e) => setContent(e.target.value.slice(0, 200))}
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
+              placeholder="记录一下今天的心情和事情...✨"
+              className="w-full h-32 sm:h-40 p-4 sm:p-5 bg-transparent resize-none text-sm sm:text-base focus:outline-none"
+              style={{ color: '#78350F' }}
+            />
+          </motion.div>
+          <div className="text-right text-xs" style={{ color: '#9A3412' }}>
             {content.length}/200
           </div>
-        </motion.section>
+        </motion.div>
       </div>
       
       {/* Submit Button */}
@@ -125,13 +149,14 @@ const RecordPage = () => {
         transition={{ delay: 0.3 }}
         className="relative z-10 p-4 sm:p-6"
       >
-        <motion.button
-          whileTap={{ scale: 0.98 }}
+        <BubbleButton
           onClick={handleSubmit}
-          className={`w-full py-3 sm:py-4 rounded-xl ${orangeButton} font-bold text-base sm:text-lg shadow-lg`}
+          size="xl"
+          className="w-full"
+          data-testid="button-submit"
         >
           嗨呀！✨
-        </motion.button>
+        </BubbleButton>
       </motion.div>
       
       {/* Poster Modal */}

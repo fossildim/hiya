@@ -1,31 +1,11 @@
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState } from 'react';
+import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Rocket, Zap } from 'lucide-react';
+import { ArrowLeft, Rocket } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 import BottomTabBar from '@/components/BottomTabBar';
+import CandyBackground from '@/components/CandyBackground';
 import confetti from 'canvas-confetti';
-
-// Floating decoration component
-const FloatingDecoration = ({ emoji, delay, duration, x, y }: { emoji: string; delay: number; duration: number; x: number; y: number }) => (
-  <motion.div
-    className="absolute text-2xl opacity-30 pointer-events-none select-none"
-    style={{ left: `${x}%`, top: `${y}%` }}
-    animate={{
-      y: [0, -20, 0],
-      rotate: [0, 10, -10, 0],
-      scale: [1, 1.1, 1],
-    }}
-    transition={{
-      duration,
-      delay,
-      repeat: Infinity,
-      ease: "easeInOut",
-    }}
-  >
-    {emoji}
-  </motion.div>
-);
 
 const HistoryPage = () => {
   const navigate = useNavigate();
@@ -58,11 +38,8 @@ const HistoryPage = () => {
   const daysInMonth = getDaysInMonth(year, month);
   const firstDay = getFirstDayOfMonth(year, month);
   
-  // Get best entry for each week
   const getWeekBestDays = () => {
     const bestDays: { [key: string]: boolean } = {};
-    
-    // Group entries by week
     const weeks: { [key: number]: typeof entries } = {};
     
     entries.forEach(entry => {
@@ -74,7 +51,6 @@ const HistoryPage = () => {
       }
     });
     
-    // Find best in each week
     Object.values(weeks).forEach(weekEntries => {
       if (weekEntries.length > 0) {
         const best = weekEntries.reduce((a, b) => a.rating > b.rating ? a : b);
@@ -114,12 +90,10 @@ const HistoryPage = () => {
   const renderCalendarDays = () => {
     const days = [];
     
-    // Empty cells for days before the first day of month
     for (let i = 0; i < firstDay; i++) {
       days.push(<div key={`empty-${i}`} className="aspect-square" />);
     }
     
-    // Days of the month
     for (let day = 1; day <= daysInMonth; day++) {
       const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
       const entry = getEntryByDate(dateStr);
@@ -144,26 +118,25 @@ const HistoryPage = () => {
               }
             }
           }}
-          className={`
-            aspect-square rounded-2xl flex flex-col items-center justify-center relative cursor-pointer transition-all
-            ${entry 
-              ? isBest 
-                ? 'bg-gradient-to-br from-amber-400 to-orange-500 shadow-lg shadow-orange-300/50' 
-                : 'bg-gradient-to-br from-orange-300 to-orange-400 shadow-md shadow-orange-200/50'
-              : 'bg-white/60 backdrop-blur-sm hover:bg-white/80 border border-white/50'
-            }
-            ${today ? 'ring-4 ring-primary ring-offset-2 ring-offset-transparent' : ''}
-          `}
+          className="aspect-square rounded-2xl flex flex-col items-center justify-center relative cursor-pointer transition-all"
           style={{
+            background: entry 
+              ? isBest 
+                ? 'linear-gradient(135deg, #FBBF24 0%, #F97316 100%)'
+                : 'linear-gradient(135deg, #FDBA74 0%, #FB923C 100%)'
+              : 'rgba(255,255,255,0.7)',
             boxShadow: isBest 
-              ? '0 0 20px rgba(251, 146, 60, 0.5), 0 0 40px rgba(251, 146, 60, 0.3)' 
-              : undefined
+              ? '0 0 25px rgba(251, 146, 60, 0.6), 0 8px 20px rgba(251, 146, 60, 0.4)' 
+              : entry
+                ? '0 4px 15px rgba(251, 146, 60, 0.3)'
+                : '0 2px 10px rgba(0,0,0,0.05)',
+            border: today ? '3px solid #EA580C' : entry ? 'none' : '2px solid rgba(255,255,255,0.5)',
           }}
         >
-          {/* Glow effect for best days */}
           {isBest && (
             <motion.div
-              className="absolute inset-0 rounded-2xl bg-gradient-to-br from-yellow-300/30 to-orange-400/30"
+              className="absolute inset-0 rounded-2xl"
+              style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.3) 0%, transparent 100%)' }}
               animate={{ 
                 scale: [1, 1.05, 1],
                 opacity: [0.5, 0.8, 0.5]
@@ -176,19 +149,6 @@ const HistoryPage = () => {
             />
           )}
           
-          {/* Today indicator - spinning ring */}
-          {today && (
-            <motion.div
-              className="absolute inset-0 rounded-2xl border-2 border-primary/50"
-              animate={{ rotate: 360 }}
-              transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-              style={{
-                borderStyle: 'dashed',
-              }}
-            />
-          )}
-          
-          {/* Crown for best days */}
           {isBest && (
             <motion.span 
               className="absolute -top-1 -right-1 text-xs"
@@ -202,18 +162,20 @@ const HistoryPage = () => {
             </motion.span>
           )}
           
-          <span className={`text-xs sm:text-sm font-bold relative z-10 ${
-            entry ? 'text-white drop-shadow-sm' : today ? 'text-primary' : 'text-foreground/70'
-          }`}>
+          <span 
+            className="text-xs sm:text-sm font-bold relative z-10"
+            style={{ 
+              color: entry ? 'white' : today ? '#EA580C' : '#78350F',
+              textShadow: entry ? '0 1px 2px rgba(0,0,0,0.2)' : 'none',
+            }}
+          >
             {day}
           </span>
           
           {entry && (
             <motion.span 
               className="text-xs relative z-10"
-              animate={isBest ? { 
-                scale: [1, 1.2, 1],
-              } : undefined}
+              animate={isBest ? { scale: [1, 1.2, 1] } : undefined}
               transition={{ duration: 1, repeat: Infinity }}
             >
               {getRatingEmoji(entry.rating)}
@@ -226,31 +188,9 @@ const HistoryPage = () => {
     return days;
   };
 
-  // Floating decorations data
-  const decorations = [
-    { emoji: '🍊', delay: 0, duration: 4, x: 5, y: 15 },
-    { emoji: '☀️', delay: 0.5, duration: 5, x: 85, y: 10 },
-    { emoji: '🙂', delay: 1, duration: 4.5, x: 10, y: 60 },
-    { emoji: '✨', delay: 1.5, duration: 3.5, x: 90, y: 55 },
-    { emoji: '🍊', delay: 2, duration: 4, x: 80, y: 80 },
-    { emoji: '⭐', delay: 0.3, duration: 5, x: 15, y: 85 },
-    { emoji: '🌟', delay: 0.8, duration: 4.2, x: 50, y: 5 },
-  ];
-
   return (
     <div className="min-h-screen max-w-md mx-auto pt-safe pb-20 relative overflow-hidden">
-      {/* Vibrant gradient background */}
-      <div 
-        className="fixed inset-0 pointer-events-none"
-        style={{
-          background: 'linear-gradient(135deg, hsl(var(--primary) / 0.7) 0%, hsl(var(--chart-1) / 0.6) 50%, hsl(var(--accent) / 0.8) 100%)',
-        }}
-      />
-      
-      {/* Floating decorations */}
-      {decorations.map((dec, i) => (
-        <FloatingDecoration key={i} {...dec} />
-      ))}
+      <CandyBackground />
       
       {/* Header */}
       <header className="relative z-10 p-4 flex items-center gap-4">
@@ -258,22 +198,21 @@ const HistoryPage = () => {
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={() => navigate('/')}
-          className="p-2 rounded-full bg-white/80 backdrop-blur-sm shadow-lg text-primary"
+          className="p-3 rounded-full shadow-lg"
+          style={{
+            background: 'linear-gradient(135deg, #FB923C 0%, #EA580C 100%)',
+            boxShadow: '0 4px 15px rgba(251, 146, 60, 0.4)',
+          }}
+          data-testid="button-back"
         >
-          <ArrowLeft className="w-5 h-5" />
+          <ArrowLeft className="w-5 h-5 text-white" />
         </motion.button>
         
-        {/* Bouncy title */}
         <motion.h1 
-          className="font-black text-xl text-white drop-shadow-lg"
-          animate={{ 
-            y: [0, -3, 0],
-          }}
-          transition={{ 
-            duration: 1.5, 
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
+          className="font-black text-xl"
+          style={{ color: '#EA580C' }}
+          animate={{ y: [0, -3, 0] }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
         >
           ✨ 嗨呀！动态 ✨
         </motion.h1>
@@ -285,13 +224,18 @@ const HistoryPage = () => {
           whileHover={{ scale: 1.2, rotate: -10 }}
           whileTap={{ scale: 0.8 }}
           onClick={prevMonth}
-          className="p-3 rounded-full bg-white/80 backdrop-blur-sm shadow-lg text-primary"
+          className="p-3 rounded-full shadow-lg"
+          style={{
+            background: 'linear-gradient(145deg, rgba(255,255,255,0.9) 0%, rgba(254,237,213,0.9) 100%)',
+            boxShadow: '0 4px 15px rgba(251, 146, 60, 0.2)',
+          }}
         >
-          <Rocket className="w-5 h-5 rotate-180" />
+          <Rocket className="w-5 h-5 rotate-180" style={{ color: '#EA580C' }} />
         </motion.button>
         
         <motion.h2 
-          className="text-xl font-black text-white drop-shadow-lg"
+          className="text-xl font-black"
+          style={{ color: '#9A3412' }}
           key={`${year}-${month}`}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -304,16 +248,25 @@ const HistoryPage = () => {
           whileHover={{ scale: 1.2, rotate: 10 }}
           whileTap={{ scale: 0.8 }}
           onClick={nextMonth}
-          className="p-3 rounded-full bg-white/80 backdrop-blur-sm shadow-lg text-primary"
+          className="p-3 rounded-full shadow-lg"
+          style={{
+            background: 'linear-gradient(145deg, rgba(255,255,255,0.9) 0%, rgba(254,237,213,0.9) 100%)',
+            boxShadow: '0 4px 15px rgba(251, 146, 60, 0.2)',
+          }}
         >
-          <Rocket className="w-5 h-5" />
+          <Rocket className="w-5 h-5" style={{ color: '#EA580C' }} />
         </motion.button>
       </div>
       
       {/* Calendar Card */}
       <div className="relative z-10 p-4">
         <motion.div 
-          className="bg-white/70 backdrop-blur-md rounded-3xl p-4 shadow-2xl"
+          className="rounded-3xl p-4 shadow-2xl"
+          style={{
+            background: 'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(255,251,245,0.9) 100%)',
+            boxShadow: '0 15px 50px rgba(251, 146, 60, 0.2), inset 0 1px 0 rgba(255,255,255,0.8)',
+            border: '2px solid rgba(251, 146, 60, 0.2)',
+          }}
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.3 }}
@@ -322,7 +275,7 @@ const HistoryPage = () => {
           <div className="grid grid-cols-7 gap-1 mb-3">
             {weekDays.map(day => (
               <div key={day} className="aspect-square flex items-center justify-center">
-                <span className="text-xs font-bold text-primary/70">{day}</span>
+                <span className="text-xs font-bold" style={{ color: '#EA580C' }}>{day}</span>
               </div>
             ))}
           </div>
@@ -335,25 +288,37 @@ const HistoryPage = () => {
       </div>
       
       {/* Legend */}
-      <div className="relative z-10 p-4 flex items-center justify-center gap-6 text-sm">
+      <div className="relative z-10 p-4 flex items-center justify-center gap-4 text-sm">
         <motion.div 
-          className="flex items-center gap-2 bg-white/60 backdrop-blur-sm px-3 py-2 rounded-full shadow"
+          className="flex items-center gap-2 px-4 py-2 rounded-full shadow-md"
+          style={{
+            background: 'linear-gradient(145deg, rgba(255,255,255,0.9) 0%, rgba(254,237,213,0.9) 100%)',
+          }}
           whileHover={{ scale: 1.05 }}
         >
-          <div className="w-5 h-5 rounded-lg bg-gradient-to-br from-orange-300 to-orange-400 flex items-center justify-center">
+          <div 
+            className="w-5 h-5 rounded-lg flex items-center justify-center"
+            style={{ background: 'linear-gradient(135deg, #FDBA74 0%, #FB923C 100%)' }}
+          >
             <span className="text-[8px]">🙂</span>
           </div>
-          <span className="text-foreground/80 font-medium">有记录</span>
+          <span className="font-medium" style={{ color: '#9A3412' }}>有记录</span>
         </motion.div>
         
         <motion.div 
-          className="flex items-center gap-2 bg-white/60 backdrop-blur-sm px-3 py-2 rounded-full shadow"
+          className="flex items-center gap-2 px-4 py-2 rounded-full shadow-md"
+          style={{
+            background: 'linear-gradient(145deg, rgba(255,255,255,0.9) 0%, rgba(254,237,213,0.9) 100%)',
+          }}
           whileHover={{ scale: 1.05 }}
         >
-          <div className="w-5 h-5 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center relative">
+          <div 
+            className="w-5 h-5 rounded-lg flex items-center justify-center relative"
+            style={{ background: 'linear-gradient(135deg, #FBBF24 0%, #F97316 100%)' }}
+          >
             <span className="text-[8px]">👑</span>
           </div>
-          <span className="text-foreground/80 font-medium">本周最佳</span>
+          <span className="font-medium" style={{ color: '#9A3412' }}>本周最佳</span>
         </motion.div>
       </div>
 

@@ -5,6 +5,9 @@ import { ArrowLeft, Share2 } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 import SmileRating from '@/components/SmileRating';
 import PosterGenerator from '@/components/PosterGenerator';
+import CandyBackground from '@/components/CandyBackground';
+import BubbleCard from '@/components/BubbleCard';
+import BounceTitle from '@/components/BounceTitle';
 
 const EntryDetailPage = () => {
   const navigate = useNavigate();
@@ -12,20 +15,23 @@ const EntryDetailPage = () => {
   const { getEntryByDate, settings } = useApp();
   
   const [showPoster, setShowPoster] = useState(false);
-
-  const orangeIconButton = 'p-2 rounded-full bg-gradient-to-br from-primary to-chart-1 text-primary-foreground';
   
   const entry = date ? getEntryByDate(date) : null;
   
   if (!entry) {
     return (
-      <div className="min-h-screen max-w-md mx-auto bg-background flex items-center justify-center pt-safe pb-safe">
-        <div className="text-center">
-          <p className="text-muted-foreground mb-4">找不到这条记录</p>
+      <div className="min-h-screen max-w-md mx-auto flex items-center justify-center pt-safe pb-safe relative">
+        <CandyBackground />
+        <div className="text-center relative z-10">
+          <p className="mb-4" style={{ color: '#9A3412' }}>找不到这条记录</p>
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={() => navigate('/history')}
-            className="px-4 py-2 bg-primary text-primary-foreground rounded-lg"
+            className="px-6 py-3 rounded-2xl font-bold text-white"
+            style={{
+              background: 'linear-gradient(135deg, #FB923C 0%, #EA580C 100%)',
+              boxShadow: '0 4px 15px rgba(251, 146, 60, 0.4)',
+            }}
           >
             返回历史
           </motion.button>
@@ -57,35 +63,43 @@ const EntryDetailPage = () => {
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -20 }}
-      className="min-h-screen max-w-md mx-auto bg-background pt-safe pb-safe"
+      className="min-h-screen max-w-md mx-auto pt-safe pb-safe relative"
     >
-      {/* Decorative background */}
-      <div 
-        className="fixed inset-0 pointer-events-none"
-        style={{
-          background: 'linear-gradient(180deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.4) 67%, hsl(var(--primary) / 0.3) 100%)',
-        }}
-      />
+      <CandyBackground />
 
       {/* Header */}
-      <header className="relative z-10 p-4 flex items-center justify-between border-b border-border bg-card/80 backdrop-blur-sm">
+      <header className="relative z-10 p-4 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <motion.button
+            whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             onClick={() => navigate('/history')}
-            className="p-2 rounded-full bg-secondary text-secondary-foreground"
+            className="p-3 rounded-full shadow-lg"
+            style={{
+              background: 'linear-gradient(135deg, #FB923C 0%, #EA580C 100%)',
+              boxShadow: '0 4px 15px rgba(251, 146, 60, 0.4)',
+            }}
+            data-testid="button-back"
           >
-            <ArrowLeft className="w-5 h-5" />
+            <ArrowLeft className="w-5 h-5 text-white" />
           </motion.button>
-          <h1 className="font-bold text-foreground">记录详情</h1>
+          <BounceTitle className="text-xl">
+            记录详情
+          </BounceTitle>
         </div>
         
         <motion.button
+          whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={() => setShowPoster(true)}
-          className={orangeIconButton}
+          className="p-3 rounded-full shadow-lg"
+          style={{
+            background: 'linear-gradient(135deg, #FB923C 0%, #EA580C 100%)',
+            boxShadow: '0 4px 15px rgba(251, 146, 60, 0.4)',
+          }}
+          data-testid="button-share"
         >
-          <Share2 className="w-5 h-5" />
+          <Share2 className="w-5 h-5 text-white" />
         </motion.button>
       </header>
       
@@ -97,35 +111,34 @@ const EntryDetailPage = () => {
           animate={{ opacity: 1, y: 0 }}
           className="text-center space-y-1"
         >
-          <h2 className="text-lg sm:text-xl font-bold text-foreground">{formatDate(entry.date)}</h2>
-          <p className="text-xs sm:text-sm text-muted-foreground">记录于 {formatTime(entry.createdAt)}</p>
+          <h2 className="text-lg sm:text-xl font-bold" style={{ color: '#EA580C' }}>
+            {formatDate(entry.date)}
+          </h2>
+          <p className="text-xs sm:text-sm" style={{ color: '#9A3412' }}>
+            记录于 {formatTime(entry.createdAt)}
+          </p>
         </motion.div>
-        
         
         {/* Rating */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="py-4"
-        >
-        <SmileRating value={entry.rating} onChange={() => {}} readonly size="lg" />
-          <p className="text-center text-xs sm:text-sm text-muted-foreground mt-2">
+        <BubbleCard glow delay={0.2}>
+          <SmileRating value={entry.rating} onChange={() => {}} readonly size="lg" />
+          <motion.p 
+            className="text-center text-sm mt-3 font-bold"
+            style={{ color: '#9A3412' }}
+          >
             {['', '嗨呀！', '嗨呀！！', '嗨呀呀呀！', '嗨--呀！！', '嗨呀！嗨呀！嗨呀！'][entry.rating]}
-          </p>
-        </motion.div>
+          </motion.p>
+        </BubbleCard>
         
         {/* Content */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="bg-card/80 backdrop-blur-sm rounded-xl p-4 sm:p-5 shadow-sm border border-border/50"
-        >
-          <p className="text-card-foreground text-sm sm:text-base leading-relaxed whitespace-pre-wrap">
+        <BubbleCard delay={0.3}>
+          <p 
+            className="text-sm sm:text-base leading-relaxed whitespace-pre-wrap"
+            style={{ color: '#78350F' }}
+          >
             {entry.content || '这天没有写什么...'}
           </p>
-        </motion.div>
+        </BubbleCard>
       </div>
       
       {/* Poster Modal */}

@@ -8,16 +8,19 @@ import SmileRating from '@/components/SmileRating';
 import { playHaiya } from '@/lib/sfx';
 import { useNotificationReminder } from '@/hooks/useNotificationReminder';
 import BottomTabBar from '@/components/BottomTabBar';
+import CandyBackground from '@/components/CandyBackground';
+import BounceTitle from '@/components/BounceTitle';
+import BubbleCard from '@/components/BubbleCard';
 
 const Index = () => {
   const navigate = useNavigate();
   const { getTodayEntry, getWeekEntries } = useApp();
   const [isPressed, setIsPressed] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [showConfetti, setShowConfetti] = useState(false);
   const pressTimerRef = useRef<NodeJS.Timeout | null>(null);
   const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
   
-  // Enable notification reminder
   useNotificationReminder();
   
   const todayEntry = getTodayEntry();
@@ -46,7 +49,10 @@ const Index = () => {
     }, 100);
     
     pressTimerRef.current = setTimeout(() => {
-      navigate('/record');
+      setShowConfetti(true);
+      setTimeout(() => {
+        navigate('/record');
+      }, 300);
     }, 2000);
   }, [navigate]);
 
@@ -71,50 +77,10 @@ const Index = () => {
     };
   }, []);
 
-  const orangeMainButton =
-    'relative w-36 h-36 sm:w-44 sm:h-44 rounded-full bg-gradient-to-br from-primary to-chart-1 text-primary-foreground font-bold text-xl shadow-xl overflow-hidden';
-
   return (
-    <div className="min-h-screen max-w-md mx-auto bg-background flex flex-col relative overflow-hidden pt-safe pb-20">
-      {/* Decorative background - theme gradient */}
-      <div 
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: 'linear-gradient(180deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.4) 67%, hsl(var(--primary) / 0.3) 100%)',
-        }}
-      />
+    <div className="min-h-screen max-w-md mx-auto flex flex-col relative overflow-hidden pt-safe pb-20">
+      <CandyBackground />
       
-      {/* Decorative background blobs */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div 
-          className="absolute w-64 h-64 rounded-full opacity-20"
-          style={{ 
-            background: 'hsl(var(--primary) / 0.3)', 
-            top: '-5%', 
-            right: '-10%', 
-            filter: 'blur(60px)' 
-          }}
-        />
-        <div 
-          className="absolute w-48 h-48 rounded-full opacity-15"
-          style={{ 
-            background: 'hsl(var(--chart-1) / 0.4)', 
-            bottom: '25%', 
-            left: '-8%', 
-            filter: 'blur(50px)' 
-          }}
-        />
-        <div 
-          className="absolute w-32 h-32 rounded-full opacity-10"
-          style={{ 
-            background: 'hsl(var(--accent) / 0.5)', 
-            top: '40%', 
-            right: '5%', 
-            filter: 'blur(40px)' 
-          }}
-        />
-      </div>
-
       {/* Header */}
       <motion.header
         initial={{ opacity: 0, y: -20 }}
@@ -122,115 +88,172 @@ const Index = () => {
         className="p-4 sm:p-6 space-y-1 relative z-10 flex justify-between items-start"
       >
         <div>
-          <h1 
-            className="text-2xl sm:text-3xl font-bold"
-            style={{
-              background: 'linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--chart-1)) 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-            }}
-          >
+          <BounceTitle className="text-3xl sm:text-4xl">
             嗨呀！
-          </h1>
-          <span className="text-xs sm:text-sm text-muted-foreground">{formatDate(new Date())}</span>
+          </BounceTitle>
+          <span className="text-xs sm:text-sm" style={{ color: '#9A3412' }}>
+            {formatDate(new Date())}
+          </span>
         </div>
         <motion.button
-          whileHover={{ scale: 1.1 }}
+          whileHover={{ scale: 1.1, rotate: 15 }}
           whileTap={{ scale: 0.9 }}
           onClick={() => navigate('/settings')}
-          className="p-2.5 rounded-full bg-gradient-to-br from-accent to-accent/70 text-accent-foreground"
+          className="p-3 rounded-full shadow-lg"
+          style={{
+            background: 'linear-gradient(135deg, #FB923C 0%, #EA580C 100%)',
+            boxShadow: '0 4px 15px rgba(251, 146, 60, 0.4)',
+          }}
         >
-          <Settings className="w-5 h-5" />
+          <Settings className="w-5 h-5 text-white" />
         </motion.button>
       </motion.header>
       
       {/* Best Entry of the Week */}
-      <motion.section
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
-        className="px-4 sm:px-6 mb-4 sm:mb-6 relative z-10"
-      >
-        <div 
-          className="bg-card/80 backdrop-blur-sm rounded-2xl p-4 sm:p-5 shadow-md border border-border/50"
-          style={{ boxShadow: '0 4px 20px hsl(var(--primary) / 0.08)' }}
-        >
-          <h2 className="text-xs sm:text-sm font-medium text-muted-foreground mb-2 sm:mb-3 flex items-center gap-2">
-            <span>🌟</span> 上周最嗨！
+      <div className="px-4 sm:px-6 mb-4 sm:mb-6 relative z-10">
+        <BubbleCard glow delay={0.1}>
+          <h2 className="text-xs sm:text-sm font-bold mb-2 sm:mb-3 flex items-center gap-2" style={{ color: '#EA580C' }}>
+            <motion.span
+              animate={{ rotate: [0, 15, -15, 0] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            >
+              🌟
+            </motion.span>
+            上周最嗨！
           </h2>
           {bestEntry ? (
             <div className="space-y-2 sm:space-y-3">
               <SmileRating value={bestEntry.rating} onChange={() => {}} readonly size="sm" />
-              <p className="text-card-foreground text-xs sm:text-sm line-clamp-2">
+              <p className="text-xs sm:text-sm line-clamp-2" style={{ color: '#78350F' }}>
                 {bestEntry.content || '没有写什么...'}
               </p>
-              <span className="text-xs text-muted-foreground">
+              <span className="text-xs" style={{ color: '#9A3412' }}>
                 {new Date(bestEntry.date).toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' })}
               </span>
             </div>
           ) : (
-            <p className="text-muted-foreground text-xs sm:text-sm">还没有记录哦，快来记录吧！✨</p>
+            <p className="text-xs sm:text-sm" style={{ color: '#9A3412' }}>
+              还没有记录哦，快来记录吧！✨
+            </p>
           )}
-        </div>
-      </motion.section>
+        </BubbleCard>
+      </div>
       
       {/* Four Week Calendar */}
-      <motion.section
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-        className="px-4 sm:px-6 mb-4 sm:mb-6 relative z-10"
-      >
-        <h2 className="text-xs sm:text-sm font-medium text-muted-foreground mb-2 sm:mb-3 flex items-center gap-2">
-          <span>🗓️</span> 这是你的嗨呀！
+      <div className="px-4 sm:px-6 mb-4 sm:mb-6 relative z-10">
+        <h2 className="text-xs sm:text-sm font-bold mb-2 sm:mb-3 flex items-center gap-2" style={{ color: '#EA580C' }}>
+          <motion.span
+            animate={{ y: [0, -3, 0] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+          >
+            🗓️
+          </motion.span>
+          这是你的嗨呀！
         </h2>
-        <div className="bg-card/80 backdrop-blur-sm rounded-2xl p-3 sm:p-4 shadow-md border border-border/50">
+        <BubbleCard delay={0.2}>
           <FourWeekCalendar />
-        </div>
-      </motion.section>
+        </BubbleCard>
+      </div>
       
-      {/* Center Record Button */}
+      {/* Center Record Button - Happy Bomb */}
       <div className="flex-1 flex items-center justify-center px-4 sm:px-6 relative z-10">
         <motion.div className="relative">
-          {/* Glow effect behind button */}
-          <div 
-            className="absolute inset-0 rounded-full opacity-40"
+          {/* Pulsing glow effect */}
+          <motion.div
+            animate={{ 
+              scale: [1, 1.2, 1],
+              opacity: [0.4, 0.6, 0.4],
+            }}
+            transition={{ 
+              duration: 2,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+            className="absolute inset-0 rounded-full"
             style={{
-              background: 'radial-gradient(circle, hsl(var(--primary) / 0.4) 0%, transparent 70%)',
-              transform: 'scale(1.5)',
-              filter: 'blur(20px)',
+              background: 'radial-gradient(circle, rgba(251, 146, 60, 0.6) 0%, transparent 70%)',
+              transform: 'scale(1.8)',
+              filter: 'blur(30px)',
             }}
           />
+          
+          {/* Main button */}
           <motion.button
             onMouseDown={handlePressStart}
             onMouseUp={handlePressEnd}
             onMouseLeave={handlePressEnd}
             onTouchStart={handlePressStart}
             onTouchEnd={handlePressEnd}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className={orangeMainButton}
-            style={{ boxShadow: '0 8px 30px hsl(var(--primary) / 0.3)' }}
+            animate={isPressed ? { scale: 0.95 } : { scale: [1, 1.03, 1] }}
+            transition={isPressed ? {} : { duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            className="relative w-40 h-40 sm:w-48 sm:h-48 rounded-full font-bold text-xl overflow-hidden"
+            style={{
+              background: 'linear-gradient(135deg, #FB923C 0%, #EA580C 50%, #C2410C 100%)',
+              boxShadow: '0 15px 50px rgba(234, 88, 12, 0.5), 0 0 40px rgba(251, 146, 60, 0.4), inset 0 -5px 20px rgba(0,0,0,0.1)',
+              border: '4px solid rgba(255,255,255,0.3)',
+            }}
+            data-testid="button-record"
           >
-            <div
-              className="absolute inset-0 bg-accent-foreground transition-all duration-100"
-              style={{ 
-                clipPath: `inset(${100 - progress}% 0 0 0)`,
-                opacity: 0.3
+            {/* Glossy highlight */}
+            <div 
+              className="absolute top-0 left-0 right-0 h-1/2 pointer-events-none"
+              style={{
+                background: 'linear-gradient(180deg, rgba(255,255,255,0.4) 0%, transparent 100%)',
+                borderRadius: 'inherit',
               }}
             />
-            <div className="relative z-10 flex flex-col items-center justify-center h-full">
-              <span className="text-2xl sm:text-3xl mb-1">😊</span>
-              <span className="text-base sm:text-lg">{todayEntry ? '还有更嗨呀的！' : '嗨呀！'}</span>
+            
+            {/* Progress fill */}
+            <div
+              className="absolute inset-0 transition-all duration-100"
+              style={{ 
+                background: 'rgba(255,255,255,0.3)',
+                clipPath: `inset(${100 - progress}% 0 0 0)`,
+              }}
+            />
+            
+            {/* Content */}
+            <div className="relative z-10 flex flex-col items-center justify-center h-full text-white">
+              <motion.span 
+                className="text-4xl sm:text-5xl mb-1"
+                animate={{ rotate: [0, 10, -10, 0] }}
+                transition={{ duration: 1, repeat: Infinity, repeatDelay: 2 }}
+              >
+                😊
+              </motion.span>
+              <span className="text-lg sm:text-xl font-black">
+                {todayEntry ? '还有更嗨呀的！' : '嗨呀！'}
+              </span>
               {isPressed && (
                 <span className="text-xs mt-1 opacity-80">长按2秒...</span>
               )}
             </div>
           </motion.button>
+          
+          {/* Confetti burst */}
+          {showConfetti && (
+            <div className="absolute inset-0 pointer-events-none">
+              {[...Array(12)].map((_, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 1, scale: 0, x: 0, y: 0 }}
+                  animate={{ 
+                    opacity: 0, 
+                    scale: 1,
+                    x: Math.cos(i * 30 * Math.PI / 180) * 100,
+                    y: Math.sin(i * 30 * Math.PI / 180) * 100,
+                  }}
+                  transition={{ duration: 0.6 }}
+                  className="absolute top-1/2 left-1/2 text-2xl"
+                >
+                  {['✨', '🎉', '⭐', '💫', '🌟', '🍊'][i % 6]}
+                </motion.div>
+              ))}
+            </div>
+          )}
         </motion.div>
       </div>
 
-      {/* Bottom Tab Bar */}
       <BottomTabBar />
     </div>
   );
