@@ -28,6 +28,7 @@ const BubbleCard = ({
       whileHover={onClick ? { scale: 1.02, y: -2 } : undefined}
       whileTap={onClick ? { scale: 0.98 } : undefined}
       onClick={onClick}
+      role={onClick ? "button" : undefined}
       className={`relative rounded-3xl p-4 sm:p-5 overflow-hidden ${onClick ? 'cursor-pointer' : ''} ${className}`}
       style={{
         background: 'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(255,251,245,0.9) 100%)',

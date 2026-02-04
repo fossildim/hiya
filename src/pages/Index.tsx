@@ -193,6 +193,7 @@ const Index = () => {
               border: '4px solid rgba(255,255,255,0.3)',
             }}
             data-testid="button-record"
+            data-sfx="off"
           >
             {/* Glossy highlight */}
             <div 
