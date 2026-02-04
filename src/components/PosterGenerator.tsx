@@ -73,7 +73,7 @@ const PosterGenerator = ({ entry, userId, onClose }: PosterGeneratorProps) => {
           top: 0,
           width: '1080px',
           height: '1080px',
-          background: 'linear-gradient(135deg, #FB923C 0%, #F97316 30%, #EA580C 60%, #EC4899 100%)',
+          background: 'linear-gradient(135deg, #FDBA74 0%, #FB923C 30%, #F97316 60%, #FBBF24 100%)',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
@@ -118,7 +118,7 @@ const PosterGenerator = ({ entry, userId, onClose }: PosterGeneratorProps) => {
             {formatDate(entry.date)}
           </div>
 
-          {/* Emoji rating */}
+          {/* Emoji rating - with proper centering */}
           <div
             style={{
               fontSize: '120px',
@@ -127,6 +127,11 @@ const PosterGenerator = ({ entry, userId, onClose }: PosterGeneratorProps) => {
               borderRadius: '32px',
               padding: '24px 64px',
               boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              minWidth: '200px',
+              minHeight: '180px',
             }}
           >
             {RATING_EMOJIS[entry.rating]}
@@ -193,7 +198,7 @@ const PosterGenerator = ({ entry, userId, onClose }: PosterGeneratorProps) => {
           <div
             className="relative overflow-hidden p-8 aspect-square"
             style={{
-              background: 'linear-gradient(135deg, #FB923C 0%, #F97316 30%, #EA580C 60%, #EC4899 100%)',
+              background: 'linear-gradient(135deg, #FDBA74 0%, #FB923C 30%, #F97316 60%, #FBBF24 100%)',
             }}
           >
             <div className="flex flex-col items-center justify-center h-full text-center">
@@ -214,7 +219,7 @@ const PosterGenerator = ({ entry, userId, onClose }: PosterGeneratorProps) => {
               
               {/* Emoji rating */}
               <div 
-                className="text-5xl mb-4 px-6 py-2 rounded-2xl"
+                className="text-5xl mb-4 px-6 py-2 rounded-2xl flex justify-center items-center min-w-[80px] min-h-[60px]"
                 style={{ background: 'rgba(255,255,255,0.25)' }}
               >
                 {RATING_EMOJIS[entry.rating]}
