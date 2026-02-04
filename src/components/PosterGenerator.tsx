@@ -118,20 +118,15 @@ const PosterGenerator = ({ entry, userId, onClose }: PosterGeneratorProps) => {
             {formatDate(entry.date)}
           </div>
 
-          {/* Emoji rating - with proper centering */}
+          {/* Emoji rating - floating without background */}
           <div
             style={{
-              fontSize: '120px',
+              fontSize: '144px',
               marginBottom: '48px',
-              background: 'rgba(255,255,255,0.25)',
-              borderRadius: '32px',
-              padding: '24px 64px',
-              boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
-              minWidth: '200px',
-              minHeight: '180px',
+              width: '100%',
             }}
           >
             {RATING_EMOJIS[entry.rating]}
