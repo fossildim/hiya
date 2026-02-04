@@ -12,16 +12,16 @@ import BounceTitle from '@/components/BounceTitle';
 
 const ThemeStorePage = () => {
   const navigate = useNavigate();
-  const { entries } = useApp();
+  const { entries, settings } = useApp();
   const [showCelebration, setShowCelebration] = useState(false);
   const [showLockScreen, setShowLockScreen] = useState(false);
   const [lastTapTime, setLastTapTime] = useState(0);
 
-  // Developer backdoor: uncomment the line below to skip the 20-day check
-  // const daysRecorded = 20;
   const daysRecorded = entries.length;
   
-  const isUnlocked = daysRecorded >= 20;
+  // Check if user is HiYaJoHn (case-insensitive) to bypass 20-day restriction
+  const isDeveloper = settings.userId?.toLowerCase() === 'hiyajohn';
+  const isUnlocked = isDeveloper || daysRecorded >= 20;
 
   useEffect(() => {
     if (!isUnlocked) {

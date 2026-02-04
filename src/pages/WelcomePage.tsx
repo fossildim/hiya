@@ -101,7 +101,9 @@ const WelcomePage = () => {
             <p className="text-sm leading-relaxed" style={{ color: '#78350F' }}>
               <span className="font-bold" style={{ color: '#EA580C' }}>@HiYaJoHn 说：</span>
               <br />
-              "在这里，所有的开心与数据，都只属于你自己！🔐"
+              "在这里，所有的开心与数据，
+              <br />
+              都只属于你自己！🔐"
             </p>
           </div>
         </motion.div>

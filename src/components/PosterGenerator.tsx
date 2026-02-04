@@ -1,9 +1,8 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Download } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import { Entry } from '@/context/AppContext';
-import SmileRating from './SmileRating';
 import BubbleButton from './BubbleButton';
 
 interface PosterGeneratorProps {
@@ -12,9 +11,19 @@ interface PosterGeneratorProps {
   onClose: () => void;
 }
 
+const RATING_EMOJIS = ['', '😊', '😄', '🥳', '🤩', '🥹'];
+
 const PosterGenerator = ({ entry, userId, onClose }: PosterGeneratorProps) => {
-  const posterRef = useRef<HTMLDivElement>(null);
+  const hiddenContainerRef = useRef<HTMLDivElement>(null);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [fontsLoaded, setFontsLoaded] = useState(false);
+
+  // Wait for fonts to load
+  useEffect(() => {
+    document.fonts.ready.then(() => {
+      setFontsLoaded(true);
+    });
+  }, []);
 
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
@@ -27,18 +36,24 @@ const PosterGenerator = ({ entry, userId, onClose }: PosterGeneratorProps) => {
   };
 
   const handleSave = async () => {
-    if (!posterRef.current) return;
+    if (!hiddenContainerRef.current || !fontsLoaded) return;
     
     setIsGenerating(true);
     try {
-      const canvas = await html2canvas(posterRef.current, {
-        scale: 2,
+      // Wait a bit for any animations to settle
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      const canvas = await html2canvas(hiddenContainerRef.current, {
+        scale: 3, // High resolution for crisp text
         backgroundColor: null,
+        useCORS: true,
+        allowTaint: true,
+        logging: false,
       });
       
       const link = document.createElement('a');
       link.download = `haiya-${entry.date}.png`;
-      link.href = canvas.toDataURL('image/png');
+      link.href = canvas.toDataURL('image/png', 1.0);
       link.click();
     } catch (error) {
       console.error('Failed to generate poster:', error);
@@ -49,6 +64,113 @@ const PosterGenerator = ({ entry, userId, onClose }: PosterGeneratorProps) => {
 
   return (
     <AnimatePresence>
+      {/* Hidden container for high-quality image generation */}
+      <div
+        ref={hiddenContainerRef}
+        style={{
+          position: 'fixed',
+          left: '-9999px',
+          top: 0,
+          width: '1080px',
+          height: '1080px',
+          background: 'linear-gradient(135deg, #FB923C 0%, #F97316 30%, #EA580C 60%, #EC4899 100%)',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          padding: '60px',
+          fontFamily: 'system-ui, -apple-system, sans-serif',
+        }}
+      >
+        {/* Inner content wrapper */}
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: '100%',
+            height: '100%',
+          }}
+        >
+          {/* Title */}
+          <div
+            style={{
+              fontSize: '96px',
+              fontWeight: 900,
+              color: '#FFFFFF',
+              textShadow: '4px 4px 0 rgba(0,0,0,0.2), -2px -2px 0 rgba(255,255,255,0.3)',
+              marginBottom: '24px',
+            }}
+          >
+            嗨呀！✨
+          </div>
+
+          {/* Date */}
+          <div
+            style={{
+              fontSize: '36px',
+              fontWeight: 600,
+              color: 'rgba(255,255,255,0.95)',
+              marginBottom: '48px',
+            }}
+          >
+            {formatDate(entry.date)}
+          </div>
+
+          {/* Emoji rating */}
+          <div
+            style={{
+              fontSize: '120px',
+              marginBottom: '48px',
+              background: 'rgba(255,255,255,0.25)',
+              borderRadius: '32px',
+              padding: '24px 64px',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+            }}
+          >
+            {RATING_EMOJIS[entry.rating]}
+          </div>
+
+          {/* Content card */}
+          <div
+            style={{
+              width: '80%',
+              background: 'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(255,251,245,0.95) 100%)',
+              borderRadius: '40px',
+              padding: '48px 56px',
+              boxShadow: '0 20px 60px rgba(0,0,0,0.15)',
+              marginBottom: '48px',
+            }}
+          >
+            <p
+              style={{
+                fontSize: '32px',
+                lineHeight: 1.8,
+                color: '#78350F',
+                textAlign: 'center',
+                margin: 0,
+                wordBreak: 'break-word',
+              }}
+            >
+              {entry.content || '今天没有写什么...'}
+            </p>
+          </div>
+
+          {/* User signature */}
+          <div
+            style={{
+              fontSize: '32px',
+              fontWeight: 700,
+              color: 'rgba(255,255,255,0.9)',
+            }}
+          >
+            🌸 {userId ? `@${userId}` : '@HiYa'} 🌸
+          </div>
+        </div>
+      </div>
+
+      {/* Visible modal for preview */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -67,82 +189,56 @@ const PosterGenerator = ({ entry, userId, onClose }: PosterGeneratorProps) => {
           }}
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Poster Content - Golden Medal Style */}
+          {/* Poster Preview - matches hidden container style */}
           <div
-            ref={posterRef}
-            className="relative overflow-hidden p-8"
+            className="relative overflow-hidden p-8 aspect-square"
             style={{
-              background: 'linear-gradient(145deg, #FFFBEB 0%, #FEF3C7 30%, #FDE68A 60%, #FCD34D 100%)',
+              background: 'linear-gradient(135deg, #FB923C 0%, #F97316 30%, #EA580C 60%, #EC4899 100%)',
             }}
           >
-            {/* Golden glow border effect */}
-            <div 
-              className="absolute inset-3 rounded-2xl pointer-events-none"
-              style={{
-                border: '4px solid rgba(251, 191, 36, 0.6)',
-                boxShadow: '0 0 30px rgba(251, 191, 36, 0.4), inset 0 0 30px rgba(251, 191, 36, 0.2)',
-              }}
-            />
-            
-            {/* Decorative corners */}
-            <div className="absolute top-5 left-5 text-2xl opacity-60">✨</div>
-            <div className="absolute top-5 right-5 text-2xl opacity-60">✨</div>
-            <div className="absolute bottom-5 left-5 text-2xl opacity-60">✨</div>
-            <div className="absolute bottom-5 right-5 text-2xl opacity-60">✨</div>
-            
-            <div className="relative z-10 text-center space-y-5">
-              {/* Title - Medal style */}
-              <div className="relative inline-block">
-                <h2 
-                  className="text-4xl font-black"
-                  style={{
-                    color: '#B45309',
-                    textShadow: '2px 2px 0 #FDE68A, -1px -1px 0 #FDE68A, 1px -1px 0 #FDE68A, -1px 1px 0 #FDE68A',
-                  }}
-                >
-                  嗨呀！
-                </h2>
-                <span className="absolute -top-2 -right-6 text-xl">🏆</span>
-              </div>
+            <div className="flex flex-col items-center justify-center h-full text-center">
+              {/* Title */}
+              <h2 
+                className="text-4xl font-black text-white mb-2"
+                style={{
+                  textShadow: '2px 2px 0 rgba(0,0,0,0.2)',
+                }}
+              >
+                嗨呀！✨
+              </h2>
               
               {/* Date */}
-              <div 
-                className="text-base font-medium"
-                style={{ color: '#92400E' }}
-              >
+              <div className="text-white/90 text-sm font-semibold mb-4">
                 {formatDate(entry.date)}
               </div>
               
               {/* Emoji rating */}
-              <div className="py-3">
-                <SmileRating value={entry.rating} onChange={() => {}} readonly size="md" variant="poster" />
+              <div 
+                className="text-5xl mb-4 px-6 py-2 rounded-2xl"
+                style={{ background: 'rgba(255,255,255,0.25)' }}
+              >
+                {RATING_EMOJIS[entry.rating]}
               </div>
               
-              {/* Content card - glossy bubble */}
+              {/* Content card */}
               <div 
-                className="rounded-2xl p-5 mx-2"
+                className="w-[80%] rounded-2xl p-5 mb-4"
                 style={{ 
-                  background: 'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(254,243,199,0.9) 100%)',
-                  boxShadow: '0 8px 30px rgba(180, 83, 9, 0.15), inset 0 1px 0 rgba(255,255,255,0.8)',
-                  border: '2px solid rgba(251, 191, 36, 0.4)',
+                  background: 'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(255,251,245,0.95) 100%)',
+                  boxShadow: '0 8px 30px rgba(0,0,0,0.1)',
                 }}
               >
                 <p 
-                  className="leading-relaxed text-sm"
+                  className="text-sm leading-relaxed text-center"
                   style={{ color: '#78350F' }}
                 >
                   {entry.content || '今天没有写什么...'}
                 </p>
               </div>
               
-              {/* User ID with medal */}
-              <div className="pt-2">
-                <span 
-                  className="text-sm font-bold"
-                  style={{ color: '#B45309' }}
-                >
-                  {userId ? `@${userId}` : '@HiYa'} 🌟
-                </span>
+              {/* User signature */}
+              <div className="text-white/90 text-sm font-bold">
+                🌸 {userId ? `@${userId}` : '@HiYa'} 🌸
               </div>
             </div>
           </div>
@@ -150,7 +246,7 @@ const PosterGenerator = ({ entry, userId, onClose }: PosterGeneratorProps) => {
           {/* Actions */}
           <div 
             className="p-4 flex gap-3"
-            style={{ background: 'linear-gradient(145deg, #FEF3C7 0%, #FDE68A 100%)' }}
+            style={{ background: 'linear-gradient(135deg, #FB923C 0%, #EA580C 100%)' }}
           >
             <motion.button
               whileHover={{ scale: 1.02 }}
@@ -158,9 +254,8 @@ const PosterGenerator = ({ entry, userId, onClose }: PosterGeneratorProps) => {
               onClick={onClose}
               className="flex-1 py-3 px-4 rounded-2xl font-bold flex items-center justify-center gap-2"
               style={{
-                background: 'linear-gradient(145deg, rgba(255,255,255,0.9) 0%, rgba(254,243,199,0.9) 100%)',
-                color: '#92400E',
-                border: '2px solid rgba(251, 191, 36, 0.4)',
+                background: 'rgba(255,255,255,0.9)',
+                color: '#EA580C',
               }}
             >
               <X className="w-4 h-4" />
@@ -168,7 +263,7 @@ const PosterGenerator = ({ entry, userId, onClose }: PosterGeneratorProps) => {
             </motion.button>
             <BubbleButton
               onClick={handleSave}
-              disabled={isGenerating}
+              disabled={isGenerating || !fontsLoaded}
               size="md"
               className="flex-1"
             >

@@ -92,13 +92,13 @@ const SettingsPage = () => {
       <div className="relative z-10 p-4 sm:p-6 space-y-4 sm:space-y-6">
         {/* User ID */}
         <BubbleCard delay={0.1}>
-          <h2 className="text-sm font-bold mb-3" style={{ color: '#EA580C' }}>用户ID</h2>
+          <h2 className="text-sm font-bold mb-3" style={{ color: '#EA580C' }}>你的嗨呀名！</h2>
           <div className="flex gap-2">
             <input
               type="text"
               value={userId}
               onChange={(e) => setUserId(e.target.value)}
-              placeholder="输入你的ID..."
+              placeholder="分享页面会显示嗨呀名呀！"
               className="flex-1 px-4 py-3 rounded-2xl text-sm focus:outline-none"
               style={{
                 background: 'linear-gradient(145deg, rgba(254,237,213,0.8) 0%, rgba(255,251,245,0.9) 100%)',
