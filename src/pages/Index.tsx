@@ -211,7 +211,9 @@
                boxShadow: isNeonTheme 
                  ? '0 0 50px hsl(142 71% 45% / 0.5), 0 0 100px hsl(142 71% 45% / 0.3), inset 0 -5px 20px rgba(0,0,0,0.3)'
                  : '0 15px 50px hsl(var(--primary) / 0.5), 0 0 40px hsl(var(--primary) / 0.4), inset 0 -5px 20px rgba(0,0,0,0.1)',
-               border: 'none',
+               border: isNeonTheme 
+                 ? '2px solid hsl(142 71% 60%)'
+                 : 'none',
              }}
              data-testid="button-record"
              data-sfx="off"
