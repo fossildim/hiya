@@ -66,20 +66,20 @@ const RecordPage = () => {
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={() => navigate('/')}
-          className="p-3 rounded-full shadow-lg"
+          className="p-3 rounded-full shadow-lg text-primary-foreground"
           style={{
-            background: 'linear-gradient(135deg, #FB923C 0%, #EA580C 100%)',
-            boxShadow: '0 4px 15px rgba(251, 146, 60, 0.4)',
+            background: 'linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.8) 100%)',
+            boxShadow: '0 4px 15px hsl(var(--primary) / 0.4)',
           }}
           data-testid="button-back"
         >
-          <ArrowLeft className="w-5 h-5 text-white" />
+          <ArrowLeft className="w-5 h-5" />
         </motion.button>
         <div>
           <BounceTitle className="text-xl">
             {isBackfill ? '补充嗨呀！' : '记录今天'}
           </BounceTitle>
-          <span className="text-sm" style={{ color: '#9A3412' }}>{formatDate()}</span>
+          <span className="text-sm text-muted-foreground">{formatDate()}</span>
         </div>
       </header>
       
@@ -87,7 +87,7 @@ const RecordPage = () => {
       <div className="relative z-10 flex-1 p-4 sm:p-6 space-y-6 sm:space-y-8">
         {/* Rating Section */}
         <BubbleCard glow delay={0.1}>
-          <h2 className="text-base sm:text-lg font-bold text-center mb-4" style={{ color: '#EA580C' }}>
+          <h2 className="text-base sm:text-lg font-bold text-center mb-4" style={{ color: 'hsl(var(--primary))' }}>
             今天的心情
           </h2>
           <SmileRating value={rating} onChange={setRating} />
@@ -109,12 +109,12 @@ const RecordPage = () => {
           transition={{ delay: 0.2 }}
           className="space-y-2"
         >
-          <label className="text-sm font-bold" style={{ color: '#EA580C' }}>
+          <label className="text-sm font-bold" style={{ color: 'hsl(var(--primary))' }}>
             今天发生了什么？
           </label>
           <motion.div
             animate={isFocused ? { 
-              boxShadow: '0 0 30px rgba(251, 146, 60, 0.4), 0 10px 40px rgba(251, 146, 60, 0.2)',
+              boxShadow: '0 0 30px hsl(var(--primary) / 0.4), 0 10px 40px hsl(var(--primary) / 0.2)',
               scale: 1.01,
             } : {
               boxShadow: '0 8px 30px rgba(0, 0, 0, 0.08)',
@@ -122,8 +122,8 @@ const RecordPage = () => {
             }}
             className="rounded-3xl overflow-hidden"
             style={{
-              background: 'linear-gradient(145deg, rgba(255,251,245,0.95) 0%, rgba(254,237,213,0.9) 100%)',
-              border: isFocused ? '3px solid rgba(251, 146, 60, 0.5)' : '3px solid rgba(255, 255, 255, 0.5)',
+              background: 'linear-gradient(145deg, hsl(var(--card)) 0%, hsl(var(--accent) / 0.9) 100%)',
+              border: isFocused ? '3px solid hsl(var(--primary) / 0.5)' : '3px solid hsl(var(--border) / 0.5)',
             }}
           >
             <textarea
@@ -132,11 +132,10 @@ const RecordPage = () => {
               onFocus={() => setIsFocused(true)}
               onBlur={() => setIsFocused(false)}
               placeholder="记录一下今天的心情和事情...✨"
-              className="w-full h-32 sm:h-40 p-4 sm:p-5 bg-transparent resize-none text-sm sm:text-base focus:outline-none"
-              style={{ color: '#78350F' }}
+              className="w-full h-32 sm:h-40 p-4 sm:p-5 bg-transparent resize-none text-sm sm:text-base focus:outline-none text-card-foreground placeholder:text-muted-foreground"
             />
           </motion.div>
-          <div className="text-right text-xs" style={{ color: '#9A3412' }}>
+          <div className="text-right text-xs text-muted-foreground">
             {content.length}/200
           </div>
         </motion.div>
