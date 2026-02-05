@@ -14,6 +14,7 @@ interface AppSettings {
   unlockedThemes: string[];
   currentTheme: string;
   devMode?: boolean;
+   themeStoreUnlocked?: boolean;
 }
 
 interface AppContextType {
@@ -27,6 +28,7 @@ interface AppContextType {
   exportData: () => string;
   importData: (data: string) => boolean;
   getDaysUsed: () => number;
+   getEntriesCount: () => number;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -185,6 +187,10 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   };
 
+   const getEntriesCount = () => {
+     return entries.length;
+   };
+ 
   return (
     <AppContext.Provider
       value={{
@@ -198,6 +204,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         exportData,
         importData,
         getDaysUsed,
+         getEntriesCount,
       }}
     >
       {children}
