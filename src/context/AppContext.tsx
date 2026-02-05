@@ -166,14 +166,36 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const exportData = () => {
-    return JSON.stringify({ entries, settings }, null, 2);
+     return JSON.stringify({ 
+       entries, 
+       settings,
+       exportInfo: {
+         userId: settings.userId,
+         daysUsed: getDaysUsed(),
+         entriesCount: entries.length,
+         exportDate: new Date().toISOString(),
+       }
+     }, null, 2);
   };
 
   const importData = (data: string) => {
     try {
       const parsed = JSON.parse(data);
-      if (parsed.entries) setEntries(parsed.entries);
-      if (parsed.settings) setSettings(parsed.settings);
+       if (parsed.entries) {
+         setEntries(parsed.entries);
+       }
+       if (parsed.settings) {
+         // Check if imported data has >= 20 entries to unlock theme store
+         const importedEntriesCount = parsed.entries?.length || 0;
+         const updatedSettings = { ...parsed.settings };
+         
+         // If the imported data has >= 20 entries, mark as unlocked
+         if (importedEntriesCount >= 20) {
+           updatedSettings.themeStoreUnlocked = true;
+         }
+         
+         setSettings(prev => ({ ...prev, ...updatedSettings }));
+       }
       return true;
     } catch {
       return false;
