@@ -316,33 +316,53 @@ const HistoryPage = () => {
         <motion.div 
           className="flex items-center gap-2 px-4 py-2 rounded-full shadow-md"
           style={{
-            background: 'linear-gradient(145deg, rgba(255,255,255,0.9) 0%, rgba(254,237,213,0.9) 100%)',
+            background: isNeonTheme 
+              ? 'linear-gradient(145deg, rgba(74, 222, 128, 0.15) 0%, rgba(74, 222, 128, 0.05) 100%)'
+              : isHoloTheme
+              ? 'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 100%)'
+              : 'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(255,251,245,0.9) 100%)',
           }}
           whileHover={{ scale: 1.05 }}
         >
           <div 
             className="w-5 h-5 rounded-lg flex items-center justify-center"
-            style={{ background: 'linear-gradient(135deg, #FDBA74 0%, #FB923C 100%)' }}
+            style={{ 
+              background: isNeonTheme 
+                ? 'linear-gradient(135deg, hsl(142 71% 45%) 0%, hsl(142 76% 36%) 100%)'
+                : isHoloTheme
+                ? 'linear-gradient(135deg, #EF4444 0%, #F97316 16.67%, #FBBF24 33.33%, #22C55E 50%, #3B82F6 66.67%, #8B5CF6 83.33%, #EC4899 100%)'
+                : 'linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.85) 100%)',
+            }}
           >
             <span className="text-[8px]">🙂</span>
           </div>
-          <span className="font-medium" style={{ color: '#9A3412' }}>有记录</span>
+          <span className="font-medium" style={{ color: isNeonTheme ? '#4ADE80' : isYellowTheme ? '#78350F' : 'hsl(var(--primary) / 0.8)' }}>有记录</span>
         </motion.div>
         
         <motion.div 
           className="flex items-center gap-2 px-4 py-2 rounded-full shadow-md"
           style={{
-            background: 'linear-gradient(145deg, rgba(255,255,255,0.9) 0%, rgba(254,237,213,0.9) 100%)',
+            background: isNeonTheme 
+              ? 'linear-gradient(145deg, rgba(74, 222, 128, 0.15) 0%, rgba(74, 222, 128, 0.05) 100%)'
+              : isHoloTheme
+              ? 'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 100%)'
+              : 'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(255,251,245,0.9) 100%)',
           }}
           whileHover={{ scale: 1.05 }}
         >
           <div 
             className="w-5 h-5 rounded-lg flex items-center justify-center relative"
-            style={{ background: 'linear-gradient(135deg, #FBBF24 0%, #F97316 100%)' }}
+            style={{ 
+              background: isNeonTheme 
+                ? 'linear-gradient(135deg, hsl(142 71% 50%) 0%, hsl(142 76% 40%) 100%)'
+                : isHoloTheme
+                ? 'linear-gradient(135deg, #EF4444 0%, #F97316 16.67%, #FBBF24 33.33%, #22C55E 50%, #3B82F6 66.67%, #8B5CF6 83.33%, #EC4899 100%)'
+                : 'linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.7) 100%)',
+            }}
           >
             <span className="text-[8px]">👑</span>
           </div>
-          <span className="font-medium" style={{ color: '#9A3412' }}>本周最佳</span>
+          <span className="font-medium" style={{ color: isNeonTheme ? '#4ADE80' : isYellowTheme ? '#78350F' : 'hsl(var(--primary) / 0.8)' }}>本周最佳</span>
         </motion.div>
       </div>
 
