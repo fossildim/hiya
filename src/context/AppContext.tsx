@@ -14,6 +14,7 @@ interface AppSettings {
   unlockedThemes: string[];
   currentTheme: string;
   devMode?: boolean;
+   themeStoreUnlocked?: boolean;
 }
 
 interface AppContextType {
@@ -27,6 +28,7 @@ interface AppContextType {
   exportData: () => string;
   importData: (data: string) => boolean;
   getDaysUsed: () => number;
+   getEntriesCount: () => number;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -50,8 +52,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [settings, setSettings] = useState<AppSettings>({
     userId: '',
     firstUseDate: getLocalISODate(),
-    unlockedThemes: ['white-orange', 'white-black', 'white-red', 'white-green', 'white-blue'],
-    currentTheme: 'white-orange',
+     unlockedThemes: ['red', 'orange', 'yellow', 'green', 'cyan', 'blue', 'purple', 'pink', 'black', 'white'],
+     currentTheme: 'orange',
     devMode: false,
   });
   const [hydrated, setHydrated] = useState(false);
@@ -92,11 +94,20 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     if (finalSettings) {
       // Migrate old theme IDs to new ones
       let migratedSettings = { ...finalSettings };
-      if (migratedSettings.currentTheme === 'default') {
-        migratedSettings.currentTheme = 'white-orange';
+       // Map legacy theme IDs
+       const legacyThemeMap: Record<string, string> = {
+         'default': 'orange',
+         'white-orange': 'orange',
+         'white-black': 'black',
+         'white-red': 'red',
+         'white-green': 'green',
+         'white-blue': 'blue',
+       };
+       if (migratedSettings.currentTheme && legacyThemeMap[migratedSettings.currentTheme]) {
+         migratedSettings.currentTheme = legacyThemeMap[migratedSettings.currentTheme];
       }
       // All themes are now free
-      migratedSettings.unlockedThemes = ['white-orange', 'white-black', 'white-red', 'white-green', 'white-blue'];
+       migratedSettings.unlockedThemes = ['red', 'orange', 'yellow', 'green', 'cyan', 'blue', 'purple', 'pink', 'black', 'white'];
       
       setSettings((prev) => ({ ...prev, ...migratedSettings }));
       // Migrate legacy -> current key
@@ -164,14 +175,36 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const exportData = () => {
-    return JSON.stringify({ entries, settings }, null, 2);
+     return JSON.stringify({ 
+       entries, 
+       settings,
+       exportInfo: {
+         userId: settings.userId,
+         daysUsed: getDaysUsed(),
+         entriesCount: entries.length,
+         exportDate: new Date().toISOString(),
+       }
+     }, null, 2);
   };
 
   const importData = (data: string) => {
     try {
       const parsed = JSON.parse(data);
-      if (parsed.entries) setEntries(parsed.entries);
-      if (parsed.settings) setSettings(parsed.settings);
+       if (parsed.entries) {
+         setEntries(parsed.entries);
+       }
+       if (parsed.settings) {
+         // Check if imported data has >= 20 entries to unlock theme store
+         const importedEntriesCount = parsed.entries?.length || 0;
+         const updatedSettings = { ...parsed.settings };
+         
+         // If the imported data has >= 20 entries, mark as unlocked
+         if (importedEntriesCount >= 20) {
+           updatedSettings.themeStoreUnlocked = true;
+         }
+         
+         setSettings(prev => ({ ...prev, ...updatedSettings }));
+       }
       return true;
     } catch {
       return false;
@@ -185,6 +218,10 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   };
 
+   const getEntriesCount = () => {
+     return entries.length;
+   };
+ 
   return (
     <AppContext.Provider
       value={{
@@ -198,6 +235,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         exportData,
         importData,
         getDaysUsed,
+         getEntriesCount,
       }}
     >
       {children}

@@ -21,7 +21,8 @@ const ThemeStorePage = () => {
   
   // Check if user is HiYaJoHn (case-insensitive) to bypass 20-day restriction
   const isDeveloper = settings.userId?.toLowerCase() === 'hiyajohn';
-  const isUnlocked = isDeveloper || daysRecorded >= 20;
+   // Also check if theme store was unlocked via import
+   const isUnlocked = isDeveloper || daysRecorded >= 20 || settings.themeStoreUnlocked === true;
 
   useEffect(() => {
     if (!isUnlocked) {
