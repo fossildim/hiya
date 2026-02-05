@@ -9,6 +9,7 @@ import ThemeLockScreen from '@/components/ThemeLockScreen';
 import { useApp } from '@/context/AppContext';
 import CandyBackground from '@/components/CandyBackground';
 import BounceTitle from '@/components/BounceTitle';
+import { getThemeById } from '@/lib/themes';
 
 const ThemeStorePage = () => {
   const navigate = useNavigate();
@@ -17,6 +18,11 @@ const ThemeStorePage = () => {
   const [showLockScreen, setShowLockScreen] = useState(false);
   const [lastTapTime, setLastTapTime] = useState(0);
 
+  const themeId = settings.currentTheme || 'orange';
+  const isNeonTheme = themeId === 'black';
+  const isHoloTheme = themeId === 'white';
+  const isYellowTheme = themeId === 'yellow';
+  
   const daysRecorded = entries.length;
   
   // Check if user is HiYaJoHn (case-insensitive) to bypass 20-day restriction
