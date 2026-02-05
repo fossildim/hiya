@@ -98,7 +98,7 @@ const ThemeStorePage = () => {
               animate={{ rotate: [0, 15, -15, 0] }}
               transition={{ duration: 2, repeat: Infinity }}
             >
-              <Sparkles className="w-6 h-6" style={{ color: '#EA580C' }} />
+              <Sparkles className="w-6 h-6" style={{ color: isNeonTheme ? '#4ADE80' : isYellowTheme ? '#78350F' : 'hsl(var(--primary))' }} />
             </motion.div>
             <BounceTitle className="text-2xl">
               嗨呀！主题
@@ -107,10 +107,10 @@ const ThemeStorePage = () => {
               animate={{ rotate: [0, -15, 15, 0] }}
               transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
             >
-              <Sparkles className="w-6 h-6" style={{ color: '#EA580C' }} />
+              <Sparkles className="w-6 h-6" style={{ color: isNeonTheme ? '#4ADE80' : isYellowTheme ? '#78350F' : 'hsl(var(--primary))' }} />
             </motion.div>
           </div>
-          <p className="text-sm" style={{ color: '#9A3412' }}>选择你喜欢的主题风格</p>
+          <p className="text-sm" style={{ color: isNeonTheme ? '#4ADE80' : isYellowTheme ? '#78350F' : 'hsl(var(--primary) / 0.8)' }}>选择你喜欢的主题风格</p>
         </motion.div>
       </header>
 
