@@ -52,8 +52,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [settings, setSettings] = useState<AppSettings>({
     userId: '',
     firstUseDate: getLocalISODate(),
-    unlockedThemes: ['white-orange', 'white-black', 'white-red', 'white-green', 'white-blue'],
-    currentTheme: 'white-orange',
+     unlockedThemes: ['red', 'orange', 'yellow', 'green', 'cyan', 'blue', 'purple', 'pink', 'black', 'white'],
+     currentTheme: 'orange',
     devMode: false,
   });
   const [hydrated, setHydrated] = useState(false);
@@ -94,11 +94,20 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     if (finalSettings) {
       // Migrate old theme IDs to new ones
       let migratedSettings = { ...finalSettings };
-      if (migratedSettings.currentTheme === 'default') {
-        migratedSettings.currentTheme = 'white-orange';
+       // Map legacy theme IDs
+       const legacyThemeMap: Record<string, string> = {
+         'default': 'orange',
+         'white-orange': 'orange',
+         'white-black': 'black',
+         'white-red': 'red',
+         'white-green': 'green',
+         'white-blue': 'blue',
+       };
+       if (migratedSettings.currentTheme && legacyThemeMap[migratedSettings.currentTheme]) {
+         migratedSettings.currentTheme = legacyThemeMap[migratedSettings.currentTheme];
       }
       // All themes are now free
-      migratedSettings.unlockedThemes = ['white-orange', 'white-black', 'white-red', 'white-green', 'white-blue'];
+       migratedSettings.unlockedThemes = ['red', 'orange', 'yellow', 'green', 'cyan', 'blue', 'purple', 'pink', 'black', 'white'];
       
       setSettings((prev) => ({ ...prev, ...migratedSettings }));
       // Migrate legacy -> current key

@@ -23,7 +23,7 @@ export const useTheme = () => {
       if (savedSettings) {
         try {
           const settings = JSON.parse(savedSettings);
-          const colorThemeId = settings.currentTheme || 'white-orange';
+           const colorThemeId = settings.currentTheme || 'orange';
           const colorTheme = getThemeById(colorThemeId);
           if (colorTheme) {
             const vars =
