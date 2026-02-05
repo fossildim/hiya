@@ -17,7 +17,7 @@ const RecordPage = () => {
   const [searchParams] = useSearchParams();
   const { addEntry, settings } = useApp();
   
-  const [rating, setRating] = useState(3);
+  const [rating, setRating] = useState(2);
   const [content, setContent] = useState('');
   const [showPoster, setShowPoster] = useState(false);
   const [savedEntry, setSavedEntry] = useState<Entry | null>(null);
@@ -96,9 +96,9 @@ const RecordPage = () => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             className="text-center text-sm mt-4 font-bold"
-            style={{ color: '#9A3412' }}
+            style={{ color: 'hsl(var(--primary))' }}
           >
-            {['', '嗨呀！', '嗨呀！！', '嗨呀呀呀！', '嗨--呀！！', '嗨呀！嗨呀！嗨呀！'][rating]}
+            {['', '嗨呀！', '嗨呀呀！！', '嗨呀嗨呀！！！'][rating]}
           </motion.p>
         </BubbleCard>
         

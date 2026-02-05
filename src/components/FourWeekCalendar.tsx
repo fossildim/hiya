@@ -38,15 +38,13 @@ const FourWeekCalendar = () => {
   const weekDays = ['日', '一', '二', '三', '四', '五', '六'];
   
   const getRatingColor = (rating: number) => {
-    const colors = [
-      'bg-secondary',
-      'bg-chart-5',
-      'bg-chart-4',
-      'bg-chart-2',
-      'bg-chart-1',
-      'bg-primary',
-    ];
-    return colors[rating] || colors[0];
+    // 3-level rating system
+    const colors: Record<number, string> = {
+      1: 'bg-accent',
+      2: 'bg-primary/70',
+      3: 'bg-primary',
+    };
+    return colors[rating] || 'bg-secondary';
   };
 
   const isToday = (date: Date) => {
@@ -96,8 +94,8 @@ const FourWeekCalendar = () => {
                   {date.getDate()}
                 </span>
                 {entry && (
-                  <span className="text-[10px] leading-none">
-                    {['', '😢', '😕', '😐', '😊', '🥳'][entry.rating]}
+                  <span className="text-[11px] leading-none">
+                    {['', '😊', '😆', '🤩'][entry.rating]}
                   </span>
                 )}
               </motion.button>
