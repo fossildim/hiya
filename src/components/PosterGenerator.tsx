@@ -291,29 +291,42 @@
              className="p-4 flex gap-3"
              style={{ background: isNeonTheme ? '#0F172A' : 'hsl(var(--primary))' }}
            >
-             <motion.button
-               whileHover={{ scale: 1.02 }}
-               whileTap={{ scale: 0.95 }}
-               onClick={onClose}
-               className="flex-1 py-3 px-4 rounded-2xl font-bold flex items-center justify-center gap-2"
-               style={{
-                 background: isNeonTheme ? 'rgba(74, 222, 128, 0.2)' : 'rgba(255,255,255,0.9)',
-                 color: isNeonTheme ? '#4ADE80' : 'hsl(var(--primary))',
-                 border: isNeonTheme ? '2px solid #4ADE80' : 'none',
-               }}
-             >
-               <X className="w-4 h-4" />
-               关闭
-             </motion.button>
-             <BubbleButton
-               onClick={handleSave}
-               disabled={isGenerating || !fontsLoaded}
-               size="md"
-               className="flex-1"
-             >
-               <Download className="w-4 h-4 mr-2" />
-               {isGenerating ? '生成中...' : '保存'}
-             </BubbleButton>
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={onClose}
+                className="flex-1 py-3 px-4 rounded-2xl font-bold flex items-center justify-center gap-2"
+                style={{
+                  background: isNeonTheme ? 'rgba(74, 222, 128, 0.2)' : 'rgba(255,255,255,0.9)',
+                  color: isNeonTheme ? '#4ADE80' : 'hsl(var(--primary))',
+                  border: isNeonTheme ? '2px solid #4ADE80' : 'none',
+                }}
+              >
+                <X className="w-5 h-5" />
+                关闭
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleSave}
+                disabled={isGenerating || !fontsLoaded}
+                className="flex-1 py-3 px-4 rounded-2xl font-bold flex items-center justify-center gap-2"
+                style={{
+                  background: isNeonTheme 
+                    ? 'linear-gradient(135deg, hsl(142 71% 45%) 0%, hsl(142 76% 36%) 100%)'
+                    : isHoloTheme
+                    ? 'linear-gradient(135deg, #EF4444 0%, #F97316 16.67%, #FBBF24 33.33%, #22C55E 50%, #3B82F6 66.67%, #8B5CF6 83.33%, #EC4899 100%)'
+                    : 'linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.85) 100%)',
+                  color: isYellowTheme ? '#78350F' : '#FFFFFF',
+                  border: isNeonTheme ? '2px solid #4ADE80' : 'none',
+                  boxShadow: isNeonTheme 
+                    ? '0 0 20px rgba(74, 222, 128, 0.3)'
+                    : `0 4px 15px hsl(var(--primary) / 0.3)`,
+                }}
+              >
+                <Download className="w-5 h-5" />
+                {isGenerating ? '生成中...' : '保存'}
+              </motion.button>
            </div>
          </motion.div>
        </motion.div>
