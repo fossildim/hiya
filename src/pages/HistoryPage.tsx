@@ -6,12 +6,18 @@ import { useApp } from '@/context/AppContext';
 import BottomTabBar from '@/components/BottomTabBar';
 import CandyBackground from '@/components/CandyBackground';
 import confetti from 'canvas-confetti';
+import { getThemeById } from '@/lib/themes';
 
 const HistoryPage = () => {
   const navigate = useNavigate();
-  const { entries, getEntryByDate } = useApp();
+  const { entries, getEntryByDate, settings } = useApp();
   
   const [currentDate, setCurrentDate] = useState(new Date());
+  
+  const themeId = settings.currentTheme || 'orange';
+  const isNeonTheme = themeId === 'black';
+  const isHoloTheme = themeId === 'white';
+  const isYellowTheme = themeId === 'yellow';
   
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
