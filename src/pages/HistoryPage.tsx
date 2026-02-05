@@ -206,17 +206,23 @@ const HistoryPage = () => {
           onClick={() => navigate('/')}
           className="p-3 rounded-full shadow-lg"
           style={{
-            background: 'linear-gradient(135deg, #FB923C 0%, #EA580C 100%)',
-            boxShadow: '0 4px 15px rgba(251, 146, 60, 0.4)',
+            background: isNeonTheme 
+              ? 'linear-gradient(135deg, hsl(142 71% 45%) 0%, hsl(142 76% 36%) 100%)'
+              : isHoloTheme
+              ? 'linear-gradient(135deg, #EF4444 0%, #F97316 16.67%, #FBBF24 33.33%, #22C55E 50%, #3B82F6 66.67%, #8B5CF6 83.33%, #EC4899 100%)'
+              : 'linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.85) 100%)',
+            boxShadow: isNeonTheme 
+              ? '0 0 30px rgba(74, 222, 128, 0.3)'
+              : `0 4px 15px hsl(var(--primary) / 0.3)`,
           }}
           data-testid="button-back"
         >
-          <ArrowLeft className="w-5 h-5 text-white" />
+          <ArrowLeft className="w-5 h-5" style={{ color: isYellowTheme ? '#78350F' : '#FFFFFF' }} />
         </motion.button>
         
         <motion.h1 
           className="font-black text-xl"
-          style={{ color: '#EA580C' }}
+          style={{ color: isNeonTheme ? '#4ADE80' : isYellowTheme ? '#78350F' : 'hsl(var(--primary))' }}
           animate={{ y: [0, -3, 0] }}
           transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
         >
