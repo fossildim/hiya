@@ -201,7 +201,7 @@
              onTouchEnd={handlePressEnd}
              animate={isPressed ? { scale: 0.95 } : { scale: [1, 1.03, 1] }}
              transition={isPressed ? {} : { duration: 2, repeat: Infinity, ease: "easeInOut" }}
-             className="relative w-40 h-40 sm:w-48 sm:h-48 rounded-full font-bold text-xl"
+             className="relative w-40 h-40 sm:w-48 sm:h-48 rounded-full font-bold text-xl p-4"
              style={{
                background: isNeonTheme 
                  ? 'linear-gradient(135deg, hsl(142 71% 45%) 0%, hsl(142 76% 36%) 50%, hsl(142 71% 28%) 100%)'
@@ -212,8 +212,8 @@
                  ? '0 0 50px hsl(142 71% 45% / 0.5), 0 0 100px hsl(142 71% 45% / 0.3), inset 0 -5px 20px rgba(0,0,0,0.3)'
                  : '0 15px 50px hsl(var(--primary) / 0.5), 0 0 40px hsl(var(--primary) / 0.4), inset 0 -5px 20px rgba(0,0,0,0.1)',
                border: isNeonTheme 
-                 ? '4px solid hsl(142 71% 60%)'
-                 : '4px solid rgba(255,255,255,0.3)',
+                 ? '2px solid hsl(142 71% 60%)'
+                 : 'none',
              }}
              data-testid="button-record"
              data-sfx="off"

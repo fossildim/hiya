@@ -6,12 +6,18 @@ import { useApp } from '@/context/AppContext';
 import BottomTabBar from '@/components/BottomTabBar';
 import CandyBackground from '@/components/CandyBackground';
 import confetti from 'canvas-confetti';
+import { getThemeById } from '@/lib/themes';
 
 const HistoryPage = () => {
   const navigate = useNavigate();
-  const { entries, getEntryByDate } = useApp();
+  const { entries, getEntryByDate, settings } = useApp();
   
   const [currentDate, setCurrentDate] = useState(new Date());
+  
+  const themeId = settings.currentTheme || 'orange';
+  const isNeonTheme = themeId === 'black';
+  const isHoloTheme = themeId === 'white';
+  const isYellowTheme = themeId === 'yellow';
   
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -200,17 +206,23 @@ const HistoryPage = () => {
           onClick={() => navigate('/')}
           className="p-3 rounded-full shadow-lg"
           style={{
-            background: 'linear-gradient(135deg, #FB923C 0%, #EA580C 100%)',
-            boxShadow: '0 4px 15px rgba(251, 146, 60, 0.4)',
+            background: isNeonTheme 
+              ? 'linear-gradient(135deg, hsl(142 71% 45%) 0%, hsl(142 76% 36%) 100%)'
+              : isHoloTheme
+              ? 'linear-gradient(135deg, #EF4444 0%, #F97316 16.67%, #FBBF24 33.33%, #22C55E 50%, #3B82F6 66.67%, #8B5CF6 83.33%, #EC4899 100%)'
+              : 'linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.85) 100%)',
+            boxShadow: isNeonTheme 
+              ? '0 0 30px rgba(74, 222, 128, 0.3)'
+              : `0 4px 15px hsl(var(--primary) / 0.3)`,
           }}
           data-testid="button-back"
         >
-          <ArrowLeft className="w-5 h-5 text-white" />
+          <ArrowLeft className="w-5 h-5" style={{ color: isYellowTheme ? '#78350F' : '#FFFFFF' }} />
         </motion.button>
         
         <motion.h1 
           className="font-black text-xl"
-          style={{ color: '#EA580C' }}
+          style={{ color: isNeonTheme ? '#4ADE80' : isYellowTheme ? '#78350F' : 'hsl(var(--primary))' }}
           animate={{ y: [0, -3, 0] }}
           transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
         >
@@ -226,16 +238,22 @@ const HistoryPage = () => {
           onClick={prevMonth}
           className="p-3 rounded-full shadow-lg"
           style={{
-            background: 'linear-gradient(145deg, rgba(255,255,255,0.9) 0%, rgba(254,237,213,0.9) 100%)',
-            boxShadow: '0 4px 15px rgba(251, 146, 60, 0.2)',
+            background: isNeonTheme 
+              ? 'linear-gradient(145deg, rgba(74, 222, 128, 0.15) 0%, rgba(74, 222, 128, 0.05) 100%)'
+              : isHoloTheme
+              ? 'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 100%)'
+              : 'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(255,251,245,0.9) 100%)',
+            boxShadow: isNeonTheme 
+              ? '0 0 20px rgba(74, 222, 128, 0.2)'
+              : `0 4px 15px hsl(var(--primary) / 0.15)`,
           }}
         >
-          <Rocket className="w-5 h-5 rotate-180" style={{ color: '#EA580C' }} />
+          <Rocket className="w-5 h-5 rotate-180" style={{ color: isNeonTheme ? '#4ADE80' : isYellowTheme ? '#78350F' : 'hsl(var(--primary))' }} />
         </motion.button>
         
         <motion.h2 
           className="text-xl font-black"
-          style={{ color: '#9A3412' }}
+          style={{ color: isNeonTheme ? '#4ADE80' : isYellowTheme ? '#78350F' : 'hsl(var(--primary) / 0.8)' }}
           key={`${year}-${month}`}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -250,11 +268,17 @@ const HistoryPage = () => {
           onClick={nextMonth}
           className="p-3 rounded-full shadow-lg"
           style={{
-            background: 'linear-gradient(145deg, rgba(255,255,255,0.9) 0%, rgba(254,237,213,0.9) 100%)',
-            boxShadow: '0 4px 15px rgba(251, 146, 60, 0.2)',
+            background: isNeonTheme 
+              ? 'linear-gradient(145deg, rgba(74, 222, 128, 0.15) 0%, rgba(74, 222, 128, 0.05) 100%)'
+              : isHoloTheme
+              ? 'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 100%)'
+              : 'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(255,251,245,0.9) 100%)',
+            boxShadow: isNeonTheme 
+              ? '0 0 20px rgba(74, 222, 128, 0.2)'
+              : `0 4px 15px hsl(var(--primary) / 0.15)`,
           }}
         >
-          <Rocket className="w-5 h-5" style={{ color: '#EA580C' }} />
+          <Rocket className="w-5 h-5" style={{ color: isNeonTheme ? '#4ADE80' : isYellowTheme ? '#78350F' : 'hsl(var(--primary))' }} />
         </motion.button>
       </div>
       
@@ -275,7 +299,7 @@ const HistoryPage = () => {
           <div className="grid grid-cols-7 gap-1 mb-3">
             {weekDays.map(day => (
               <div key={day} className="aspect-square flex items-center justify-center">
-                <span className="text-xs font-bold" style={{ color: '#EA580C' }}>{day}</span>
+                <span className="text-xs font-bold" style={{ color: isNeonTheme ? '#4ADE80' : isYellowTheme ? '#78350F' : 'hsl(var(--primary))' }}>{day}</span>
               </div>
             ))}
           </div>
@@ -292,33 +316,53 @@ const HistoryPage = () => {
         <motion.div 
           className="flex items-center gap-2 px-4 py-2 rounded-full shadow-md"
           style={{
-            background: 'linear-gradient(145deg, rgba(255,255,255,0.9) 0%, rgba(254,237,213,0.9) 100%)',
+            background: isNeonTheme 
+              ? 'linear-gradient(145deg, rgba(74, 222, 128, 0.15) 0%, rgba(74, 222, 128, 0.05) 100%)'
+              : isHoloTheme
+              ? 'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 100%)'
+              : 'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(255,251,245,0.9) 100%)',
           }}
           whileHover={{ scale: 1.05 }}
         >
           <div 
             className="w-5 h-5 rounded-lg flex items-center justify-center"
-            style={{ background: 'linear-gradient(135deg, #FDBA74 0%, #FB923C 100%)' }}
+            style={{ 
+              background: isNeonTheme 
+                ? 'linear-gradient(135deg, hsl(142 71% 45%) 0%, hsl(142 76% 36%) 100%)'
+                : isHoloTheme
+                ? 'linear-gradient(135deg, #EF4444 0%, #F97316 16.67%, #FBBF24 33.33%, #22C55E 50%, #3B82F6 66.67%, #8B5CF6 83.33%, #EC4899 100%)'
+                : 'linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.85) 100%)',
+            }}
           >
             <span className="text-[8px]">🙂</span>
           </div>
-          <span className="font-medium" style={{ color: '#9A3412' }}>有记录</span>
+          <span className="font-medium" style={{ color: isNeonTheme ? '#4ADE80' : isYellowTheme ? '#78350F' : 'hsl(var(--primary) / 0.8)' }}>有记录</span>
         </motion.div>
         
         <motion.div 
           className="flex items-center gap-2 px-4 py-2 rounded-full shadow-md"
           style={{
-            background: 'linear-gradient(145deg, rgba(255,255,255,0.9) 0%, rgba(254,237,213,0.9) 100%)',
+            background: isNeonTheme 
+              ? 'linear-gradient(145deg, rgba(74, 222, 128, 0.15) 0%, rgba(74, 222, 128, 0.05) 100%)'
+              : isHoloTheme
+              ? 'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 100%)'
+              : 'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(255,251,245,0.9) 100%)',
           }}
           whileHover={{ scale: 1.05 }}
         >
           <div 
             className="w-5 h-5 rounded-lg flex items-center justify-center relative"
-            style={{ background: 'linear-gradient(135deg, #FBBF24 0%, #F97316 100%)' }}
+            style={{ 
+              background: isNeonTheme 
+                ? 'linear-gradient(135deg, hsl(142 71% 50%) 0%, hsl(142 76% 40%) 100%)'
+                : isHoloTheme
+                ? 'linear-gradient(135deg, #EF4444 0%, #F97316 16.67%, #FBBF24 33.33%, #22C55E 50%, #3B82F6 66.67%, #8B5CF6 83.33%, #EC4899 100%)'
+                : 'linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.7) 100%)',
+            }}
           >
             <span className="text-[8px]">👑</span>
           </div>
-          <span className="font-medium" style={{ color: '#9A3412' }}>本周最佳</span>
+          <span className="font-medium" style={{ color: isNeonTheme ? '#4ADE80' : isYellowTheme ? '#78350F' : 'hsl(var(--primary) / 0.8)' }}>本周最佳</span>
         </motion.div>
       </div>
 
