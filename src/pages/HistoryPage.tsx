@@ -299,7 +299,7 @@ const HistoryPage = () => {
           <div className="grid grid-cols-7 gap-1 mb-3">
             {weekDays.map(day => (
               <div key={day} className="aspect-square flex items-center justify-center">
-                <span className="text-xs font-bold" style={{ color: '#EA580C' }}>{day}</span>
+                <span className="text-xs font-bold" style={{ color: isNeonTheme ? '#4ADE80' : isYellowTheme ? '#78350F' : 'hsl(var(--primary))' }}>{day}</span>
               </div>
             ))}
           </div>
