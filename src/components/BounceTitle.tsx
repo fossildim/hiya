@@ -16,7 +16,7 @@ const BounceTitle = ({ children, className = '', delay = 0 }: BounceTitleProps) 
       }}
       transition={{ delay }}
       className={`font-black ${className}`}
-      style={{ color: '#EA580C' }}
+      style={{ color: 'hsl(var(--primary))' }}
     >
       <motion.span
         animate={{ 

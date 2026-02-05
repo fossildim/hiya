@@ -8,6 +8,7 @@ import BounceTitle from '@/components/BounceTitle';
 import BubbleCard from '@/components/BubbleCard';
 import BubbleButton from '@/components/BubbleButton';
 import coffeeQrcode from '@/assets/coffee-qrcode.png';
+import { getThemeById } from '@/lib/themes';
 
 const SettingsPage = () => {
   const navigate = useNavigate();
@@ -18,6 +19,10 @@ const SettingsPage = () => {
   const [showAbout, setShowAbout] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  const currentTheme = getThemeById(settings.currentTheme || 'orange');
+  const isNeonTheme = settings.currentTheme === 'black';
+  const isHoloTheme = settings.currentTheme === 'white';
   
   const handleSaveId = () => {
     updateSettings({ userId });
@@ -75,14 +80,20 @@ const SettingsPage = () => {
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={() => navigate('/')}
-          className="p-3 rounded-full shadow-lg"
+          className="p-3 rounded-full shadow-lg text-primary-foreground"
           style={{
-            background: 'linear-gradient(135deg, #FB923C 0%, #EA580C 100%)',
-            boxShadow: '0 4px 15px rgba(251, 146, 60, 0.4)',
+            background: isNeonTheme 
+              ? 'linear-gradient(135deg, hsl(142 71% 45%) 0%, hsl(142 76% 36%) 100%)'
+              : isHoloTheme
+              ? 'linear-gradient(135deg, #EF4444 0%, #F97316 20%, #FBBF24 40%, #22C55E 60%, #3B82F6 80%, #8B5CF6 100%)'
+              : 'linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.8) 100%)',
+            boxShadow: isNeonTheme 
+              ? '0 0 20px hsl(142 71% 45% / 0.5)'
+              : '0 4px 15px hsl(var(--primary) / 0.4)',
           }}
           data-testid="button-back"
         >
-          <ArrowLeft className="w-5 h-5 text-white" />
+          <ArrowLeft className="w-5 h-5" style={{ color: isNeonTheme ? '#0F172A' : 'white' }} />
         </motion.button>
         <BounceTitle className="text-xl">
           设置
@@ -92,18 +103,19 @@ const SettingsPage = () => {
       <div className="relative z-10 p-4 sm:p-6 space-y-4 sm:space-y-6">
         {/* User ID */}
         <BubbleCard delay={0.1}>
-          <h2 className="text-sm font-bold mb-3" style={{ color: '#EA580C' }}>你的嗨呀名！</h2>
+          <h2 className="text-sm font-bold mb-3" style={{ color: 'hsl(var(--primary))' }}>你的嗨呀名！</h2>
           <div className="flex gap-2">
             <input
               type="text"
               value={userId}
               onChange={(e) => setUserId(e.target.value)}
               placeholder="分享页面会显示嗨呀名呀！"
-              className="flex-1 px-4 py-3 rounded-2xl text-sm focus:outline-none"
+              className="flex-1 px-4 py-3 rounded-2xl text-sm focus:outline-none text-card-foreground"
               style={{
-                background: 'linear-gradient(145deg, rgba(254,237,213,0.8) 0%, rgba(255,251,245,0.9) 100%)',
-                border: '2px solid rgba(251, 146, 60, 0.3)',
-                color: '#78350F',
+                background: isNeonTheme 
+                  ? 'hsl(222 47% 15%)'
+                  : 'linear-gradient(145deg, hsl(var(--accent) / 0.8) 0%, hsl(var(--card)) 100%)',
+                border: '2px solid hsl(var(--primary) / 0.3)',
               }}
             />
             <BubbleButton
@@ -118,48 +130,52 @@ const SettingsPage = () => {
         
         {/* Stats */}
         <BubbleCard glow delay={0.15}>
-          <h2 className="text-sm font-bold mb-4" style={{ color: '#EA580C' }}>使用统计</h2>
+          <h2 className="text-sm font-bold mb-4" style={{ color: 'hsl(var(--primary))' }}>使用统计</h2>
           <div className="grid grid-cols-2 gap-4">
             <div className="text-center">
               <motion.p 
                 className="text-3xl sm:text-4xl font-black"
                 animate={{ scale: [1, 1.05, 1] }}
                 transition={{ duration: 2, repeat: Infinity }}
-                style={{ color: '#EA580C' }}
+                style={{ color: 'hsl(var(--primary))' }}
               >
                 {getDaysUsed()}
               </motion.p>
-              <p className="text-xs sm:text-sm" style={{ color: '#9A3412' }}>使用天数</p>
+              <p className="text-xs sm:text-sm text-muted-foreground">使用天数</p>
             </div>
             <div className="text-center">
               <motion.p 
                 className="text-3xl sm:text-4xl font-black"
                 animate={{ scale: [1, 1.05, 1] }}
                 transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
-                style={{ color: '#EA580C' }}
+                style={{ color: 'hsl(var(--primary))' }}
               >
                 {entries.length}
               </motion.p>
-              <p className="text-xs sm:text-sm" style={{ color: '#9A3412' }}>记录条数</p>
+              <p className="text-xs sm:text-sm text-muted-foreground">记录条数</p>
             </div>
           </div>
         </BubbleCard>
         
         {/* Data Management */}
         <div className="space-y-3">
-          <h2 className="text-sm font-bold" style={{ color: '#EA580C' }}>数据管理</h2>
+          <h2 className="text-sm font-bold" style={{ color: 'hsl(var(--primary))' }}>数据管理</h2>
           
           <BubbleCard delay={0.2} onClick={handleExport}>
             <div className="flex items-center gap-3">
               <div 
-                className="p-2 rounded-xl"
-                style={{ background: 'linear-gradient(135deg, #FB923C 0%, #EA580C 100%)' }}
+                className="p-2 rounded-xl text-primary-foreground"
+                style={{ 
+                  background: isNeonTheme 
+                    ? 'linear-gradient(135deg, hsl(142 71% 45%) 0%, hsl(142 76% 36%) 100%)'
+                    : 'linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.8) 100%)'
+                }}
               >
-                <Download className="w-5 h-5 text-white" />
+                <Download className="w-5 h-5" style={{ color: isNeonTheme ? '#0F172A' : 'white' }} />
               </div>
               <div className="text-left">
-                <p className="font-bold text-sm" style={{ color: '#EA580C' }}>导出数据</p>
-                <p className="text-xs" style={{ color: '#9A3412' }}>备份所有记录到文件</p>
+                <p className="font-bold text-sm" style={{ color: 'hsl(var(--primary))' }}>导出数据</p>
+                <p className="text-xs text-muted-foreground">备份所有记录到文件</p>
               </div>
             </div>
           </BubbleCard>
@@ -167,14 +183,18 @@ const SettingsPage = () => {
           <BubbleCard delay={0.25} onClick={() => fileInputRef.current?.click()}>
             <div className="flex items-center gap-3">
               <div 
-                className="p-2 rounded-xl"
-                style={{ background: 'linear-gradient(135deg, #FB923C 0%, #EA580C 100%)' }}
+                className="p-2 rounded-xl text-primary-foreground"
+                style={{ 
+                  background: isNeonTheme 
+                    ? 'linear-gradient(135deg, hsl(142 71% 45%) 0%, hsl(142 76% 36%) 100%)'
+                    : 'linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.8) 100%)'
+                }}
               >
-                <Upload className="w-5 h-5 text-white" />
+                <Upload className="w-5 h-5" style={{ color: isNeonTheme ? '#0F172A' : 'white' }} />
               </div>
               <div className="text-left">
-                <p className="font-bold text-sm" style={{ color: '#EA580C' }}>导入数据</p>
-                <p className="text-xs" style={{ color: '#9A3412' }}>从备份文件恢复记录</p>
+                <p className="font-bold text-sm" style={{ color: 'hsl(var(--primary))' }}>导入数据</p>
+                <p className="text-xs text-muted-foreground">从备份文件恢复记录</p>
               </div>
             </div>
           </BubbleCard>
@@ -192,12 +212,16 @@ const SettingsPage = () => {
         <BubbleCard delay={0.3} onClick={handleShowWelcome}>
           <div className="flex items-center gap-3">
             <div 
-              className="p-2 rounded-xl"
-              style={{ background: 'linear-gradient(135deg, #FB923C 0%, #EA580C 100%)' }}
+              className="p-2 rounded-xl text-primary-foreground"
+              style={{ 
+                background: isNeonTheme 
+                  ? 'linear-gradient(135deg, hsl(142 71% 45%) 0%, hsl(142 76% 36%) 100%)'
+                  : 'linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.8) 100%)'
+              }}
             >
-              <Eye className="w-5 h-5 text-white" />
+              <Eye className="w-5 h-5" style={{ color: isNeonTheme ? '#0F172A' : 'white' }} />
             </div>
-            <p className="font-bold text-sm" style={{ color: '#EA580C' }}>再看看嗨呀！欢迎页</p>
+            <p className="font-bold text-sm" style={{ color: 'hsl(var(--primary))' }}>再看看嗨呀！欢迎页</p>
           </div>
         </BubbleCard>
 
@@ -205,17 +229,21 @@ const SettingsPage = () => {
         <BubbleCard delay={0.35} onClick={() => setShowAbout(true)}>
           <div className="flex items-center gap-3">
             <div 
-              className="p-2 rounded-xl"
-              style={{ background: 'linear-gradient(135deg, #FB923C 0%, #EA580C 100%)' }}
+              className="p-2 rounded-xl text-primary-foreground"
+              style={{ 
+                background: isNeonTheme 
+                  ? 'linear-gradient(135deg, hsl(142 71% 45%) 0%, hsl(142 76% 36%) 100%)'
+                  : 'linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.8) 100%)'
+              }}
             >
-              <Info className="w-5 h-5 text-white" />
+              <Info className="w-5 h-5" style={{ color: isNeonTheme ? '#0F172A' : 'white' }} />
             </div>
-            <p className="font-bold text-sm" style={{ color: '#EA580C' }}>关于嗨呀！</p>
+            <p className="font-bold text-sm" style={{ color: 'hsl(var(--primary))' }}>关于嗨呀！</p>
           </div>
         </BubbleCard>
       </div>
       
-      {/* About Modal - Vibrant Orange Theme */}
+      {/* About Modal - Theme-aware */}
       {showAbout && (
         <motion.div
           initial={{ opacity: 0 }}
@@ -229,34 +257,40 @@ const SettingsPage = () => {
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
             className="relative rounded-3xl p-6 max-w-sm w-full shadow-2xl text-center max-h-[90vh] overflow-y-auto overflow-x-hidden"
             style={{
-              background: 'linear-gradient(145deg, #FFF7ED 0%, #FFEDD5 50%, #FED7AA 100%)',
-              boxShadow: '0 20px 60px rgba(251, 146, 60, 0.3), 0 10px 30px rgba(249, 115, 22, 0.2)',
-              border: '3px solid rgba(251, 146, 60, 0.3)',
+              background: isNeonTheme 
+                ? 'linear-gradient(145deg, hsl(222 47% 11%) 0%, hsl(222 47% 8%) 100%)'
+                : 'linear-gradient(145deg, hsl(var(--card)) 0%, hsl(var(--accent)) 100%)',
+              boxShadow: isNeonTheme 
+                ? '0 0 60px hsl(142 71% 45% / 0.3)'
+                : '0 20px 60px hsl(var(--primary) / 0.3), 0 10px 30px hsl(var(--primary) / 0.2)',
+              border: isNeonTheme 
+                ? '3px solid hsl(142 71% 45% / 0.5)'
+                : '3px solid hsl(var(--primary) / 0.3)',
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Floating orange decorations */}
+            {/* Floating decorations */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
               <motion.div
                 animate={{ rotate: 360 }}
                 transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
                 className="absolute -top-4 -right-4 text-4xl opacity-30"
               >
-                <span role="img" aria-label="orange">🍊</span>
+                <span role="img" aria-label="decoration">{currentTheme?.decorations[0] || '🍊'}</span>
               </motion.div>
               <motion.div
                 animate={{ rotate: -360 }}
                 transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
                 className="absolute -bottom-2 -left-2 text-3xl opacity-20"
               >
-                <span role="img" aria-label="sun">☀️</span>
+                <span role="img" aria-label="decoration">{currentTheme?.decorations[1] || '☀️'}</span>
               </motion.div>
               <motion.div
                 animate={{ rotate: 360 }}
                 transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
                 className="absolute top-1/3 -right-6 text-2xl opacity-20"
               >
-                <span role="img" aria-label="orange">🍊</span>
+                <span role="img" aria-label="decoration">{currentTheme?.decorations[2] || '🍊'}</span>
               </motion.div>
             </div>
             
@@ -268,7 +302,7 @@ const SettingsPage = () => {
                   className="text-4xl font-black inline-block"
                   animate={{ scale: [1, 1.05, 1] }}
                   transition={{ duration: 1.5, repeat: Infinity }}
-                  style={{ color: '#EA580C' }}
+                  style={{ color: 'hsl(var(--primary))' }}
                 >
                   嗨呀！
                 </motion.span>
@@ -276,7 +310,7 @@ const SettingsPage = () => {
               </div>
               
               {/* Main message */}
-              <p className="text-lg mb-2 leading-relaxed" style={{ color: '#9A3412' }}>
+              <p className="text-lg mb-2 leading-relaxed text-muted-foreground">
                 只会帮助你记住开心的事 <span className="text-xl">🌈</span>，
               </p>
               
@@ -293,28 +327,30 @@ const SettingsPage = () => {
                 }}
                 className="mb-4"
               >
-                <span className="text-2xl font-black" style={{ color: '#EA580C' }}>
+                <span className="text-2xl font-black" style={{ color: 'hsl(var(--primary))' }}>
                   一定要嗨呀呀！
                 </span>
-                <span className="text-xl ml-1">🧡🍊⚡️</span>
+                <span className="text-xl ml-1">{currentTheme?.decorations.slice(0,3).join('')}</span>
               </motion.div>
               
               {/* QR Code Section */}
               <div 
                 className="mb-4 p-4 rounded-2xl"
                 style={{ 
-                  background: 'linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(255,237,213,0.8) 100%)',
-                  border: '2px solid rgba(251, 146, 60, 0.3)',
+                  background: isNeonTheme 
+                    ? 'hsl(222 47% 15%)'
+                    : 'linear-gradient(135deg, hsl(var(--card)) 0%, hsl(var(--accent) / 0.5) 100%)',
+                  border: '2px solid hsl(var(--primary) / 0.3)',
                 }}
               >
-                <p className="text-sm mb-3 font-medium" style={{ color: '#9A3412' }}>
+                <p className="text-sm mb-3 font-medium text-muted-foreground">
                   嗨呀！你还可以请@HiYaJoHn喝杯咖啡豆浆！
                 </p>
                 <img 
                   src={coffeeQrcode} 
                   alt="打赏二维码" 
                   className="w-40 h-auto mx-auto rounded-xl shadow-md"
-                  style={{ border: '3px solid rgba(251, 146, 60, 0.3)' }}
+                  style={{ border: '3px solid hsl(var(--primary) / 0.3)' }}
                 />
               </div>
               

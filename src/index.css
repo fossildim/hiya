@@ -156,8 +156,15 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 
+      "Apple Color Emoji", "Noto Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     /* Hide scrollbar for mobile-native feel */
     -webkit-overflow-scrolling: touch;
+  }
+
+  /* Emoji font stack for consistent cross-platform rendering */
+  .emoji, [role="img"], span:has(> :where([aria-label])) {
+    font-family: "Apple Color Emoji", "Noto Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
   }
 
   /* Hide scrollbar */
@@ -185,5 +192,18 @@ All colors MUST be HSL.
   
   .pr-safe {
     padding-right: env(safe-area-inset-right, 0);
+  }
+
+  /* Theme text colors for readability */
+  .text-themed {
+    color: hsl(var(--foreground));
+  }
+
+  .text-themed-primary {
+    color: hsl(var(--primary));
+  }
+
+  .text-themed-muted {
+    color: hsl(var(--muted-foreground));
   }
 }
