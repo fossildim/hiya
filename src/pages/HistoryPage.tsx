@@ -238,16 +238,22 @@ const HistoryPage = () => {
           onClick={prevMonth}
           className="p-3 rounded-full shadow-lg"
           style={{
-            background: 'linear-gradient(145deg, rgba(255,255,255,0.9) 0%, rgba(254,237,213,0.9) 100%)',
-            boxShadow: '0 4px 15px rgba(251, 146, 60, 0.2)',
+            background: isNeonTheme 
+              ? 'linear-gradient(145deg, rgba(74, 222, 128, 0.15) 0%, rgba(74, 222, 128, 0.05) 100%)'
+              : isHoloTheme
+              ? 'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 100%)'
+              : 'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(255,251,245,0.9) 100%)',
+            boxShadow: isNeonTheme 
+              ? '0 0 20px rgba(74, 222, 128, 0.2)'
+              : `0 4px 15px hsl(var(--primary) / 0.15)`,
           }}
         >
-          <Rocket className="w-5 h-5 rotate-180" style={{ color: '#EA580C' }} />
+          <Rocket className="w-5 h-5 rotate-180" style={{ color: isNeonTheme ? '#4ADE80' : isYellowTheme ? '#78350F' : 'hsl(var(--primary))' }} />
         </motion.button>
         
         <motion.h2 
           className="text-xl font-black"
-          style={{ color: '#9A3412' }}
+          style={{ color: isNeonTheme ? '#4ADE80' : isYellowTheme ? '#78350F' : 'hsl(var(--primary) / 0.8)' }}
           key={`${year}-${month}`}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -262,11 +268,17 @@ const HistoryPage = () => {
           onClick={nextMonth}
           className="p-3 rounded-full shadow-lg"
           style={{
-            background: 'linear-gradient(145deg, rgba(255,255,255,0.9) 0%, rgba(254,237,213,0.9) 100%)',
-            boxShadow: '0 4px 15px rgba(251, 146, 60, 0.2)',
+            background: isNeonTheme 
+              ? 'linear-gradient(145deg, rgba(74, 222, 128, 0.15) 0%, rgba(74, 222, 128, 0.05) 100%)'
+              : isHoloTheme
+              ? 'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 100%)'
+              : 'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(255,251,245,0.9) 100%)',
+            boxShadow: isNeonTheme 
+              ? '0 0 20px rgba(74, 222, 128, 0.2)'
+              : `0 4px 15px hsl(var(--primary) / 0.15)`,
           }}
         >
-          <Rocket className="w-5 h-5" style={{ color: '#EA580C' }} />
+          <Rocket className="w-5 h-5" style={{ color: isNeonTheme ? '#4ADE80' : isYellowTheme ? '#78350F' : 'hsl(var(--primary))' }} />
         </motion.button>
       </div>
       
