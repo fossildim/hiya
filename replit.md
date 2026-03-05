@@ -77,3 +77,4 @@ npm run build  # Production build to dist/
 - 2026-02-02: Added back button to theme store page
 - 2026-02-02: Added coffee donation QR code to About (after 20 days)
 - 2026-02-02: Created ThemeLockScreen component with gamification UI
+- 2026-03-05: Completed Replit Agent migration — installed all npm packages, removed unused @supabase/supabase-js and lovable-tagger packages, deleted src/integrations/supabase/ directory
