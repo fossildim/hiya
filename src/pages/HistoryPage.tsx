@@ -15,6 +15,7 @@ const HistoryPage = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   
   const themeId = settings.currentTheme || 'orange';
+  const currentTheme = getThemeById(themeId);
   const isNeonTheme = themeId === 'black';
   const isHoloTheme = themeId === 'white';
   const isYellowTheme = themeId === 'yellow';
@@ -70,7 +71,7 @@ const HistoryPage = () => {
   const weekBestDays = getWeekBestDays();
   
   const getRatingEmoji = (rating: number) => {
-    return ['', '😊', '😄', '🥰', '😍', '🤩'][rating];
+    return ['', '😊', '😆', '🤩'][rating];
   };
   
   const isToday = (day: number) => {
@@ -83,14 +84,43 @@ const HistoryPage = () => {
     const x = (rect.left + rect.width / 2) / window.innerWidth;
     const y = (rect.top + rect.height / 2) / window.innerHeight;
     
+    const primary = currentTheme?.preview.primary || '#f97316';
+    const accent = currentTheme?.preview.accent || '#fdba74';
+    
     confetti({
       particleCount: 30,
       spread: 60,
       origin: { x, y },
-      colors: ['#f97316', '#fb923c', '#fdba74', '#fef3c7', '#fbbf24'],
+      colors: [primary, accent, '#fbbf24', '#fef3c7', '#ffffff'],
       scalar: 0.6,
       ticks: 50,
     });
+  };
+
+  // Helper for themed button background
+  const getThemedButtonBg = () => {
+    if (isNeonTheme) return 'linear-gradient(135deg, hsl(142 71% 45%) 0%, hsl(142 76% 36%) 100%)';
+    if (isHoloTheme) return 'linear-gradient(135deg, #EF4444 0%, #F97316 16.67%, #FBBF24 33.33%, #22C55E 50%, #3B82F6 66.67%, #8B5CF6 83.33%, #EC4899 100%)';
+    return 'linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.85) 100%)';
+  };
+  
+  const getThemedShadow = () => {
+    if (isNeonTheme) return '0 0 30px rgba(74, 222, 128, 0.3)';
+    return '0 4px 15px hsl(var(--primary) / 0.3)';
+  };
+  
+  const getTextColor = () => {
+    if (isNeonTheme) return '#4ADE80';
+    if (isYellowTheme) return '#78350F';
+    return 'hsl(var(--primary))';
+  };
+  
+  const getIconColor = () => isYellowTheme ? '#78350F' : '#FFFFFF';
+
+  const getSubtleBg = () => {
+    if (isNeonTheme) return 'linear-gradient(145deg, rgba(74, 222, 128, 0.15) 0%, rgba(74, 222, 128, 0.05) 100%)';
+    if (isHoloTheme) return 'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 100%)';
+    return 'linear-gradient(145deg, hsl(var(--card) / 0.95) 0%, hsl(var(--accent) / 0.9) 100%)';
   };
 
   const renderCalendarDays = () => {
@@ -105,6 +135,37 @@ const HistoryPage = () => {
       const entry = getEntryByDate(dateStr);
       const isBest = weekBestDays[dateStr];
       const today = isToday(day);
+      
+      // Theme-aware calendar day styles
+      const getDayBg = () => {
+        if (entry) {
+          if (isBest) return getThemedButtonBg();
+          return `linear-gradient(135deg, hsl(var(--primary) / 0.7) 0%, hsl(var(--primary) / 0.9) 100%)`;
+        }
+        if (isNeonTheme) return 'rgba(74, 222, 128, 0.05)';
+        return 'hsl(var(--card) / 0.7)';
+      };
+      
+      const getDayShadow = () => {
+        if (isBest) {
+          if (isNeonTheme) return '0 0 25px hsl(142 71% 45% / 0.6), 0 8px 20px hsl(142 71% 45% / 0.4)';
+          return '0 0 25px hsl(var(--primary) / 0.6), 0 8px 20px hsl(var(--primary) / 0.4)';
+        }
+        if (entry) {
+          if (isNeonTheme) return '0 4px 15px hsl(142 71% 45% / 0.3)';
+          return '0 4px 15px hsl(var(--primary) / 0.3)';
+        }
+        return '0 2px 10px hsl(var(--foreground) / 0.05)';
+      };
+      
+      const getDayBorder = () => {
+        if (today) {
+          if (isNeonTheme) return '3px solid hsl(142 71% 45%)';
+          return '3px solid hsl(var(--primary))';
+        }
+        if (entry) return 'none';
+        return '2px solid hsl(var(--border) / 0.5)';
+      };
       
       days.push(
         <motion.button
@@ -126,17 +187,9 @@ const HistoryPage = () => {
           }}
           className="aspect-square rounded-2xl flex flex-col items-center justify-center relative cursor-pointer transition-all"
           style={{
-            background: entry 
-              ? isBest 
-                ? 'linear-gradient(135deg, #FBBF24 0%, #F97316 100%)'
-                : 'linear-gradient(135deg, #FDBA74 0%, #FB923C 100%)'
-              : 'rgba(255,255,255,0.7)',
-            boxShadow: isBest 
-              ? '0 0 25px rgba(251, 146, 60, 0.6), 0 8px 20px rgba(251, 146, 60, 0.4)' 
-              : entry
-                ? '0 4px 15px rgba(251, 146, 60, 0.3)'
-                : '0 2px 10px rgba(0,0,0,0.05)',
-            border: today ? '3px solid #EA580C' : entry ? 'none' : '2px solid rgba(255,255,255,0.5)',
+            background: getDayBg(),
+            boxShadow: getDayShadow(),
+            border: getDayBorder(),
           }}
         >
           {isBest && (
@@ -171,7 +224,11 @@ const HistoryPage = () => {
           <span 
             className="text-xs sm:text-sm font-bold relative z-10"
             style={{ 
-              color: entry ? 'white' : today ? '#EA580C' : '#78350F',
+              color: entry 
+                ? (isNeonTheme ? '#0F172A' : isYellowTheme ? '#78350F' : 'white')
+                : today 
+                  ? getTextColor()
+                  : 'hsl(var(--foreground) / 0.7)',
               textShadow: entry ? '0 1px 2px rgba(0,0,0,0.2)' : 'none',
             }}
           >
@@ -206,23 +263,17 @@ const HistoryPage = () => {
           onClick={() => navigate('/')}
           className="p-3 rounded-full shadow-lg"
           style={{
-            background: isNeonTheme 
-              ? 'linear-gradient(135deg, hsl(142 71% 45%) 0%, hsl(142 76% 36%) 100%)'
-              : isHoloTheme
-              ? 'linear-gradient(135deg, #EF4444 0%, #F97316 16.67%, #FBBF24 33.33%, #22C55E 50%, #3B82F6 66.67%, #8B5CF6 83.33%, #EC4899 100%)'
-              : 'linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.85) 100%)',
-            boxShadow: isNeonTheme 
-              ? '0 0 30px rgba(74, 222, 128, 0.3)'
-              : `0 4px 15px hsl(var(--primary) / 0.3)`,
+            background: getThemedButtonBg(),
+            boxShadow: getThemedShadow(),
           }}
           data-testid="button-back"
         >
-          <ArrowLeft className="w-5 h-5" style={{ color: isYellowTheme ? '#78350F' : '#FFFFFF' }} />
+          <ArrowLeft className="w-5 h-5" style={{ color: getIconColor() }} />
         </motion.button>
         
         <motion.h1 
           className="font-black text-xl"
-          style={{ color: isNeonTheme ? '#4ADE80' : isYellowTheme ? '#78350F' : 'hsl(var(--primary))' }}
+          style={{ color: getTextColor() }}
           animate={{ y: [0, -3, 0] }}
           transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
         >
@@ -238,22 +289,18 @@ const HistoryPage = () => {
           onClick={prevMonth}
           className="p-3 rounded-full shadow-lg"
           style={{
-            background: isNeonTheme 
-              ? 'linear-gradient(145deg, rgba(74, 222, 128, 0.15) 0%, rgba(74, 222, 128, 0.05) 100%)'
-              : isHoloTheme
-              ? 'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 100%)'
-              : 'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(255,251,245,0.9) 100%)',
+            background: getSubtleBg(),
             boxShadow: isNeonTheme 
               ? '0 0 20px rgba(74, 222, 128, 0.2)'
-              : `0 4px 15px hsl(var(--primary) / 0.15)`,
+              : '0 4px 15px hsl(var(--primary) / 0.15)',
           }}
         >
-          <Rocket className="w-5 h-5 rotate-180" style={{ color: isNeonTheme ? '#4ADE80' : isYellowTheme ? '#78350F' : 'hsl(var(--primary))' }} />
+          <Rocket className="w-5 h-5 rotate-180" style={{ color: getTextColor() }} />
         </motion.button>
         
         <motion.h2 
           className="text-xl font-black"
-          style={{ color: isNeonTheme ? '#4ADE80' : isYellowTheme ? '#78350F' : 'hsl(var(--primary) / 0.8)' }}
+          style={{ color: getTextColor() }}
           key={`${year}-${month}`}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -268,17 +315,13 @@ const HistoryPage = () => {
           onClick={nextMonth}
           className="p-3 rounded-full shadow-lg"
           style={{
-            background: isNeonTheme 
-              ? 'linear-gradient(145deg, rgba(74, 222, 128, 0.15) 0%, rgba(74, 222, 128, 0.05) 100%)'
-              : isHoloTheme
-              ? 'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 100%)'
-              : 'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(255,251,245,0.9) 100%)',
+            background: getSubtleBg(),
             boxShadow: isNeonTheme 
               ? '0 0 20px rgba(74, 222, 128, 0.2)'
-              : `0 4px 15px hsl(var(--primary) / 0.15)`,
+              : '0 4px 15px hsl(var(--primary) / 0.15)',
           }}
         >
-          <Rocket className="w-5 h-5" style={{ color: isNeonTheme ? '#4ADE80' : isYellowTheme ? '#78350F' : 'hsl(var(--primary))' }} />
+          <Rocket className="w-5 h-5" style={{ color: getTextColor() }} />
         </motion.button>
       </div>
       
@@ -287,9 +330,15 @@ const HistoryPage = () => {
         <motion.div 
           className="rounded-3xl p-4 shadow-2xl"
           style={{
-            background: 'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(255,251,245,0.9) 100%)',
-            boxShadow: '0 15px 50px rgba(251, 146, 60, 0.2), inset 0 1px 0 rgba(255,255,255,0.8)',
-            border: '2px solid rgba(251, 146, 60, 0.2)',
+            background: isNeonTheme 
+              ? 'linear-gradient(145deg, hsl(222 47% 11% / 0.95) 0%, hsl(222 47% 8% / 0.9) 100%)'
+              : 'linear-gradient(145deg, hsl(var(--card) / 0.95) 0%, hsl(var(--accent) / 0.9) 100%)',
+            boxShadow: isNeonTheme 
+              ? '0 15px 50px hsl(142 71% 45% / 0.2), inset 0 1px 0 hsl(142 71% 45% / 0.1)'
+              : '0 15px 50px hsl(var(--primary) / 0.2), inset 0 1px 0 rgba(255,255,255,0.8)',
+            border: isNeonTheme 
+              ? '2px solid hsl(142 71% 45% / 0.3)'
+              : '2px solid hsl(var(--primary) / 0.2)',
           }}
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -299,7 +348,7 @@ const HistoryPage = () => {
           <div className="grid grid-cols-7 gap-1 mb-3">
             {weekDays.map(day => (
               <div key={day} className="aspect-square flex items-center justify-center">
-                <span className="text-xs font-bold" style={{ color: isNeonTheme ? '#4ADE80' : isYellowTheme ? '#78350F' : 'hsl(var(--primary))' }}>{day}</span>
+                <span className="text-xs font-bold" style={{ color: getTextColor() }}>{day}</span>
               </div>
             ))}
           </div>
@@ -315,54 +364,30 @@ const HistoryPage = () => {
       <div className="relative z-10 p-4 flex items-center justify-center gap-4 text-sm">
         <motion.div 
           className="flex items-center gap-2 px-4 py-2 rounded-full shadow-md"
-          style={{
-            background: isNeonTheme 
-              ? 'linear-gradient(145deg, rgba(74, 222, 128, 0.15) 0%, rgba(74, 222, 128, 0.05) 100%)'
-              : isHoloTheme
-              ? 'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 100%)'
-              : 'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(255,251,245,0.9) 100%)',
-          }}
+          style={{ background: getSubtleBg() }}
           whileHover={{ scale: 1.05 }}
         >
           <div 
             className="w-5 h-5 rounded-lg flex items-center justify-center"
-            style={{ 
-              background: isNeonTheme 
-                ? 'linear-gradient(135deg, hsl(142 71% 45%) 0%, hsl(142 76% 36%) 100%)'
-                : isHoloTheme
-                ? 'linear-gradient(135deg, #EF4444 0%, #F97316 16.67%, #FBBF24 33.33%, #22C55E 50%, #3B82F6 66.67%, #8B5CF6 83.33%, #EC4899 100%)'
-                : 'linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.85) 100%)',
-            }}
+            style={{ background: getThemedButtonBg() }}
           >
             <span className="text-[8px]">🙂</span>
           </div>
-          <span className="font-medium" style={{ color: isNeonTheme ? '#4ADE80' : isYellowTheme ? '#78350F' : 'hsl(var(--primary) / 0.8)' }}>有记录</span>
+          <span className="font-medium" style={{ color: getTextColor() }}>有记录</span>
         </motion.div>
         
         <motion.div 
           className="flex items-center gap-2 px-4 py-2 rounded-full shadow-md"
-          style={{
-            background: isNeonTheme 
-              ? 'linear-gradient(145deg, rgba(74, 222, 128, 0.15) 0%, rgba(74, 222, 128, 0.05) 100%)'
-              : isHoloTheme
-              ? 'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 100%)'
-              : 'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(255,251,245,0.9) 100%)',
-          }}
+          style={{ background: getSubtleBg() }}
           whileHover={{ scale: 1.05 }}
         >
           <div 
             className="w-5 h-5 rounded-lg flex items-center justify-center relative"
-            style={{ 
-              background: isNeonTheme 
-                ? 'linear-gradient(135deg, hsl(142 71% 50%) 0%, hsl(142 76% 40%) 100%)'
-                : isHoloTheme
-                ? 'linear-gradient(135deg, #EF4444 0%, #F97316 16.67%, #FBBF24 33.33%, #22C55E 50%, #3B82F6 66.67%, #8B5CF6 83.33%, #EC4899 100%)'
-                : 'linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.7) 100%)',
-            }}
+            style={{ background: getThemedButtonBg() }}
           >
             <span className="text-[8px]">👑</span>
           </div>
-          <span className="font-medium" style={{ color: isNeonTheme ? '#4ADE80' : isYellowTheme ? '#78350F' : 'hsl(var(--primary) / 0.8)' }}>本周最佳</span>
+          <span className="font-medium" style={{ color: getTextColor() }}>本周最佳</span>
         </motion.div>
       </div>
 

@@ -8,6 +8,7 @@ import PosterGenerator from '@/components/PosterGenerator';
 import CandyBackground from '@/components/CandyBackground';
 import BubbleCard from '@/components/BubbleCard';
 import BounceTitle from '@/components/BounceTitle';
+import { getThemeById } from '@/lib/themes';
 
 const EntryDetailPage = () => {
   const navigate = useNavigate();
@@ -18,19 +19,38 @@ const EntryDetailPage = () => {
   
   const entry = date ? getEntryByDate(date) : null;
   
+  const themeId = settings.currentTheme || 'orange';
+  const isNeonTheme = themeId === 'black';
+  const isHoloTheme = themeId === 'white';
+  const isYellowTheme = themeId === 'yellow';
+  
+  const getButtonStyle = () => ({
+    background: isNeonTheme 
+      ? 'linear-gradient(135deg, hsl(142 71% 45%) 0%, hsl(142 76% 36%) 100%)'
+      : isHoloTheme
+      ? 'linear-gradient(135deg, #EF4444 0%, #F97316 20%, #FBBF24 40%, #22C55E 60%, #3B82F6 80%, #8B5CF6 100%)'
+      : 'linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.8) 100%)',
+    boxShadow: isNeonTheme 
+      ? '0 0 20px hsl(142 71% 45% / 0.5)'
+      : '0 4px 15px hsl(var(--primary) / 0.4)',
+  });
+  
+  const getIconColor = () => isNeonTheme ? '#0F172A' : isYellowTheme ? '#78350F' : '#FFFFFF';
+  const getTextColor = () => isNeonTheme ? '#4ADE80' : isYellowTheme ? '#78350F' : 'hsl(var(--primary))';
+  
   if (!entry) {
     return (
       <div className="min-h-screen max-w-md mx-auto flex items-center justify-center pt-safe pb-safe relative">
         <CandyBackground />
         <div className="text-center relative z-10">
-          <p className="mb-4" style={{ color: '#9A3412' }}>找不到这条记录</p>
+          <p className="mb-4 text-muted-foreground">找不到这条记录</p>
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={() => navigate('/history')}
-            className="px-6 py-3 rounded-2xl font-bold text-white"
+            className="px-6 py-3 rounded-2xl font-bold"
             style={{
-              background: 'linear-gradient(135deg, #FB923C 0%, #EA580C 100%)',
-              boxShadow: '0 4px 15px rgba(251, 146, 60, 0.4)',
+              ...getButtonStyle(),
+              color: getIconColor(),
             }}
           >
             返回历史
@@ -75,16 +95,13 @@ const EntryDetailPage = () => {
             whileTap={{ scale: 0.9 }}
             onClick={() => navigate('/history')}
             className="p-3 rounded-full shadow-lg"
-            style={{
-              background: 'linear-gradient(135deg, #FB923C 0%, #EA580C 100%)',
-              boxShadow: '0 4px 15px rgba(251, 146, 60, 0.4)',
-            }}
+            style={getButtonStyle()}
             data-testid="button-back"
           >
-            <ArrowLeft className="w-5 h-5 text-white" />
+            <ArrowLeft className="w-5 h-5" style={{ color: getIconColor() }} />
           </motion.button>
           <BounceTitle className="text-xl">
-            记录详情
+            这天嗨呀！
           </BounceTitle>
         </div>
         
@@ -93,13 +110,10 @@ const EntryDetailPage = () => {
           whileTap={{ scale: 0.9 }}
           onClick={() => setShowPoster(true)}
           className="p-3 rounded-full shadow-lg"
-          style={{
-            background: 'linear-gradient(135deg, #FB923C 0%, #EA580C 100%)',
-            boxShadow: '0 4px 15px rgba(251, 146, 60, 0.4)',
-          }}
+          style={getButtonStyle()}
           data-testid="button-share"
         >
-          <Share2 className="w-5 h-5 text-white" />
+          <Share2 className="w-5 h-5" style={{ color: getIconColor() }} />
         </motion.button>
       </header>
       
@@ -111,10 +125,10 @@ const EntryDetailPage = () => {
           animate={{ opacity: 1, y: 0 }}
           className="text-center space-y-1"
         >
-          <h2 className="text-lg sm:text-xl font-bold" style={{ color: '#EA580C' }}>
+          <h2 className="text-lg sm:text-xl font-bold" style={{ color: getTextColor() }}>
             {formatDate(entry.date)}
           </h2>
-          <p className="text-xs sm:text-sm" style={{ color: '#9A3412' }}>
+          <p className="text-xs sm:text-sm text-muted-foreground">
             记录于 {formatTime(entry.createdAt)}
           </p>
         </motion.div>
@@ -124,18 +138,15 @@ const EntryDetailPage = () => {
           <SmileRating value={entry.rating} onChange={() => {}} readonly size="lg" />
           <motion.p 
             className="text-center text-sm mt-3 font-bold"
-            style={{ color: '#9A3412' }}
+            style={{ color: getTextColor() }}
           >
-            {['', '嗨呀！', '嗨呀！！', '嗨呀呀呀！', '嗨--呀！！', '嗨呀！嗨呀！嗨呀！'][entry.rating]}
+            {['', '嗨呀！', '嗨呀呀！！', '嗨呀嗨呀！！！'][entry.rating]}
           </motion.p>
         </BubbleCard>
         
         {/* Content */}
         <BubbleCard delay={0.3}>
-          <p 
-            className="text-sm sm:text-base leading-relaxed whitespace-pre-wrap"
-            style={{ color: '#78350F' }}
-          >
+          <p className="text-sm sm:text-base leading-relaxed whitespace-pre-wrap text-card-foreground">
             {entry.content || '这天没有写什么...'}
           </p>
         </BubbleCard>

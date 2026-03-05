@@ -18,22 +18,14 @@ export const useTheme = () => {
       root.classList.remove('light', 'dark');
       root.classList.add(resolvedTheme);
 
-      // Also apply the user's selected color theme
+      // Apply the user's selected color theme (which now resets defaults first)
       const savedSettings = localStorage.getItem('haiya_settings');
       if (savedSettings) {
         try {
           const settings = JSON.parse(savedSettings);
-           const colorThemeId = settings.currentTheme || 'orange';
-          const colorTheme = getThemeById(colorThemeId);
-          if (colorTheme) {
-            const vars =
-              resolvedTheme === 'dark'
-                ? colorTheme.cssVariables.dark
-                : colorTheme.cssVariables.light;
-            Object.entries(vars).forEach(([key, value]) => {
-              root.style.setProperty(key, value);
-            });
-          }
+          const colorThemeId = settings.currentTheme || 'orange';
+          // Use the centralized applyTheme which handles reset + apply
+          applyTheme(colorThemeId);
         } catch {
           // Ignore parse errors
         }
@@ -46,7 +38,7 @@ export const useTheme = () => {
         applySystemTheme(mediaQuery.matches ? 'dark' : 'light');
       };
 
-      handleChange(); // Apply immediately
+      handleChange();
       mediaQuery.addEventListener('change', handleChange);
 
       return () => mediaQuery.removeEventListener('change', handleChange);

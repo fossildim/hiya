@@ -18,6 +18,51 @@
      dark: Record<string, string>;
    };
  }
+
+// Default CSS variable values from index.css - used to reset before applying themes
+const DEFAULT_LIGHT_VARS: Record<string, string> = {
+  '--background': '0 0% 96%',
+  '--foreground': '0 0% 9%',
+  '--card': '0 0% 98%',
+  '--card-foreground': '0 0% 9%',
+  '--popover': '0 0% 89%',
+  '--popover-foreground': '0 0% 9%',
+  '--primary': '20 90% 48%',
+  '--primary-foreground': '33 100% 96%',
+  '--secondary': '0 0% 32%',
+  '--secondary-foreground': '0 0% 98%',
+  '--muted': '0 0% 63%',
+  '--muted-foreground': '0 0% 9%',
+  '--accent': '47 100% 96%',
+  '--accent-foreground': '37 92% 50%',
+  '--destructive': '0 72% 50%',
+  '--destructive-foreground': '0 85% 97%',
+  '--border': '0 0% 83%',
+  '--input': '0 0% 83%',
+  '--ring': '20 90% 48%',
+};
+
+const DEFAULT_DARK_VARS: Record<string, string> = {
+  '--background': '0 0% 9%',
+  '--foreground': '0 0% 98%',
+  '--card': '0 0% 14%',
+  '--card-foreground': '0 0% 98%',
+  '--popover': '0 0% 25%',
+  '--popover-foreground': '0 0% 98%',
+  '--primary': '27 95% 60%',
+  '--primary-foreground': '12 81% 14%',
+  '--secondary': '0 0% 45%',
+  '--secondary-foreground': '0 0% 98%',
+  '--muted': '0 0% 45%',
+  '--muted-foreground': '0 0% 98%',
+  '--accent': '20 91% 14%',
+  '--accent-foreground': '43 96% 56%',
+  '--destructive': '0 84% 60%',
+  '--destructive-foreground': '0 85% 97%',
+  '--border': '0 0% 32%',
+  '--input': '0 0% 32%',
+  '--ring': '27 95% 60%',
+};
  
  export const themes: ThemeDefinition[] = [
    // 🔥 1. 爆裂红 (Red)
@@ -51,7 +96,7 @@
        },
      },
    },
-   // 🍊 2. 活力橙 (Orange) - Default
+   // 🍊 2. 活力橙 (Orange - Default)
    {
      id: 'orange',
      name: '🍊 活力橙',
@@ -386,8 +431,16 @@
  
    const root = document.documentElement;
    const isDark = root.classList.contains('dark');
+   
+   // CRITICAL FIX: First, reset ALL CSS variables to defaults
+   // This prevents "black theme residual" when switching themes
+   const defaults = isDark ? DEFAULT_DARK_VARS : DEFAULT_LIGHT_VARS;
+   Object.entries(defaults).forEach(([key, value]) => {
+     root.style.setProperty(key, value);
+   });
+   
+   // Then apply the theme-specific overrides
    const vars = isDark ? theme.cssVariables.dark : theme.cssVariables.light;
- 
    Object.entries(vars).forEach(([key, value]) => {
      root.style.setProperty(key, value);
    });
