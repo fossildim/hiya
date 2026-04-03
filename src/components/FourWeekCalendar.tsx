@@ -94,7 +94,7 @@ const FourWeekCalendar = () => {
                   {date.getDate()}
                 </span>
                 {entry && (
-                  <span className="text-[11px] leading-none">
+                  <span className="text-[9px] leading-none">
                     {['', '😊', '😆', '🤩'][entry.rating]}
                   </span>
                 )}
