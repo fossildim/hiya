@@ -85,7 +85,7 @@ const FourWeekCalendar = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className={`
-                  flex flex-col items-center justify-center p-1.5 rounded-lg transition-all min-h-[44px]
+                  flex flex-col items-center justify-center p-1 rounded-lg transition-all min-h-[36px]
                   ${today ? 'ring-2 ring-primary' : ''}
                   ${entry ? getRatingColor(entry.rating) : 'bg-card'}
                 `}
