@@ -2,6 +2,7 @@ import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Download, Upload, Info, Check, Eye } from 'lucide-react';
+import { saveFile } from '@/lib/fileSaver';
 import { useApp } from '@/context/AppContext';
 import CandyBackground from '@/components/CandyBackground';
 import BounceTitle from '@/components/BounceTitle';
