@@ -121,9 +121,9 @@
        </motion.header>
        
        {/* Best Entry of the Week */}
-       <div className="px-4 sm:px-6 mb-4 sm:mb-6 relative z-10">
-         <BubbleCard glow delay={0.1}>
-           <h2 className="text-xs sm:text-sm font-bold mb-2 sm:mb-3 flex items-center gap-2" style={{ color: 'hsl(var(--primary))' }}>
+        <div className="px-3 sm:px-4 mb-2 sm:mb-3 relative z-10">
+          <BubbleCard glow delay={0.1}>
+            <h2 className="text-xs font-bold mb-1.5 flex items-center gap-1.5" style={{ color: 'hsl(var(--primary))' }}>
              <motion.span
                animate={{ rotate: [0, 15, -15, 0] }}
                transition={{ duration: 2, repeat: Infinity }}
