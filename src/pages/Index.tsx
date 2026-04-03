@@ -90,7 +90,7 @@
        <motion.header
          initial={{ opacity: 0, y: -20 }}
          animate={{ opacity: 1, y: 0 }}
-         className="p-4 sm:p-6 space-y-1 relative z-10 flex justify-between items-start"
+         className="p-3 sm:p-4 space-y-0.5 relative z-10 flex justify-between items-start"
        >
          <div>
            <BounceTitle className="text-3xl sm:text-4xl">
