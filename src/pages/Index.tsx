@@ -151,8 +151,8 @@
        </div>
        
        {/* Four Week Calendar */}
-       <div className="px-4 sm:px-6 mb-4 sm:mb-6 relative z-10">
-         <h2 className="text-xs sm:text-sm font-bold mb-2 sm:mb-3 flex items-center gap-2" style={{ color: 'hsl(var(--primary))' }}>
+        <div className="px-3 sm:px-4 mb-2 sm:mb-3 relative z-10">
+          <h2 className="text-xs font-bold mb-1.5 flex items-center gap-1.5" style={{ color: 'hsl(var(--primary))' }}>
            <motion.span
              animate={{ y: [0, -3, 0] }}
              transition={{ duration: 1.5, repeat: Infinity }}
