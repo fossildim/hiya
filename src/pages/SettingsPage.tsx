@@ -31,17 +31,23 @@ const SettingsPage = () => {
     setTimeout(() => setSaved(false), 2000);
   };
   
-  const handleExport = () => {
+  const handleExport = async () => {
     const data = exportData();
-    const blob = new Blob([data], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
     const d = new Date();
     const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-    link.download = `haiya-backup-${dateStr}.json`;
-    link.click();
-    URL.revokeObjectURL(url);
+    const fileName = `haiya-backup-${dateStr}.json`;
+    
+    const result = await saveFile({
+      fileName,
+      data,
+      mimeType: 'application/json',
+    });
+    
+    if (result.success) {
+      alert(`导出成功！${result.message}`);
+    } else {
+      alert('导出失败，请重试');
+    }
   };
   
   const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
