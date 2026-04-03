@@ -100,17 +100,15 @@ const CandyBackground = ({ children }: CandyBackgroundProps) => {
         <motion.div
           animate={{ 
             y: [0, 10, 0],
-            x: [0, 5, 0],
           }}
           transition={{ 
             duration: 4.5,
             repeat: Infinity,
             ease: "easeInOut"
           }}
-           className="absolute bottom-[30%] left-[5%] text-3xl"
+           className="absolute bottom-[30%] left-[5%] text-3xl will-change-transform"
            style={{ 
              opacity: isNeonTheme ? 0.7 : 0.35,
-             filter: isNeonTheme ? 'drop-shadow(0 0 8px hsl(330 81% 60%))' : 'none'
            }}
         >
            <span role="img" aria-label="decoration">{decorations[3]}</span>
