@@ -256,9 +256,29 @@ const PosterGenerator = ({ entry, userId, onClose }: PosterGeneratorProps) => {
           style={{ boxShadow: '0 25px 80px rgba(0,0,0,0.3)' }}
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Preview scaled down */}
-          <div className="w-full" style={{ aspectRatio: '3/4', overflow: 'hidden' }}>
-            <div style={{ transform: 'scale(0.296)', transformOrigin: 'top left', width: '1080px', height: '1440px' }}>
+          {/* Preview scaled down - use CSS aspect ratio container */}
+          <div className="w-full relative" style={{ aspectRatio: '3/4', overflow: 'hidden' }}>
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '1080px',
+              height: '1440px',
+              transform: 'scale(var(--poster-scale))',
+              transformOrigin: 'top left',
+            }} ref={(el) => {
+              if (el) {
+                const parent = el.parentElement;
+                if (parent) {
+                  const scale = parent.offsetWidth / 1080;
+                  el.style.setProperty('--poster-scale', String(scale));
+                  const ro = new ResizeObserver(() => {
+                    el.style.setProperty('--poster-scale', String(parent.offsetWidth / 1080));
+                  });
+                  ro.observe(parent);
+                }
+              }
+            }}>
               <PosterContent scale={1} />
             </div>
           </div>
