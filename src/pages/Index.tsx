@@ -246,7 +246,7 @@
                >
                  {currentTheme?.emoji || '😊'}
                </motion.span>
-               <span className="text-lg sm:text-xl font-black">
+               <span className="text-base sm:text-lg font-black">
                  {todayEntry ? '还有更嗨呀的！' : '嗨呀！'}
                </span>
                {isPressed && (
