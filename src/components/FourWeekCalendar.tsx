@@ -71,7 +71,7 @@ const FourWeekCalendar = () => {
       {weeks.map((week, weekIndex) => (
         <div 
           key={weekIndex} 
-          className={`grid grid-cols-7 gap-1 ${isCurrentWeek(weekIndex) ? 'ring-2 ring-primary/30 rounded-lg p-0.5 -mx-0.5' : ''}`}
+          className={`grid grid-cols-7 gap-0.5 ${isCurrentWeek(weekIndex) ? 'ring-2 ring-primary/30 rounded-lg p-0.5 -mx-0.5' : ''}`}
         >
           {week.map((date) => {
             const dateStr = date.toISOString().split('T')[0];
