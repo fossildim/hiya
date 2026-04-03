@@ -90,7 +90,7 @@ const FourWeekCalendar = () => {
                   ${entry ? getRatingColor(entry.rating) : 'bg-card'}
                 `}
               >
-                <span className={`text-xs font-bold ${entry && entry.rating >= 4 ? 'text-primary-foreground' : 'text-card-foreground'}`}>
+                <span className={`text-[10px] font-bold ${entry && entry.rating >= 4 ? 'text-primary-foreground' : 'text-card-foreground'}`}>
                   {date.getDate()}
                 </span>
                 {entry && (
