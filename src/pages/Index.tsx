@@ -83,7 +83,7 @@
    }, []);
  
    return (
-     <div className="min-h-screen max-w-md mx-auto flex flex-col relative overflow-hidden pt-safe pb-20">
+     <div className="min-h-screen max-w-md mx-auto flex flex-col relative overflow-hidden pb-20" style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}>
        <CandyBackground />
        
        {/* Header */}
