@@ -132,9 +132,9 @@
              </motion.span>
              上周最嗨！
            </h2>
-           {bestEntry ? (
-             <div className="space-y-2 sm:space-y-3">
-               <SmileRating value={bestEntry.rating} onChange={() => {}} readonly size="sm" />
+            {bestEntry ? (
+              <div className="space-y-1.5">
+                <SmileRating value={bestEntry.rating} onChange={() => {}} readonly size="sm" />
                <p className="text-xs sm:text-sm line-clamp-2 text-card-foreground">
                  {bestEntry.content || '没有写什么...'}
                </p>
