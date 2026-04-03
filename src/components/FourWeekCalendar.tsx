@@ -57,11 +57,11 @@ const FourWeekCalendar = () => {
   };
   
   return (
-    <div className="space-y-1">
+    <div className="space-y-0.5">
       {/* Week day headers */}
-      <div className="grid grid-cols-7 gap-1 mb-2">
+      <div className="grid grid-cols-7 gap-0.5 mb-1">
         {weekDays.map((day) => (
-          <div key={day} className="text-center text-xs text-muted-foreground font-medium py-1">
+          <div key={day} className="text-center text-[10px] text-muted-foreground font-medium py-0.5">
             {day}
           </div>
         ))}
