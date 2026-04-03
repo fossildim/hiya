@@ -325,8 +325,25 @@ const HistoryPage = () => {
         </motion.button>
       </div>
       
-      {/* Calendar Card */}
-      <div className="relative z-10 p-4">
+      {/* Calendar Card - with swipe support */}
+      <div
+        className="relative z-10 p-4"
+        onTouchStart={(e) => {
+          const touch = e.touches[0];
+          (e.currentTarget as any)._swipeX = touch.clientX;
+        }}
+        onTouchEnd={(e) => {
+          const startX = (e.currentTarget as any)._swipeX;
+          if (startX == null) return;
+          const endX = e.changedTouches[0].clientX;
+          const diff = endX - startX;
+          if (Math.abs(diff) > 60) {
+            if (diff > 0) prevMonth();
+            else nextMonth();
+          }
+          (e.currentTarget as any)._swipeX = null;
+        }}
+      >
         <motion.div 
           className="rounded-3xl p-4 shadow-2xl"
           style={{
@@ -340,9 +357,10 @@ const HistoryPage = () => {
               ? '2px solid hsl(142 71% 45% / 0.3)'
               : '2px solid hsl(var(--primary) / 0.2)',
           }}
-          initial={{ opacity: 0, scale: 0.9 }}
+          key={`${year}-${month}`}
+          initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.3 }}
+          transition={{ duration: 0.25 }}
         >
           {/* Week Days Header */}
           <div className="grid grid-cols-7 gap-1 mb-3">
