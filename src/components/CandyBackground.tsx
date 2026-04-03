@@ -139,10 +139,7 @@ const CandyBackground = ({ children }: CandyBackgroundProps) => {
             repeat: Infinity,
             ease: "easeInOut"
           }}
-           className="absolute top-[25%] left-[50%] text-xl"
-           style={{
-             filter: isNeonTheme ? 'drop-shadow(0 0 15px hsl(142 71% 45%))' : 'none'
-           }}
+           className="absolute top-[25%] left-[50%] text-xl will-change-transform"
         >
            <span role="img" aria-label="sparkle">✨</span>
         </motion.div>
