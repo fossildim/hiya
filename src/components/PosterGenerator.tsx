@@ -2,6 +2,7 @@ import { useRef, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Download } from 'lucide-react';
 import html2canvas from 'html2canvas';
+import { saveCanvasAsImage } from '@/lib/fileSaver';
 import { Entry } from '@/context/AppContext';
 import { useApp } from '@/context/AppContext';
 import { getThemeById } from '@/lib/themes';
