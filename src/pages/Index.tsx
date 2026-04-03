@@ -239,8 +239,8 @@
              
              {/* Content */}
              <div className="relative z-10 flex flex-col items-center justify-center h-full" style={{ color: isNeonTheme ? '#0F172A' : 'white' }}>
-               <motion.span 
-                 className="text-4xl sm:text-5xl mb-1"
+                <motion.span 
+                  className="text-3xl sm:text-4xl mb-1"
                  animate={{ rotate: [0, 10, -10, 0] }}
                  transition={{ duration: 1, repeat: Infinity, repeatDelay: 2 }}
                >
