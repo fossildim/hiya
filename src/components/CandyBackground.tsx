@@ -54,13 +54,11 @@ const CandyBackground = ({ children }: CandyBackgroundProps) => {
         <motion.div
           animate={{ 
             y: [0, -20, 0],
-            rotate: 360,
           }}
           transition={{ 
             y: { duration: 4, repeat: Infinity, ease: "easeInOut" },
-            rotate: { duration: 20, repeat: Infinity, ease: "linear" }
           }}
-           className="absolute top-[10%] right-[5%] text-4xl"
+           className="absolute top-[10%] right-[5%] text-4xl will-change-transform"
            style={{ opacity: isNeonTheme ? 0.7 : 0.4 }}
         >
            <span role="img" aria-label="decoration">{decorations[0]}</span>
@@ -70,13 +68,11 @@ const CandyBackground = ({ children }: CandyBackgroundProps) => {
         <motion.div
           animate={{ 
             y: [0, 15, 0],
-            rotate: -360,
           }}
           transition={{ 
             y: { duration: 5, repeat: Infinity, ease: "easeInOut" },
-            rotate: { duration: 25, repeat: Infinity, ease: "linear" }
           }}
-           className="absolute top-[5%] left-[10%] text-3xl"
+           className="absolute top-[5%] left-[10%] text-3xl will-change-transform"
            style={{ opacity: isNeonTheme ? 0.6 : 0.3 }}
         >
            <span role="img" aria-label="decoration">{decorations[1]}</span>
@@ -86,17 +82,15 @@ const CandyBackground = ({ children }: CandyBackgroundProps) => {
         <motion.div
           animate={{ 
             y: [0, -15, 0],
-            scale: [1, 1.2, 1],
           }}
           transition={{ 
             duration: 3,
             repeat: Infinity,
             ease: "easeInOut"
           }}
-           className="absolute top-[40%] right-[8%] text-2xl"
+           className="absolute top-[40%] right-[8%] text-2xl will-change-transform"
            style={{ 
              opacity: isNeonTheme ? 0.8 : 0.5,
-             filter: isNeonTheme ? 'drop-shadow(0 0 10px hsl(142 71% 45%))' : 'none'
            }}
         >
            <span role="img" aria-label="decoration">{decorations[2]}</span>
@@ -106,17 +100,15 @@ const CandyBackground = ({ children }: CandyBackgroundProps) => {
         <motion.div
           animate={{ 
             y: [0, 10, 0],
-            x: [0, 5, 0],
           }}
           transition={{ 
             duration: 4.5,
             repeat: Infinity,
             ease: "easeInOut"
           }}
-           className="absolute bottom-[30%] left-[5%] text-3xl"
+           className="absolute bottom-[30%] left-[5%] text-3xl will-change-transform"
            style={{ 
              opacity: isNeonTheme ? 0.7 : 0.35,
-             filter: isNeonTheme ? 'drop-shadow(0 0 8px hsl(330 81% 60%))' : 'none'
            }}
         >
            <span role="img" aria-label="decoration">{decorations[3]}</span>
@@ -126,13 +118,11 @@ const CandyBackground = ({ children }: CandyBackgroundProps) => {
         <motion.div
           animate={{ 
             y: [0, -12, 0],
-            rotate: -360,
           }}
           transition={{ 
             y: { duration: 6, repeat: Infinity, ease: "easeInOut" },
-            rotate: { duration: 30, repeat: Infinity, ease: "linear" }
           }}
-           className="absolute bottom-[15%] right-[15%] text-3xl"
+           className="absolute bottom-[15%] right-[15%] text-3xl will-change-transform"
            style={{ opacity: isNeonTheme ? 0.6 : 0.25 }}
         >
            <span role="img" aria-label="decoration">{decorations[4]}</span>
@@ -149,10 +139,7 @@ const CandyBackground = ({ children }: CandyBackgroundProps) => {
             repeat: Infinity,
             ease: "easeInOut"
           }}
-           className="absolute top-[25%] left-[50%] text-xl"
-           style={{
-             filter: isNeonTheme ? 'drop-shadow(0 0 15px hsl(142 71% 45%))' : 'none'
-           }}
+           className="absolute top-[25%] left-[50%] text-xl will-change-transform"
         >
            <span role="img" aria-label="sparkle">✨</span>
         </motion.div>

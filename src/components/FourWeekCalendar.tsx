@@ -57,11 +57,11 @@ const FourWeekCalendar = () => {
   };
   
   return (
-    <div className="space-y-1">
+    <div className="space-y-0.5">
       {/* Week day headers */}
-      <div className="grid grid-cols-7 gap-1 mb-2">
+      <div className="grid grid-cols-7 gap-0.5 mb-1">
         {weekDays.map((day) => (
-          <div key={day} className="text-center text-xs text-muted-foreground font-medium py-1">
+          <div key={day} className="text-center text-[10px] text-muted-foreground font-medium py-0.5">
             {day}
           </div>
         ))}
@@ -71,7 +71,7 @@ const FourWeekCalendar = () => {
       {weeks.map((week, weekIndex) => (
         <div 
           key={weekIndex} 
-          className={`grid grid-cols-7 gap-1 ${isCurrentWeek(weekIndex) ? 'ring-2 ring-primary/30 rounded-lg p-0.5 -mx-0.5' : ''}`}
+          className={`grid grid-cols-7 gap-0.5 ${isCurrentWeek(weekIndex) ? 'ring-2 ring-primary/30 rounded-lg p-0.5 -mx-0.5' : ''}`}
         >
           {week.map((date) => {
             const dateStr = date.toISOString().split('T')[0];
@@ -85,16 +85,16 @@ const FourWeekCalendar = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className={`
-                  flex flex-col items-center justify-center p-1.5 rounded-lg transition-all min-h-[44px]
+                  flex flex-col items-center justify-center p-1 rounded-lg transition-all min-h-[36px]
                   ${today ? 'ring-2 ring-primary' : ''}
                   ${entry ? getRatingColor(entry.rating) : 'bg-card'}
                 `}
               >
-                <span className={`text-xs font-bold ${entry && entry.rating >= 4 ? 'text-primary-foreground' : 'text-card-foreground'}`}>
+                <span className={`text-[10px] font-bold ${entry && entry.rating >= 4 ? 'text-primary-foreground' : 'text-card-foreground'}`}>
                   {date.getDate()}
                 </span>
                 {entry && (
-                  <span className="text-[11px] leading-none">
+                  <span className="text-[9px] leading-none">
                     {['', '😊', '😆', '🤩'][entry.rating]}
                   </span>
                 )}

@@ -83,14 +83,14 @@
    }, []);
  
    return (
-     <div className="min-h-screen max-w-md mx-auto flex flex-col relative overflow-hidden pt-safe pb-20">
+     <div className="min-h-screen max-w-md mx-auto flex flex-col relative overflow-hidden pb-20" style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}>
        <CandyBackground />
        
        {/* Header */}
        <motion.header
          initial={{ opacity: 0, y: -20 }}
          animate={{ opacity: 1, y: 0 }}
-         className="p-4 sm:p-6 space-y-1 relative z-10 flex justify-between items-start"
+         className="p-3 sm:p-4 space-y-0.5 relative z-10 flex justify-between items-start"
        >
          <div>
            <BounceTitle className="text-3xl sm:text-4xl">
@@ -121,9 +121,9 @@
        </motion.header>
        
        {/* Best Entry of the Week */}
-       <div className="px-4 sm:px-6 mb-4 sm:mb-6 relative z-10">
-         <BubbleCard glow delay={0.1}>
-           <h2 className="text-xs sm:text-sm font-bold mb-2 sm:mb-3 flex items-center gap-2" style={{ color: 'hsl(var(--primary))' }}>
+        <div className="px-3 sm:px-4 mb-2 sm:mb-3 relative z-10">
+          <BubbleCard glow delay={0.1}>
+            <h2 className="text-xs font-bold mb-1.5 flex items-center gap-1.5" style={{ color: 'hsl(var(--primary))' }}>
              <motion.span
                animate={{ rotate: [0, 15, -15, 0] }}
                transition={{ duration: 2, repeat: Infinity }}
@@ -132,9 +132,9 @@
              </motion.span>
              上周最嗨！
            </h2>
-           {bestEntry ? (
-             <div className="space-y-2 sm:space-y-3">
-               <SmileRating value={bestEntry.rating} onChange={() => {}} readonly size="sm" />
+            {bestEntry ? (
+              <div className="space-y-1.5">
+                <SmileRating value={bestEntry.rating} onChange={() => {}} readonly size="sm" />
                <p className="text-xs sm:text-sm line-clamp-2 text-card-foreground">
                  {bestEntry.content || '没有写什么...'}
                </p>
@@ -151,8 +151,8 @@
        </div>
        
        {/* Four Week Calendar */}
-       <div className="px-4 sm:px-6 mb-4 sm:mb-6 relative z-10">
-         <h2 className="text-xs sm:text-sm font-bold mb-2 sm:mb-3 flex items-center gap-2" style={{ color: 'hsl(var(--primary))' }}>
+        <div className="px-3 sm:px-4 mb-2 sm:mb-3 relative z-10">
+          <h2 className="text-xs font-bold mb-1.5 flex items-center gap-1.5" style={{ color: 'hsl(var(--primary))' }}>
            <motion.span
              animate={{ y: [0, -3, 0] }}
              transition={{ duration: 1.5, repeat: Infinity }}
@@ -201,7 +201,7 @@
              onTouchEnd={handlePressEnd}
              animate={isPressed ? { scale: 0.95 } : { scale: [1, 1.03, 1] }}
              transition={isPressed ? {} : { duration: 2, repeat: Infinity, ease: "easeInOut" }}
-             className="relative w-40 h-40 sm:w-48 sm:h-48 rounded-full font-bold text-xl p-4"
+             className="relative w-32 h-32 sm:w-40 sm:h-40 rounded-full font-bold text-xl p-3"
              style={{
                background: isNeonTheme 
                  ? 'linear-gradient(135deg, hsl(142 71% 45%) 0%, hsl(142 76% 36%) 50%, hsl(142 71% 28%) 100%)'
@@ -239,14 +239,14 @@
              
              {/* Content */}
              <div className="relative z-10 flex flex-col items-center justify-center h-full" style={{ color: isNeonTheme ? '#0F172A' : 'white' }}>
-               <motion.span 
-                 className="text-4xl sm:text-5xl mb-1"
+                <motion.span 
+                  className="text-3xl sm:text-4xl mb-1"
                  animate={{ rotate: [0, 10, -10, 0] }}
                  transition={{ duration: 1, repeat: Infinity, repeatDelay: 2 }}
                >
                  {currentTheme?.emoji || '😊'}
                </motion.span>
-               <span className="text-lg sm:text-xl font-black">
+               <span className="text-base sm:text-lg font-black">
                  {todayEntry ? '还有更嗨呀的！' : '嗨呀！'}
                </span>
                {isPressed && (

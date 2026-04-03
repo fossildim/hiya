@@ -179,11 +179,11 @@ All colors MUST be HSL.
 
   /* Safe area padding utilities */
   .pt-safe {
-    padding-top: env(safe-area-inset-top, 0);
+    padding-top: env(safe-area-inset-top, 0px);
   }
   
   .pb-safe {
-    padding-bottom: env(safe-area-inset-bottom, 0);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
   }
   
   .pl-safe {

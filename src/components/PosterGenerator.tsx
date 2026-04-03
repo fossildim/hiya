@@ -2,6 +2,7 @@ import { useRef, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Download } from 'lucide-react';
 import html2canvas from 'html2canvas';
+import { saveCanvasAsImage } from '@/lib/fileSaver';
 import { Entry } from '@/context/AppContext';
 import { useApp } from '@/context/AppContext';
 import { getThemeById } from '@/lib/themes';
@@ -115,10 +116,10 @@ const PosterGenerator = ({ entry, userId, onClose }: PosterGeneratorProps) => {
       const canvas = await html2canvas(hiddenContainerRef.current, {
         scale: 3, backgroundColor: null, useCORS: true, allowTaint: true, logging: false,
       });
-      const link = document.createElement('a');
-      link.download = `haiya-${entry.date}.png`;
-      link.href = canvas.toDataURL('image/png', 1.0);
-      link.click();
+      const result = await saveCanvasAsImage(canvas, `haiya-${entry.date}.png`);
+      if (!result.success) {
+        console.error('Save failed');
+      }
     } catch (error) {
       console.error('Failed to generate poster:', error);
     } finally {
