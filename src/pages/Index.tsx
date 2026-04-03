@@ -201,7 +201,7 @@
              onTouchEnd={handlePressEnd}
              animate={isPressed ? { scale: 0.95 } : { scale: [1, 1.03, 1] }}
              transition={isPressed ? {} : { duration: 2, repeat: Infinity, ease: "easeInOut" }}
-             className="relative w-40 h-40 sm:w-48 sm:h-48 rounded-full font-bold text-xl p-4"
+             className="relative w-32 h-32 sm:w-40 sm:h-40 rounded-full font-bold text-xl p-3"
              style={{
                background: isNeonTheme 
                  ? 'linear-gradient(135deg, hsl(142 71% 45%) 0%, hsl(142 76% 36%) 50%, hsl(142 71% 28%) 100%)'
