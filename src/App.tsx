@@ -38,6 +38,11 @@ const WelcomeGuard = ({ children }: { children: React.ReactNode }) => {
 
 const App = () => {
   useEffect(() => {
+    // Initialize status bar for immersive mode on Capacitor
+    initStatusBar();
+  }, []);
+
+  useEffect(() => {
     const onClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement | null;
       if (!target) return;
