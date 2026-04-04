@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { applyTheme, getThemeById } from '@/lib/themes';
+import { updateStatusBarStyle } from '@/lib/statusBar';
 
 type Theme = 'light' | 'dark' | 'system';
 
