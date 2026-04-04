@@ -16,7 +16,6 @@ interface PosterGeneratorProps {
 const RATING_EMOJIS = ['', '😊', '😆', '🤩'];
 const RATING_LABELS = ['', '嗨呀！', '嗨呀呀！！', '嗨呀嗨呀！！！'];
 
-// Theme-specific decorative elements for the poster
 const getThemeDecorations = (themeId: string) => {
   const decos: Record<string, { accent: string; deco: string; pattern: string }> = {
     red:    { accent: '#FCA5A5', deco: '🔥', pattern: '❤️' },
@@ -37,6 +36,7 @@ const PosterGenerator = ({ entry, userId, onClose }: PosterGeneratorProps) => {
   const hiddenContainerRef = useRef<HTMLDivElement>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [fontsLoaded, setFontsLoaded] = useState(false);
+  const [longPressDataUrl, setLongPressDataUrl] = useState<string | null>(null);
   const { settings } = useApp();
 
   const themeId = settings.currentTheme || 'orange';
@@ -117,7 +117,10 @@ const PosterGenerator = ({ entry, userId, onClose }: PosterGeneratorProps) => {
         scale: 3, backgroundColor: null, useCORS: true, allowTaint: true, logging: false,
       });
       const result = await saveCanvasAsImage(canvas, `haiya-${entry.date}.png`);
-      if (!result.success) {
+      if (result.fallbackDataUrl) {
+        // Show long-press overlay
+        setLongPressDataUrl(result.fallbackDataUrl);
+      } else if (!result.success) {
         console.error('Save failed');
       }
     } catch (error) {
@@ -133,7 +136,6 @@ const PosterGenerator = ({ entry, userId, onClose }: PosterGeneratorProps) => {
     ? { background: 'linear-gradient(90deg, #EF4444, #F97316, #FBBF24, #22C55E, #3B82F6, #8B5CF6, #EC4899)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }
     : { color: getTextColor(), textShadow: '3px 3px 0 rgba(0,0,0,0.15)' };
 
-  // Shared poster content (used for both hidden render and preview)
   const PosterContent = ({ scale = 1 }: { scale?: number }) => {
     const s = (v: number) => v * scale;
     return (
@@ -149,27 +151,20 @@ const PosterGenerator = ({ entry, userId, onClose }: PosterGeneratorProps) => {
         position: 'relative',
         overflow: 'hidden',
       }}>
-        {/* Decorative corner elements */}
         <div style={{ position: 'absolute', top: s(30), left: s(30), fontSize: `${s(36)}px`, opacity: 0.4 }}>{themeDeco.pattern}</div>
         <div style={{ position: 'absolute', top: s(30), right: s(30), fontSize: `${s(36)}px`, opacity: 0.4 }}>{themeDeco.pattern}</div>
         <div style={{ position: 'absolute', bottom: s(30), left: s(30), fontSize: `${s(36)}px`, opacity: 0.4 }}>{themeDeco.pattern}</div>
         <div style={{ position: 'absolute', bottom: s(30), right: s(30), fontSize: `${s(36)}px`, opacity: 0.4 }}>{themeDeco.pattern}</div>
 
-        {/* Top: Date */}
         <div style={{ paddingTop: s(40), paddingBottom: s(20), textAlign: 'center' }}>
           <div style={{ fontSize: `${s(30)}px`, fontWeight: 600, color: getSubTextColor(), letterSpacing: `${s(2)}px` }}>
             {formatDate(entry.date)}
           </div>
         </div>
 
-        {/* Upper 1/3: "嗨呀！" + emoji */}
         <div style={{
-          flex: 2,
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          gap: `${s(20)}px`,
+          flex: 2, display: 'flex', flexDirection: 'column',
+          justifyContent: 'center', alignItems: 'center', gap: `${s(20)}px`,
         }}>
           <div style={{ fontSize: `${s(80)}px`, fontWeight: 900, ...titleStyle }}>
             {RATING_LABELS[entry.rating] || '嗨呀！'}
@@ -182,42 +177,23 @@ const PosterGenerator = ({ entry, userId, onClose }: PosterGeneratorProps) => {
           </div>
         </div>
 
-        {/* Lower 1/3: Content card */}
-        <div style={{
-          flex: 2,
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          width: '100%',
-        }}>
+        <div style={{ flex: 2, display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
           <div style={{
-            width: '88%',
-            borderRadius: `${s(28)}px`,
-            padding: `${s(36)}px ${s(44)}px`,
-            ...getCardBgStyle(),
+            width: '88%', borderRadius: `${s(28)}px`,
+            padding: `${s(36)}px ${s(44)}px`, ...getCardBgStyle(),
           }}>
             <p style={{
-              fontSize: `${s(26)}px`,
-              lineHeight: 1.8,
-              color: getCardTextColor(),
-              textAlign: 'center',
-              margin: 0,
-              wordBreak: 'break-word',
+              fontSize: `${s(26)}px`, lineHeight: 1.8, color: getCardTextColor(),
+              textAlign: 'center', margin: 0, wordBreak: 'break-word',
             }}>
               {entry.content || '今天没有写什么...'}
             </p>
           </div>
         </div>
 
-        {/* Bottom: @ID */}
-        <div style={{
-          paddingTop: s(16),
-          paddingBottom: s(30),
-          textAlign: 'center',
-        }}>
+        <div style={{ paddingTop: s(16), paddingBottom: s(30), textAlign: 'center' }}>
           <div style={{
-            fontSize: `${s(28)}px`,
-            fontWeight: 700,
+            fontSize: `${s(28)}px`, fontWeight: 700,
             color: isNeonTheme ? '#F472B6' : getSubTextColor(),
             textShadow: isNeonTheme ? '0 0 20px #F472B6' : 'none',
           }}>
@@ -228,17 +204,50 @@ const PosterGenerator = ({ entry, userId, onClose }: PosterGeneratorProps) => {
     );
   };
 
+  // Long-press fallback overlay
+  if (longPressDataUrl) {
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="fixed inset-0 bg-black/80 flex flex-col items-center justify-center z-[60] p-4"
+        onClick={() => setLongPressDataUrl(null)}
+      >
+        <motion.p
+          initial={{ y: -20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          className="text-white text-lg font-bold mb-4 text-center"
+          style={{ textShadow: '0 2px 8px rgba(0,0,0,0.5)' }}
+        >
+          👇 请长按下方图片保存到手机相册
+        </motion.p>
+        <motion.img
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          src={longPressDataUrl}
+          alt="分享图"
+          className="max-w-full max-h-[70vh] rounded-2xl shadow-2xl"
+          onClick={(e) => e.stopPropagation()}
+        />
+        <motion.button
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => { setLongPressDataUrl(null); onClose(); }}
+          className="mt-4 px-8 py-3 rounded-2xl font-bold text-white bg-white/20 backdrop-blur-sm border border-white/30"
+        >
+          关闭
+        </motion.button>
+      </motion.div>
+    );
+  }
+
   return (
     <AnimatePresence>
-      {/* Hidden container for high-quality export (1080x1440, 3:4) */}
-      <div
-        ref={hiddenContainerRef}
-        style={{ position: 'fixed', left: '-9999px', top: 0 }}
-      >
+      <div ref={hiddenContainerRef} style={{ position: 'fixed', left: '-9999px', top: 0 }}>
         <PosterContent scale={1} />
       </div>
 
-      {/* Visible modal preview */}
       <motion.div
         key="poster-overlay"
         initial={{ opacity: 0 }}
@@ -257,14 +266,10 @@ const PosterGenerator = ({ entry, userId, onClose }: PosterGeneratorProps) => {
           style={{ boxShadow: '0 25px 80px rgba(0,0,0,0.3)' }}
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Preview scaled down - use CSS aspect ratio container */}
           <div className="w-full relative" style={{ aspectRatio: '3/4', overflow: 'hidden' }}>
             <div style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '1080px',
-              height: '1440px',
+              position: 'absolute', top: 0, left: 0,
+              width: '1080px', height: '1440px',
               transform: 'scale(var(--poster-scale))',
               transformOrigin: 'top left',
             }} ref={(el) => {
@@ -284,7 +289,6 @@ const PosterGenerator = ({ entry, userId, onClose }: PosterGeneratorProps) => {
             </div>
           </div>
 
-          {/* Actions */}
           <div
             className="p-3 flex gap-3"
             style={{ background: isNeonTheme ? '#0F172A' : 'hsl(var(--primary))' }}
@@ -317,7 +321,7 @@ const PosterGenerator = ({ entry, userId, onClose }: PosterGeneratorProps) => {
                 boxShadow: isNeonTheme ? '0 0 20px rgba(74,222,128,0.3)' : '0 4px 15px hsl(var(--primary) / 0.3)',
               }}
             >
-              <Download className="w-4 h-4" /> {isGenerating ? '生成中...' : '保存'}
+              <Download className="w-4 h-4" /> {isGenerating ? '生成中...' : '保存/分享'}
             </motion.button>
           </div>
         </motion.div>
