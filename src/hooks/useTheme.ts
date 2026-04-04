@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { applyTheme, getThemeById } from '@/lib/themes';
+import { updateStatusBarStyle } from '@/lib/statusBar';
 
 type Theme = 'light' | 'dark' | 'system';
 
@@ -26,6 +27,9 @@ export const useTheme = () => {
           const colorThemeId = settings.currentTheme || 'orange';
           // Use the centralized applyTheme which handles reset + apply
           applyTheme(colorThemeId);
+          // Sync status bar text color: black theme uses dark style (white text)
+          const isDark = resolvedTheme === 'dark' || colorThemeId === 'black';
+          updateStatusBarStyle(isDark);
         } catch {
           // Ignore parse errors
         }

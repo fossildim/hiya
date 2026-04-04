@@ -7,6 +7,7 @@ import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AppProvider } from "@/context/AppContext";
 import { playRandomSyllable } from "@/lib/sfx";
 import { useTheme } from "@/hooks/useTheme";
+import { initStatusBar } from "@/lib/statusBar";
 import Index from "./pages/Index";
 import RecordPage from "./pages/RecordPage";
 import HistoryPage from "./pages/HistoryPage";
@@ -36,6 +37,11 @@ const WelcomeGuard = ({ children }: { children: React.ReactNode }) => {
 };
 
 const App = () => {
+  useEffect(() => {
+    // Initialize status bar for immersive mode on Capacitor
+    initStatusBar();
+  }, []);
+
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement | null;

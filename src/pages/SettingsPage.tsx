@@ -44,9 +44,9 @@ const SettingsPage = () => {
     });
     
     if (result.success) {
-      alert(`导出成功！${result.message}`);
+      alert(`✅ 导出成功！\n${result.message}`);
     } else {
-      alert('导出失败，请重试');
+      alert('❌ 导出失败，请重试');
     }
   };
   
