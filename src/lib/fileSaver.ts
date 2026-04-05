@@ -1,21 +1,56 @@
 /**
- * Cross-platform file saver using pure Web APIs.
- * Uses navigator.share when available, falls back to long-press overlay or clipboard.
+ * Native-first file saver using Capacitor plugins.
+ * Writes to Cache directory then invokes the system Share panel.
+ * Falls back to Web APIs when running in the browser.
  */
+import { Capacitor } from '@capacitor/core';
+
+/** Helper: is this running inside a Capacitor native shell? */
+const isNative = () => Capacitor.isNativePlatform();
 
 /**
  * Share or save a file (JSON backup etc).
- * Strategy: navigator.share → download link → copy to clipboard
+ * Native: write to Cache → Share panel.
+ * Web: navigator.share → download link → clipboard.
  */
 export const saveFile = async (options: {
   fileName: string;
   data: string;
   mimeType: string;
-  isBase64?: boolean;
 }): Promise<{ success: boolean; message: string }> => {
   const { fileName, data, mimeType } = options;
 
-  // Try navigator.share first
+  // ── Native path ──
+  if (isNative()) {
+    try {
+      const { Filesystem, Directory, Encoding } = await import('@capacitor/filesystem');
+      const { Share } = await import('@capacitor/share');
+
+      const writeResult = await Filesystem.writeFile({
+        path: fileName,
+        data,
+        directory: Directory.Cache,
+        encoding: Encoding.UTF8,
+      });
+
+      await Share.share({
+        title: fileName,
+        url: writeResult.uri,
+        dialogTitle: '保存或分享数据备份',
+      });
+
+      return { success: true, message: '已通过系统分享面板导出！' };
+    } catch (err: any) {
+      if (err?.message?.includes('cancel') || err?.message?.includes('Cancel')) {
+        return { success: true, message: '已取消分享' };
+      }
+      console.error('[fileSaver] native saveFile error:', err);
+      return { success: false, message: '保存失败，请重试' };
+    }
+  }
+
+  // ── Web fallback ──
+  // Try navigator.share
   if (navigator.share && navigator.canShare) {
     try {
       const blob = new Blob([data], { type: mimeType });
@@ -25,14 +60,11 @@ export const saveFile = async (options: {
         return { success: true, message: '分享成功！' };
       }
     } catch (err: any) {
-      if (err?.name === 'AbortError') {
-        return { success: true, message: '已取消分享' };
-      }
-      console.warn('navigator.share failed, falling back:', err);
+      if (err?.name === 'AbortError') return { success: true, message: '已取消分享' };
     }
   }
 
-  // Fallback: try download link
+  // Download link
   try {
     const blob = new Blob([data], { type: mimeType });
     const link = document.createElement('a');
@@ -41,11 +73,11 @@ export const saveFile = async (options: {
     link.click();
     URL.revokeObjectURL(link.href);
     return { success: true, message: '下载已开始' };
-  } catch (err) {
-    console.warn('Download link failed:', err);
+  } catch {
+    // ignore
   }
 
-  // Last resort for JSON: copy to clipboard
+  // Clipboard for JSON
   if (mimeType.includes('json')) {
     try {
       await navigator.clipboard.writeText(data);
@@ -60,23 +92,51 @@ export const saveFile = async (options: {
 
 /**
  * Save a canvas as a PNG image.
- * Strategy: navigator.share → show long-press overlay
- * Returns either success or a data URL for the long-press fallback.
+ * Native: write base64 to Cache → Share panel.
+ * Web: navigator.share → returns dataUrl for long-press.
  */
 export const saveCanvasAsImage = async (
   canvas: HTMLCanvasElement,
   fileName: string
-): Promise<{ success: boolean; message: string; fallbackDataUrl?: string }> => {
-  // Convert canvas to blob
+): Promise<{ success: boolean; message: string }> => {
+  // ── Native path ──
+  if (isNative()) {
+    try {
+      const { Filesystem, Directory } = await import('@capacitor/filesystem');
+      const { Share } = await import('@capacitor/share');
+
+      const dataUrl = canvas.toDataURL('image/png', 1.0);
+      const base64Data = dataUrl.replace(/^data:image\/png;base64,/, '');
+
+      const writeResult = await Filesystem.writeFile({
+        path: fileName,
+        data: base64Data,
+        directory: Directory.Cache,
+      });
+
+      await Share.share({
+        title: '嗨呀！分享图',
+        text: '来看看我的嗨呀记录！',
+        url: writeResult.uri,
+        dialogTitle: '保存或分享图片',
+      });
+
+      return { success: true, message: '已通过系统分享面板导出！' };
+    } catch (err: any) {
+      if (err?.message?.includes('cancel') || err?.message?.includes('Cancel')) {
+        return { success: true, message: '已取消分享' };
+      }
+      console.error('[fileSaver] native saveCanvasAsImage error:', err);
+      return { success: false, message: '图片保存失败，请重试' };
+    }
+  }
+
+  // ── Web fallback ──
   const blob = await new Promise<Blob | null>((resolve) =>
     canvas.toBlob(resolve, 'image/png', 1.0)
   );
+  if (!blob) return { success: false, message: '图片生成失败' };
 
-  if (!blob) {
-    return { success: false, message: '图片生成失败' };
-  }
-
-  // Try navigator.share
   if (navigator.share && navigator.canShare) {
     try {
       const file = new File([blob], fileName, { type: 'image/png' });
@@ -89,18 +149,20 @@ export const saveCanvasAsImage = async (
         return { success: true, message: '分享成功！' };
       }
     } catch (err: any) {
-      if (err?.name === 'AbortError') {
-        return { success: true, message: '已取消分享' };
-      }
-      console.warn('navigator.share for image failed:', err);
+      if (err?.name === 'AbortError') return { success: true, message: '已取消分享' };
     }
   }
 
-  // Fallback: return data URL for long-press overlay
-  const dataUrl = canvas.toDataURL('image/png', 1.0);
-  return {
-    success: false,
-    message: '请长按图片保存到手机相册',
-    fallbackDataUrl: dataUrl,
-  };
+  // Last resort: trigger download
+  try {
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.download = fileName;
+    link.href = url;
+    link.click();
+    URL.revokeObjectURL(url);
+    return { success: true, message: '下载已开始' };
+  } catch {
+    return { success: false, message: '图片保存失败' };
+  }
 };
