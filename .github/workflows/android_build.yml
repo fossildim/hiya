@@ -39,6 +39,9 @@ jobs:
 
       - name: Add Android Platform & Sync
         run: |
+          npm install @capacitor/cli @capacitor/core
+          npx cap init hiya com.hiya.app --web-dir dist
+          npm install @capacitor/android
           npx cap add android
           npx cap sync
           
