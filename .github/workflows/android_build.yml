@@ -2,8 +2,8 @@ name: Build Android APK (HiYa!)
 
 on:
   push:
-    branches: [ main ] # 当你从 Lovable 同步到 main 分支时自动触发
-  workflow_dispatch: # 允许你手动点击按钮触发
+    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -34,8 +34,9 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Capacitor Sync
+      - name: Add Android Platform & Sync
         run: |
+          npx cap add android
           npx cap sync
           
       - name: Build Android APK
