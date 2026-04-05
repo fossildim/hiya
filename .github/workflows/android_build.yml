@@ -43,6 +43,10 @@ jobs:
           npx cap init hiya com.hiya.app --web-dir dist
           npm install @capacitor/android
           npx cap add android
+          mkdir -p assets
+          mv icon.png assets/icon.png
+          npm install @capacitor/assets --save-dev
+          npx capacitor-assets generate --android
           npx cap sync
           
       - name: Build Android APK
