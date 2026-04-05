@@ -1,12 +1,12 @@
 import { useRef, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Download } from 'lucide-react';
+import { X, Download, Share2 } from 'lucide-react';
 import html2canvas from 'html2canvas';
-import { saveCanvasAsImage } from '@/lib/fileSaver';
+import { saveCanvasAsImage, saveCanvasToLocal } from '@/lib/fileSaver';
 import { Entry } from '@/context/AppContext';
 import { useApp } from '@/context/AppContext';
 import { getThemeById } from '@/lib/themes';
-import { toast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 
 interface PosterGeneratorProps {
   entry: Entry;
@@ -43,6 +43,7 @@ const PosterGenerator = ({ entry, userId, onClose }: PosterGeneratorProps) => {
   const isNeonTheme = themeId === 'black';
   const isHoloTheme = themeId === 'white';
   const isYellowTheme = themeId === 'yellow';
+  const isDarkTheme = isNeonTheme;
   const themeDeco = getThemeDecorations(themeId);
 
   const getThemeGradient = () => {
@@ -73,32 +74,22 @@ const PosterGenerator = ({ entry, userId, onClose }: PosterGeneratorProps) => {
     return 'rgba(255,255,255,0.75)';
   };
 
-  const getCardBgStyle = () => {
-    if (isNeonTheme) return {
-      background: 'rgba(30, 41, 59, 0.9)',
-      border: '2px solid #4ADE80',
-      boxShadow: '0 0 30px rgba(74, 222, 128, 0.2)',
-    };
-    if (isHoloTheme) return {
-      background: 'linear-gradient(white, white), linear-gradient(90deg, #EF4444, #F97316, #FBBF24, #22C55E, #3B82F6, #8B5CF6, #EC4899)',
-      backgroundOrigin: 'border-box',
-      backgroundClip: 'padding-box, border-box',
-      border: '3px solid transparent',
-      boxShadow: '0 10px 40px rgba(0,0,0,0.08)',
-    };
-    return {
-      background: 'rgba(255,255,255,0.92)',
-      boxShadow: '0 10px 40px rgba(0,0,0,0.1)',
-    };
+  const getContentBoxBg = () => {
+    if (isNeonTheme) return 'rgba(30, 41, 59, 0.6)';
+    if (isHoloTheme) return 'rgba(255, 255, 255, 0.35)';
+    return 'rgba(255, 255, 255, 0.25)';
   };
 
-  const getCardTextColor = () => {
-    const colors: Record<string, string> = {
-      red: '#7F1D1D', orange: '#78350F', yellow: '#713F12', green: '#14532D',
-      cyan: '#164E63', blue: '#1E3A8A', purple: '#4C1D95', pink: '#831843',
-      black: '#4ADE80', white: '#334155',
-    };
-    return colors[themeId] || '#78350F';
+  const getContentBoxBorder = () => {
+    if (isNeonTheme) return '2px solid rgba(74, 222, 128, 0.4)';
+    if (isHoloTheme) return '1px solid rgba(0,0,0,0.08)';
+    return '1px solid rgba(255, 255, 255, 0.3)';
+  };
+
+  const getContentTextColor = () => {
+    if (isNeonTheme) return '#E2E8F0';
+    if (isYellowTheme || isHoloTheme) return '#44403C';
+    return '#FFFFFF';
   };
 
   useEffect(() => { document.fonts.ready.then(() => setFontsLoaded(true)); }, []);
@@ -108,23 +99,45 @@ const PosterGenerator = ({ entry, userId, onClose }: PosterGeneratorProps) => {
     return date.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
   };
 
-  const handleSave = async () => {
-    if (!hiddenContainerRef.current || !fontsLoaded) return;
-    setIsGenerating(true);
-    toast({ title: '正在生成专属嗨呀时刻...', duration: 2000 });
+  const generateCanvas = async () => {
+    if (!hiddenContainerRef.current || !fontsLoaded) return null;
+    await new Promise(resolve => setTimeout(resolve, 100));
+    return html2canvas(hiddenContainerRef.current, {
+      scale: 3, backgroundColor: null, useCORS: true, allowTaint: true, logging: false,
+    });
+  };
 
+  const handleShare = async () => {
+    setIsGenerating(true);
+    toast('正在生成专属嗨呀时刻...');
     try {
-      await new Promise(resolve => setTimeout(resolve, 100));
-      const canvas = await html2canvas(hiddenContainerRef.current, {
-        scale: 3, backgroundColor: null, useCORS: true, allowTaint: true, logging: false,
-      });
-      const result = await saveCanvasAsImage(canvas, `haiya-${entry.date}.png`);
-      if (!result.success) {
-        toast({ title: '❌ ' + result.message, variant: 'destructive', duration: 3000 });
-      }
+      const canvas = await generateCanvas();
+      if (!canvas) return;
+      const result = await saveCanvasAsImage(canvas, `HiYa_Share_${Date.now()}.png`);
+      if (!result.success) toast.error(result.message);
     } catch (error) {
       console.error('Failed to generate poster:', error);
-      toast({ title: '❌ 生成失败，请重试', variant: 'destructive', duration: 3000 });
+      toast.error('生成失败，请重试');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const handleSaveToLocal = async () => {
+    setIsGenerating(true);
+    toast('正在保存到本地...');
+    try {
+      const canvas = await generateCanvas();
+      if (!canvas) return;
+      const result = await saveCanvasToLocal(canvas, `HiYa_Share_${Date.now()}.png`);
+      if (result.success) {
+        toast.success(result.message);
+      } else {
+        toast.error(result.message);
+      }
+    } catch (error) {
+      console.error('Failed to save poster:', error);
+      toast.error('保存失败，请重试');
     } finally {
       setIsGenerating(false);
     }
@@ -146,30 +159,35 @@ const PosterGenerator = ({ entry, userId, onClose }: PosterGeneratorProps) => {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
+        justifyContent: 'center',
         padding: `${s(60)}px ${s(60)}px`,
         fontFamily: 'system-ui, -apple-system, "Apple Color Emoji", "Noto Color Emoji", "Segoe UI Emoji", sans-serif',
         position: 'relative',
         overflow: 'hidden',
       }}>
+        {/* Corner decorations */}
         <div style={{ position: 'absolute', top: s(30), left: s(30), fontSize: `${s(36)}px`, opacity: 0.4 }}>{themeDeco.pattern}</div>
         <div style={{ position: 'absolute', top: s(30), right: s(30), fontSize: `${s(36)}px`, opacity: 0.4 }}>{themeDeco.pattern}</div>
         <div style={{ position: 'absolute', bottom: s(30), left: s(30), fontSize: `${s(36)}px`, opacity: 0.4 }}>{themeDeco.pattern}</div>
         <div style={{ position: 'absolute', bottom: s(30), right: s(30), fontSize: `${s(36)}px`, opacity: 0.4 }}>{themeDeco.pattern}</div>
 
-        <div style={{ paddingTop: s(40), paddingBottom: s(20), textAlign: 'center' }}>
+        {/* Date */}
+        <div style={{ paddingBottom: s(24), textAlign: 'center' }}>
           <div style={{ fontSize: `${s(30)}px`, fontWeight: 600, color: getSubTextColor(), letterSpacing: `${s(2)}px` }}>
             {formatDate(entry.date)}
           </div>
         </div>
 
+        {/* Title + Emoji — compact, centered */}
         <div style={{
-          flex: 2, display: 'flex', flexDirection: 'column',
-          justifyContent: 'center', alignItems: 'center', gap: `${s(20)}px`,
+          display: 'flex', flexDirection: 'column',
+          alignItems: 'center', gap: `${s(12)}px`,
+          paddingBottom: s(16),
         }}>
           <div style={{ fontSize: `${s(80)}px`, fontWeight: 900, ...titleStyle }}>
             {RATING_LABELS[entry.rating] || '嗨呀！'}
           </div>
-          <div style={{ fontSize: `${s(80)}px` }}>
+          <div style={{ fontSize: `${s(72)}px` }}>
             {RATING_EMOJIS[entry.rating] || '😊'}
           </div>
           <div style={{ fontSize: `${s(20)}px`, opacity: 0.5, color: getTextColor() }}>
@@ -177,21 +195,35 @@ const PosterGenerator = ({ entry, userId, onClose }: PosterGeneratorProps) => {
           </div>
         </div>
 
-        <div style={{ flex: 2, display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
-          <div style={{
-            width: '88%', borderRadius: `${s(28)}px`,
-            padding: `${s(36)}px ${s(44)}px`, ...getCardBgStyle(),
+        {/* Content box — glassmorphism, dynamic height, large text */}
+        <div style={{
+          width: '88%',
+          borderRadius: `${s(28)}px`,
+          padding: `${s(40)}px ${s(48)}px`,
+          background: getContentBoxBg(),
+          border: getContentBoxBorder(),
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+          boxShadow: isNeonTheme ? '0 0 30px rgba(74, 222, 128, 0.15)' : '0 8px 32px rgba(0,0,0,0.08)',
+        }}>
+          <p style={{
+            fontSize: `${s(36)}px`,
+            lineHeight: 1.9,
+            color: getContentTextColor(),
+            textAlign: 'center',
+            margin: 0,
+            wordBreak: 'break-word',
+            fontWeight: 500,
           }}>
-            <p style={{
-              fontSize: `${s(26)}px`, lineHeight: 1.8, color: getCardTextColor(),
-              textAlign: 'center', margin: 0, wordBreak: 'break-word',
-            }}>
-              {entry.content || '今天没有写什么...'}
-            </p>
-          </div>
+            {entry.content || '今天没有写什么...'}
+          </p>
         </div>
 
-        <div style={{ paddingTop: s(16), paddingBottom: s(30), textAlign: 'center' }}>
+        {/* Spacer */}
+        <div style={{ flex: 1 }} />
+
+        {/* Footer */}
+        <div style={{ paddingTop: s(16), paddingBottom: s(10), textAlign: 'center' }}>
           <div style={{
             fontSize: `${s(28)}px`, fontWeight: 700,
             color: isNeonTheme ? '#F472B6' : getSubTextColor(),
@@ -253,7 +285,7 @@ const PosterGenerator = ({ entry, userId, onClose }: PosterGeneratorProps) => {
             </div>
           </div>
 
-          {/* Action buttons */}
+          {/* Action buttons — dual: save + share */}
           <div
             className="p-3 flex gap-3"
             style={{ background: isNeonTheme ? '#0F172A' : 'hsl(var(--primary))' }}
@@ -261,6 +293,19 @@ const PosterGenerator = ({ entry, userId, onClose }: PosterGeneratorProps) => {
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={onClose}
+              className="py-2.5 px-4 rounded-2xl font-bold flex items-center justify-center gap-1.5 text-sm"
+              style={{
+                background: isNeonTheme ? 'rgba(74,222,128,0.2)' : 'rgba(255,255,255,0.9)',
+                color: isNeonTheme ? '#4ADE80' : 'hsl(var(--primary))',
+                border: isNeonTheme ? '2px solid #4ADE80' : 'none',
+              }}
+            >
+              <X className="w-4 h-4" />
+            </motion.button>
+            <motion.button
+              whileTap={{ scale: 0.95 }}
+              onClick={handleSaveToLocal}
+              disabled={isGenerating || !fontsLoaded}
               className="flex-1 py-2.5 rounded-2xl font-bold flex items-center justify-center gap-2 text-sm"
               style={{
                 background: isNeonTheme ? 'rgba(74,222,128,0.2)' : 'rgba(255,255,255,0.9)',
@@ -268,11 +313,11 @@ const PosterGenerator = ({ entry, userId, onClose }: PosterGeneratorProps) => {
                 border: isNeonTheme ? '2px solid #4ADE80' : 'none',
               }}
             >
-              <X className="w-4 h-4" /> 关闭
+              <Download className="w-4 h-4" /> 保存到相册
             </motion.button>
             <motion.button
               whileTap={{ scale: 0.95 }}
-              onClick={handleSave}
+              onClick={handleShare}
               disabled={isGenerating || !fontsLoaded}
               className="flex-1 py-2.5 rounded-2xl font-bold flex items-center justify-center gap-2 text-sm"
               style={{
@@ -286,7 +331,7 @@ const PosterGenerator = ({ entry, userId, onClose }: PosterGeneratorProps) => {
                 boxShadow: isNeonTheme ? '0 0 20px rgba(74,222,128,0.3)' : '0 4px 15px hsl(var(--primary) / 0.3)',
               }}
             >
-              <Download className="w-4 h-4" /> {isGenerating ? '生成中...' : '保存/分享'}
+              <Share2 className="w-4 h-4" /> 分享
             </motion.button>
           </div>
         </motion.div>
