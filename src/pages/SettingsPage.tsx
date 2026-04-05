@@ -32,8 +32,6 @@ const SettingsPage = () => {
     setTimeout(() => setSaved(false), 2000);
   };
   
-  const [exportedData, setExportedData] = useState<string | null>(null);
-
   const handleExport = async () => {
     const data = exportData();
     const d = new Date();
@@ -46,23 +44,7 @@ const SettingsPage = () => {
       mimeType: 'application/json',
     });
     
-    if (result.success) {
-      alert(`✅ ${result.message}`);
-    } else {
-      // Show copy fallback
-      setExportedData(data);
-    }
-  };
-
-  const handleCopyData = async () => {
-    if (!exportedData) return;
-    try {
-      await navigator.clipboard.writeText(exportedData);
-      alert('✅ 已复制到剪贴板，请粘贴到备忘录保存');
-      setExportedData(null);
-    } catch {
-      alert('❌ 复制失败，请重试');
-    }
+    alert(result.success ? `✅ ${result.message}` : `❌ ${result.message}`);
   };
   
   const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
