@@ -6,6 +6,7 @@ import { saveCanvasAsImage } from '@/lib/fileSaver';
 import { Entry } from '@/context/AppContext';
 import { useApp } from '@/context/AppContext';
 import { getThemeById } from '@/lib/themes';
+import { toast } from '@/hooks/use-toast';
 
 interface PosterGeneratorProps {
   entry: Entry;
@@ -36,7 +37,6 @@ const PosterGenerator = ({ entry, userId, onClose }: PosterGeneratorProps) => {
   const hiddenContainerRef = useRef<HTMLDivElement>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [fontsLoaded, setFontsLoaded] = useState(false);
-  const [longPressDataUrl, setLongPressDataUrl] = useState<string | null>(null);
   const { settings } = useApp();
 
   const themeId = settings.currentTheme || 'orange';
@@ -111,20 +111,20 @@ const PosterGenerator = ({ entry, userId, onClose }: PosterGeneratorProps) => {
   const handleSave = async () => {
     if (!hiddenContainerRef.current || !fontsLoaded) return;
     setIsGenerating(true);
+    toast({ title: '正在生成专属嗨呀时刻...', duration: 2000 });
+
     try {
       await new Promise(resolve => setTimeout(resolve, 100));
       const canvas = await html2canvas(hiddenContainerRef.current, {
         scale: 3, backgroundColor: null, useCORS: true, allowTaint: true, logging: false,
       });
       const result = await saveCanvasAsImage(canvas, `haiya-${entry.date}.png`);
-      if (result.fallbackDataUrl) {
-        // Show long-press overlay
-        setLongPressDataUrl(result.fallbackDataUrl);
-      } else if (!result.success) {
-        console.error('Save failed');
+      if (!result.success) {
+        toast({ title: '❌ ' + result.message, variant: 'destructive', duration: 3000 });
       }
     } catch (error) {
       console.error('Failed to generate poster:', error);
+      toast({ title: '❌ 生成失败，请重试', variant: 'destructive', duration: 3000 });
     } finally {
       setIsGenerating(false);
     }
@@ -204,46 +204,9 @@ const PosterGenerator = ({ entry, userId, onClose }: PosterGeneratorProps) => {
     );
   };
 
-  // Long-press fallback overlay
-  if (longPressDataUrl) {
-    return (
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="fixed inset-0 bg-black/80 flex flex-col items-center justify-center z-[60] p-4"
-        onClick={() => setLongPressDataUrl(null)}
-      >
-        <motion.p
-          initial={{ y: -20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          className="text-white text-lg font-bold mb-4 text-center"
-          style={{ textShadow: '0 2px 8px rgba(0,0,0,0.5)' }}
-        >
-          👇 请长按下方图片保存到手机相册
-        </motion.p>
-        <motion.img
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          src={longPressDataUrl}
-          alt="分享图"
-          className="max-w-full max-h-[70vh] rounded-2xl shadow-2xl"
-          onClick={(e) => e.stopPropagation()}
-        />
-        <motion.button
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={() => { setLongPressDataUrl(null); onClose(); }}
-          className="mt-4 px-8 py-3 rounded-2xl font-bold text-white bg-white/20 backdrop-blur-sm border border-white/30"
-        >
-          关闭
-        </motion.button>
-      </motion.div>
-    );
-  }
-
   return (
     <AnimatePresence>
+      {/* Hidden render target for html2canvas */}
       <div ref={hiddenContainerRef} style={{ position: 'fixed', left: '-9999px', top: 0 }}>
         <PosterContent scale={1} />
       </div>
@@ -266,6 +229,7 @@ const PosterGenerator = ({ entry, userId, onClose }: PosterGeneratorProps) => {
           style={{ boxShadow: '0 25px 80px rgba(0,0,0,0.3)' }}
           onClick={(e) => e.stopPropagation()}
         >
+          {/* Preview */}
           <div className="w-full relative" style={{ aspectRatio: '3/4', overflow: 'hidden' }}>
             <div style={{
               position: 'absolute', top: 0, left: 0,
@@ -289,6 +253,7 @@ const PosterGenerator = ({ entry, userId, onClose }: PosterGeneratorProps) => {
             </div>
           </div>
 
+          {/* Action buttons */}
           <div
             className="p-3 flex gap-3"
             style={{ background: isNeonTheme ? '#0F172A' : 'hsl(var(--primary))' }}

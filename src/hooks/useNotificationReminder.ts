@@ -1,91 +1,56 @@
 import { useEffect, useCallback } from 'react';
 import { useApp } from '@/context/AppContext';
+import { Capacitor } from '@capacitor/core';
 
-const REMINDER_STORAGE_KEY = 'haiya_reminder_last_check';
+const NOTIFICATION_SCHEDULED_KEY = 'haiya_notification_scheduled';
 
 export const useNotificationReminder = () => {
   const { getEntryByDate } = useApp();
 
-  const getYesterdayDate = useCallback(() => {
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    const year = yesterday.getFullYear();
-    const month = String(yesterday.getMonth() + 1).padStart(2, '0');
-    const day = String(yesterday.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  }, []);
+  const scheduleNativeNotification = useCallback(async () => {
+    if (!Capacitor.isNativePlatform()) {
+      console.log('[Notification] Not native platform, skipping.');
+      return;
+    }
 
-  const requestNotificationPermission = useCallback(async () => {
-    if (!('Notification' in window)) {
-      return false;
-    }
-    
-    if (Notification.permission === 'granted') {
-      return true;
-    }
-    
-    if (Notification.permission !== 'denied') {
-      const permission = await Notification.requestPermission();
-      return permission === 'granted';
-    }
-    
-    return false;
-  }, []);
+    // Only schedule once
+    if (localStorage.getItem(NOTIFICATION_SCHEDULED_KEY) === 'true') return;
 
-  const showNotification = useCallback(() => {
-    if (Notification.permission === 'granted') {
-      new Notification('嗨呀！📝', {
-        body: '嗨呀！来记录一下昨日的嗨呀！时刻呀！',
-        icon: '/favicon.ico',
-        tag: 'haiya-reminder',
+    try {
+      const { LocalNotifications } = await import('@capacitor/local-notifications');
+
+      const permResult = await LocalNotifications.requestPermissions();
+      if (permResult.display !== 'granted') {
+        console.warn('[Notification] Permission denied.');
+        return;
+      }
+
+      await LocalNotifications.schedule({
+        notifications: [
+          {
+            title: '嗨呀！',
+            body: '昨天嗨呀！了没？来记录让你开心的事！',
+            id: 1010,
+            schedule: {
+              on: { hour: 10, minute: 10 },
+              allowWhileIdle: true,
+            },
+          },
+        ],
       });
+
+      localStorage.setItem(NOTIFICATION_SCHEDULED_KEY, 'true');
+      console.log('[Notification] Daily 10:10 notification scheduled.');
+    } catch (err) {
+      console.warn('[Notification] Failed to schedule:', err);
     }
   }, []);
-
-  const checkAndNotify = useCallback(() => {
-    const now = new Date();
-    const hours = now.getHours();
-    const minutes = now.getMinutes();
-    
-    // Check if it's around 9:33 AM (between 9:33 and 9:34)
-    if (hours !== 9 || minutes !== 33) {
-      return;
-    }
-    
-    // Check if we already notified today
-    const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-    const lastCheck = localStorage.getItem(REMINDER_STORAGE_KEY);
-    
-    if (lastCheck === today) {
-      return;
-    }
-    
-    // Check if yesterday has an entry
-    const yesterdayDate = getYesterdayDate();
-    const yesterdayEntry = getEntryByDate(yesterdayDate);
-    
-    if (!yesterdayEntry) {
-      showNotification();
-    }
-    
-    // Mark as checked for today
-    localStorage.setItem(REMINDER_STORAGE_KEY, today);
-  }, [getYesterdayDate, getEntryByDate, showNotification]);
 
   useEffect(() => {
-    // Request permission on mount
-    requestNotificationPermission();
-    
-    // Check immediately
-    checkAndNotify();
-    
-    // Check every minute
-    const interval = setInterval(checkAndNotify, 60000);
-    
-    return () => clearInterval(interval);
-  }, [requestNotificationPermission, checkAndNotify]);
+    scheduleNativeNotification();
+  }, [scheduleNativeNotification]);
 
   return {
-    requestNotificationPermission,
+    scheduleNativeNotification,
   };
 };

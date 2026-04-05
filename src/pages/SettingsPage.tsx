@@ -1,5 +1,4 @@
 import { useState, useRef } from 'react';
-import { Copy } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Download, Upload, Info, Check, Eye } from 'lucide-react';
@@ -32,8 +31,6 @@ const SettingsPage = () => {
     setTimeout(() => setSaved(false), 2000);
   };
   
-  const [exportedData, setExportedData] = useState<string | null>(null);
-
   const handleExport = async () => {
     const data = exportData();
     const d = new Date();
@@ -46,23 +43,7 @@ const SettingsPage = () => {
       mimeType: 'application/json',
     });
     
-    if (result.success) {
-      alert(`✅ ${result.message}`);
-    } else {
-      // Show copy fallback
-      setExportedData(data);
-    }
-  };
-
-  const handleCopyData = async () => {
-    if (!exportedData) return;
-    try {
-      await navigator.clipboard.writeText(exportedData);
-      alert('✅ 已复制到剪贴板，请粘贴到备忘录保存');
-      setExportedData(null);
-    } catch {
-      alert('❌ 复制失败，请重试');
-    }
+    alert(result.success ? `✅ ${result.message}` : `❌ ${result.message}`);
   };
   
   const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -389,41 +370,6 @@ const SettingsPage = () => {
         </motion.div>
       )}
 
-      {/* Copy fallback modal */}
-      {exportedData && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4"
-          onClick={() => setExportedData(null)}
-        >
-          <motion.div
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            className="rounded-3xl p-6 max-w-sm w-full shadow-2xl text-center"
-            style={{
-              background: 'hsl(var(--card))',
-              border: '3px solid hsl(var(--primary) / 0.3)',
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <p className="text-lg font-bold mb-2" style={{ color: 'hsl(var(--primary))' }}>
-              📋 无法直接下载
-            </p>
-            <p className="text-sm text-muted-foreground mb-4">
-              请点击下方按钮复制数据，然后粘贴到备忘录或其他App中保存
-            </p>
-            <div className="flex gap-3">
-              <BubbleButton onClick={() => setExportedData(null)} size="sm">
-                取消
-              </BubbleButton>
-              <BubbleButton onClick={handleCopyData} size="sm">
-                <Copy className="w-4 h-4 mr-1" /> 复制全部数据
-              </BubbleButton>
-            </div>
-          </motion.div>
-        </motion.div>
-      )}
     </motion.div>
   );
 };
