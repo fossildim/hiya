@@ -1,5 +1,4 @@
 import { useState, useRef } from 'react';
-import { Copy } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Download, Upload, Info, Check, Eye } from 'lucide-react';
