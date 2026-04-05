@@ -50,7 +50,6 @@ export const saveFile = async (options: {
   }
 
   // ── Web fallback ──
-  // Try navigator.share
   if (navigator.share && navigator.canShare) {
     try {
       const blob = new Blob([data], { type: mimeType });
@@ -64,7 +63,6 @@ export const saveFile = async (options: {
     }
   }
 
-  // Download link
   try {
     const blob = new Blob([data], { type: mimeType });
     const link = document.createElement('a');
@@ -77,7 +75,6 @@ export const saveFile = async (options: {
     // ignore
   }
 
-  // Clipboard for JSON
   if (mimeType.includes('json')) {
     try {
       await navigator.clipboard.writeText(data);
@@ -91,15 +88,14 @@ export const saveFile = async (options: {
 };
 
 /**
- * Save a canvas as a PNG image.
+ * Share a canvas image via system share panel.
  * Native: write base64 to Cache → Share panel.
- * Web: navigator.share → returns dataUrl for long-press.
+ * Web: navigator.share → download link.
  */
 export const saveCanvasAsImage = async (
   canvas: HTMLCanvasElement,
   fileName: string
 ): Promise<{ success: boolean; message: string }> => {
-  // ── Native path ──
   if (isNative()) {
     try {
       const { Filesystem, Directory } = await import('@capacitor/filesystem');
@@ -153,7 +149,66 @@ export const saveCanvasAsImage = async (
     }
   }
 
-  // Last resort: trigger download
+  try {
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.download = fileName;
+    link.href = url;
+    link.click();
+    URL.revokeObjectURL(url);
+    return { success: true, message: '下载已开始' };
+  } catch {
+    return { success: false, message: '图片保存失败' };
+  }
+};
+
+/**
+ * Save canvas image directly to device storage (Documents/Pictures).
+ * Native: request permissions → write to Documents.
+ * Web: trigger download.
+ */
+export const saveCanvasToLocal = async (
+  canvas: HTMLCanvasElement,
+  fileName: string
+): Promise<{ success: boolean; message: string }> => {
+  if (isNative()) {
+    try {
+      const { Filesystem, Directory } = await import('@capacitor/filesystem');
+
+      // Check and request permissions
+      let perms = await Filesystem.checkPermissions();
+      if (perms.publicStorage !== 'granted') {
+        perms = await Filesystem.requestPermissions();
+        if (perms.publicStorage !== 'granted') {
+          return {
+            success: false,
+            message: '存储权限被拒绝，请前往系统设置 → 应用 → 嗨呀 → 权限，开启存储权限后重试',
+          };
+        }
+      }
+
+      const dataUrl = canvas.toDataURL('image/png', 1.0);
+      const base64Data = dataUrl.replace(/^data:image\/png;base64,/, '');
+
+      await Filesystem.writeFile({
+        path: fileName,
+        data: base64Data,
+        directory: Directory.Documents,
+      });
+
+      return { success: true, message: `✅ 已成功保存到手机 Documents 目录！` };
+    } catch (err: any) {
+      console.error('[fileSaver] native saveCanvasToLocal error:', err);
+      return { success: false, message: '保存失败，请检查存储权限后重试' };
+    }
+  }
+
+  // ── Web fallback: download ──
+  const blob = await new Promise<Blob | null>((resolve) =>
+    canvas.toBlob(resolve, 'image/png', 1.0)
+  );
+  if (!blob) return { success: false, message: '图片生成失败' };
+
   try {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
