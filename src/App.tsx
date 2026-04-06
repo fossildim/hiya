@@ -69,6 +69,7 @@ const App = () => {
       <ThemeProvider>
         <TooltipProvider>
           <AppProvider>
+            <BackupFileListenerSetup />
             <Toaster />
             <Sonner />
             <HashRouter>
