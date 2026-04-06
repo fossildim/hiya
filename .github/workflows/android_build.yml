@@ -39,14 +39,25 @@ jobs:
 
       - name: Add Android Platform & Sync
         run: |
-          npm install @capacitor/cli @capacitor/core
+          npm install @capacitor/cli @capacitor/core @capacitor/app @capacitor/filesystem
+          # 如果没有配置则初始化，确保 appId 一致
           npx cap init hiya com.hiya.app --web-dir dist
           npm install @capacitor/android
           npx cap add android
+          
+          # 核心：在 AndroidManifest.xml 中注册文件关联，让系统识别“用 HiYa 打开”
+          # 这段指令会将 Intent Filter 注入到 Activity 标签中
+          SED_COMMAND='/<activity/a \            <intent-filter>\n                <action android:name="android.intent.action.VIEW" />\n                <category android:name="android.intent.category.DEFAULT" />\n                <category android:name="android.intent.category.BROWSABLE" />\n                <data android:scheme="content" />\n                <data android:scheme="file" />\n                <data android:mimeType="application/json" />\n                <data android:host="*" />\n            </intent-filter>'
+          sed -i "$SED_COMMAND" android/app/src/main/AndroidManifest.xml
+
+          # 处理图标生成
           mkdir -p assets
-          mv icon.png assets/icon.png
-          npm install @capacitor/assets --save-dev
-          npx capacitor-assets generate --android
+          if [ -f "icon.png" ]; then
+            mv icon.png assets/icon.png
+            npm install @capacitor/assets --save-dev
+            npx capacitor-assets generate --android
+          fi
+          
           npx cap sync
           
       - name: Build Android APK
