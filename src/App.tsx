@@ -37,6 +37,8 @@ const WelcomeGuard = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
+const BackupFileListenerSetup = () => { useBackupFileListener(); return null; };
+
 const App = () => {
   useEffect(() => {
     // Initialize status bar for immersive mode on Capacitor
