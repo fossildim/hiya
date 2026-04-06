@@ -1,7 +1,6 @@
 let lastPlayedAt = 0;
-const COOLDOWN_MS = 120; // 防止连续点击重复播放
+const COOLDOWN_MS = 120;
 
-// 预加载音频以减少延迟
 const audioCache: Record<string, HTMLAudioElement> = {};
 
 function getAudio(src: string): HTMLAudioElement {
@@ -9,6 +8,10 @@ function getAudio(src: string): HTMLAudioElement {
     audioCache[src] = new Audio(src);
   }
   return audioCache[src];
+}
+
+function isMuted(): boolean {
+  return localStorage.getItem('isSoundMuted') === 'true';
 }
 
 function canPlayNow(): boolean {
@@ -20,13 +23,12 @@ function canPlayNow(): boolean {
 
 function playAudio(src: string) {
   if (typeof window === "undefined") return;
+  if (isMuted()) return;
   if (!canPlayNow()) return;
 
   const audio = getAudio(src);
-  audio.currentTime = 0; // 允许快速重播
-  audio.play().catch(() => {
-    // 静默处理自动播放被阻止的情况
-  });
+  audio.currentTime = 0;
+  audio.play().catch(() => {});
 }
 
 export function playHai() {

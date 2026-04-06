@@ -2,7 +2,6 @@ import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Download, Upload, Info, Check, Eye, VolumeX, Volume2 } from 'lucide-react';
-import { saveFile } from '@/lib/fileSaver';
 import { useApp } from '@/context/AppContext';
 import CandyBackground from '@/components/CandyBackground';
 import BounceTitle from '@/components/BounceTitle';
@@ -21,7 +20,6 @@ const SettingsPage = () => {
   const [userId, setUserId] = useState(settings.userId);
   const [saved, setSaved] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
-  const [showWelcome, setShowWelcome] = useState(false);
   const [isMuted, setIsMuted] = useState(() => localStorage.getItem('isSoundMuted') === 'true');
   const fileInputRef = useRef<HTMLInputElement>(null);
   
@@ -34,6 +32,17 @@ const SettingsPage = () => {
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   };
+
+  const handleToggleMute = (checked: boolean) => {
+    // checked = true means muted
+    setIsMuted(checked);
+    localStorage.setItem('isSoundMuted', String(checked));
+    if (checked) {
+      toast('🔇 已进入闭嘴模式');
+    } else {
+      toast('🔊 嗨呀！音效已开启！');
+    }
+  };
   
   const handleExport = async () => {
     const data = exportData();
@@ -41,14 +50,69 @@ const SettingsPage = () => {
     const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
     const userName = settings.userId || 'HiYa';
     const fileName = `HiYa_Backup_${userName}_${dateStr}.json`;
-    
-    const result = await saveFile({
-      fileName,
-      data,
-      mimeType: 'application/json',
-    });
-    
-    alert(result.success ? `✅ ${result.message}` : `❌ ${result.message}`);
+
+    // Step 1: Save to Documents first (native) or download (web)
+    if (Capacitor.isNativePlatform()) {
+      try {
+        const { Filesystem, Directory, Encoding } = await import('@capacitor/filesystem');
+
+        // Check permissions
+        let perms = await Filesystem.checkPermissions();
+        if (perms.publicStorage !== 'granted') {
+          perms = await Filesystem.requestPermissions();
+          if (perms.publicStorage !== 'granted') {
+            toast.error('存储权限被拒绝，请前往系统设置开启存储权限');
+            return;
+          }
+        }
+
+        await Filesystem.writeFile({
+          path: fileName,
+          data,
+          directory: Directory.Documents,
+          encoding: Encoding.UTF8,
+        });
+
+        toast.success('✅ 备份已成功保存至手机 Documents 文件夹');
+
+        // Step 2: Ask if user wants to share
+        const wantShare = confirm('备份已保存！是否还要发送/分享到其他应用？');
+        if (wantShare) {
+          const { Share } = await import('@capacitor/share');
+          // Write a copy to cache for sharing
+          const cacheResult = await Filesystem.writeFile({
+            path: fileName,
+            data,
+            directory: Directory.Cache,
+            encoding: Encoding.UTF8,
+          });
+          await Share.share({
+            title: fileName,
+            url: cacheResult.uri,
+            dialogTitle: '分享数据备份',
+          });
+        }
+      } catch (err: any) {
+        if (err?.message?.includes('cancel') || err?.message?.includes('Cancel')) {
+          return;
+        }
+        console.error('[export] native error:', err);
+        toast.error('保存失败，请重试');
+      }
+    } else {
+      // Web fallback: download
+      try {
+        const blob = new Blob([data], { type: 'application/json' });
+        const link = document.createElement('a');
+        link.download = fileName;
+        link.href = URL.createObjectURL(blob);
+        link.click();
+        URL.revokeObjectURL(link.href);
+        toast.success('✅ 下载已开始');
+      } catch {
+        toast.error('保存失败');
+      }
+    }
   };
   
   const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,15 +122,32 @@ const SettingsPage = () => {
     const reader = new FileReader();
     reader.onload = (event) => {
       const content = event.target?.result as string;
-      const success = importData(content);
-      if (success) {
-        alert('导入成功！');
-        setUserId(settings.userId);
-      } else {
-        alert('导入失败，请检查文件格式');
+      
+      // Content-based validation
+      try {
+        const parsed = JSON.parse(content);
+        if (!parsed.entries || !Array.isArray(parsed.entries)) {
+          toast.error('❌ 导入失败：该文件不是有效的 HiYa 备份数据。');
+          return;
+        }
+        const count = parsed.entries.length;
+        const confirmed = confirm(`✅ 发现有效备份数据（共 ${count} 条记录），是否立即覆盖导入？`);
+        if (!confirmed) return;
+        
+        const success = importData(content);
+        if (success) {
+          toast.success('✅ 导入成功！正在刷新...');
+          setTimeout(() => window.location.reload(), 800);
+        } else {
+          toast.error('❌ 导入失败：该文件不是有效的 HiYa 备份数据。');
+        }
+      } catch {
+        toast.error('❌ 导入失败：该文件不是有效的 HiYa 备份数据。');
       }
     };
     reader.readAsText(file);
+    // Reset so same file can be re-selected
+    if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
   const handleShowWelcome = () => {
@@ -133,6 +214,24 @@ const SettingsPage = () => {
             >
               {saved ? <Check className="w-4 h-4" /> : '保存'}
             </BubbleButton>
+          </div>
+        </BubbleCard>
+
+        {/* Mute Toggle */}
+        <BubbleCard delay={0.12}>
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-sm font-bold" style={{ color: 'hsl(var(--primary))' }}>
+                {isMuted ? <VolumeX className="w-4 h-4 inline mr-1" /> : <Volume2 className="w-4 h-4 inline mr-1" />}
+                嗨呀！太吵了！
+              </h2>
+              <p className="text-xs text-muted-foreground mt-1">不要鬼叫！静音！</p>
+            </div>
+            <Switch
+              checked={isMuted}
+              onCheckedChange={handleToggleMute}
+              data-sfx="off"
+            />
           </div>
         </BubbleCard>
         
@@ -304,7 +403,6 @@ const SettingsPage = () => {
             
             {/* Content */}
             <div className="relative z-10">
-              {/* Title with sparkles */}
               <div className="mb-4">
                 <motion.span 
                   className="text-4xl font-black inline-block"
@@ -317,22 +415,13 @@ const SettingsPage = () => {
                 <span className="text-2xl ml-1">✨</span>
               </div>
               
-              {/* Main message */}
               <p className="text-lg mb-2 leading-relaxed text-muted-foreground">
                 只会帮助你记住开心的事 <span className="text-xl">🌈</span>，
               </p>
               
-              {/* Animated "嗨呀呀！" */}
               <motion.div
-                animate={{ 
-                  scale: [1, 1.05, 1],
-                  rotate: [0, -2, 2, 0],
-                }}
-                transition={{ 
-                  duration: 0.8, 
-                  repeat: Infinity, 
-                  repeatDelay: 2,
-                }}
+                animate={{ scale: [1, 1.05, 1], rotate: [0, -2, 2, 0] }}
+                transition={{ duration: 0.8, repeat: Infinity, repeatDelay: 2 }}
                 className="mb-4"
               >
                 <span className="text-2xl font-black" style={{ color: 'hsl(var(--primary))' }}>
@@ -341,7 +430,6 @@ const SettingsPage = () => {
                 <span className="text-xl ml-1">{currentTheme?.decorations.slice(0,3).join('')}</span>
               </motion.div>
               
-              {/* QR Code Section */}
               <div 
                 className="mb-4 p-4 rounded-2xl"
                 style={{ 
@@ -362,7 +450,6 @@ const SettingsPage = () => {
                 />
               </div>
               
-              {/* Close button */}
               <BubbleButton
                 onClick={() => setShowAbout(false)}
                 size="lg"

@@ -156,7 +156,7 @@ const PosterGenerator = ({ entry, userId, onClose }: PosterGeneratorProps) => {
         background: getThemeGradient(),
         display: 'flex',
         flexDirection: 'column',
-        padding: `${s(60)}px ${s(60)}px`,
+        padding: `${s(60)}px`,
         fontFamily: 'system-ui, -apple-system, "Apple Color Emoji", "Noto Color Emoji", "Segoe UI Emoji", sans-serif',
         position: 'relative',
         overflow: 'hidden',

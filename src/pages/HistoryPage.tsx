@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Rocket } from 'lucide-react';
@@ -8,11 +8,20 @@ import CandyBackground from '@/components/CandyBackground';
 import confetti from 'canvas-confetti';
 import { getThemeById } from '@/lib/themes';
 
+// Persist viewed month across navigations within session
+let persistedYear: number | null = null;
+let persistedMonth: number | null = null;
+
 const HistoryPage = () => {
   const navigate = useNavigate();
   const { entries, getEntryByDate, settings } = useApp();
   
-  const [currentDate, setCurrentDate] = useState(new Date());
+  const [currentDate, setCurrentDate] = useState(() => {
+    if (persistedYear !== null && persistedMonth !== null) {
+      return new Date(persistedYear, persistedMonth, 1);
+    }
+    return new Date();
+  });
   
   const themeId = settings.currentTheme || 'orange';
   const currentTheme = getThemeById(themeId);
@@ -22,6 +31,12 @@ const HistoryPage = () => {
   
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
+
+  // Persist whenever month changes
+  useEffect(() => {
+    persistedYear = year;
+    persistedMonth = month;
+  }, [year, month]);
   
   const monthNames = ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'];
   const weekDays = ['日', '一', '二', '三', '四', '五', '六'];
@@ -97,7 +112,6 @@ const HistoryPage = () => {
     });
   };
 
-  // Helper for themed button background
   const getThemedButtonBg = () => {
     if (isNeonTheme) return 'linear-gradient(135deg, hsl(142 71% 45%) 0%, hsl(142 76% 36%) 100%)';
     if (isHoloTheme) return 'linear-gradient(135deg, #EF4444 0%, #F97316 16.67%, #FBBF24 33.33%, #22C55E 50%, #3B82F6 66.67%, #8B5CF6 83.33%, #EC4899 100%)';
@@ -136,7 +150,6 @@ const HistoryPage = () => {
       const isBest = weekBestDays[dateStr];
       const today = isToday(day);
       
-      // Theme-aware calendar day styles
       const getDayBg = () => {
         if (entry) {
           if (isBest) return getThemedButtonBg();
@@ -196,25 +209,15 @@ const HistoryPage = () => {
             <motion.div
               className="absolute inset-0 rounded-2xl"
               style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.3) 0%, transparent 100%)' }}
-              animate={{ 
-                scale: [1, 1.05, 1],
-                opacity: [0.5, 0.8, 0.5]
-              }}
-              transition={{ 
-                duration: 2, 
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
+              animate={{ scale: [1, 1.05, 1], opacity: [0.5, 0.8, 0.5] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
             />
           )}
           
           {isBest && (
             <motion.span 
               className="absolute -top-1 -right-1 text-xs"
-              animate={{ 
-                y: [0, -2, 0],
-                rotate: [-5, 5, -5]
-              }}
+              animate={{ y: [0, -2, 0], rotate: [-5, 5, -5] }}
               transition={{ duration: 1.5, repeat: Infinity }}
             >
               👑
@@ -325,7 +328,7 @@ const HistoryPage = () => {
         </motion.button>
       </div>
       
-      {/* Calendar Card - with swipe support */}
+      {/* Calendar Card */}
       <div
         className="relative z-10 p-4"
         onTouchStart={(e) => {
