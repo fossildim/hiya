@@ -22,6 +22,7 @@ const SettingsPage = () => {
   const [saved, setSaved] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);
+  const [isMuted, setIsMuted] = useState(() => localStorage.getItem('isSoundMuted') === 'true');
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   const currentTheme = getThemeById(settings.currentTheme || 'orange');
