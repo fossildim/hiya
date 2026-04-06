@@ -5,13 +5,12 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
-
 jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true # 加入这一行消除警告
-      
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
     steps:
       - name: Checkout Source
         uses: actions/checkout@v4
@@ -40,17 +39,31 @@ jobs:
       - name: Add Android Platform & Sync
         run: |
           npm install @capacitor/cli @capacitor/core @capacitor/app @capacitor/filesystem
-          # 如果没有配置则初始化，确保 appId 一致
           npx cap init hiya com.hiya.app --web-dir dist
           npm install @capacitor/android
           npx cap add android
           
-          # 核心：在 AndroidManifest.xml 中注册文件关联，让系统识别“用 HiYa 打开”
-          # 这段指令会将 Intent Filter 注入到 Activity 标签中
-          SED_COMMAND='/<activity/a \            <intent-filter>\n                <action android:name="android.intent.action.VIEW" />\n                <category android:name="android.intent.category.DEFAULT" />\n                <category android:name="android.intent.category.BROWSABLE" />\n                <data android:scheme="content" />\n                <data android:scheme="file" />\n                <data android:mimeType="application/json" />\n                <data android:host="*" />\n            </intent-filter>'
-          sed -i "$SED_COMMAND" android/app/src/main/AndroidManifest.xml
+          # 使用精准的 Node.js 脚本将 intent-filter 准确塞入 activity 内部
+          node -e "
+          const fs = require('fs');
+          const file = 'android/app/src/main/AndroidManifest.xml';
+          let xml = fs.readFileSync(file, 'utf8');
+          const intentFilter = \`
+              <intent-filter>
+                  <action android:name=\\\"android.intent.action.VIEW\\\" />
+                  <category android:name=\\\"android.intent.category.DEFAULT\\\" />
+                  <category android:name=\\\"android.intent.category.BROWSABLE\\\" />
+                  <data android:scheme=\\\"content\\\" />
+                  <data android:scheme=\\\"file\\\" />
+                  <data android:mimeType=\\\"application/json\\\" />
+                  <data android:host=\\\"*\\\" />
+              </intent-filter>
+          \`;
+          xml = xml.replace('</activity>', intentFilter + '</activity>');
+          fs.writeFileSync(file, xml);
+          "
 
-          # 处理图标生成
+          # 处理图标
           mkdir -p assets
           if [ -f "icon.png" ]; then
             mv icon.png assets/icon.png
@@ -59,7 +72,7 @@ jobs:
           fi
           
           npx cap sync
-          
+
       - name: Build Android APK
         run: |
           cd android
