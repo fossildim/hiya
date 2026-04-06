@@ -5,7 +5,6 @@ import html2canvas from 'html2canvas';
 import { saveCanvasAsImage, saveCanvasToLocal } from '@/lib/fileSaver';
 import { Entry } from '@/context/AppContext';
 import { useApp } from '@/context/AppContext';
-import { getThemeById } from '@/lib/themes';
 import { toast } from 'sonner';
 
 interface PosterGeneratorProps {
@@ -43,7 +42,6 @@ const PosterGenerator = ({ entry, userId, onClose }: PosterGeneratorProps) => {
   const isNeonTheme = themeId === 'black';
   const isHoloTheme = themeId === 'white';
   const isYellowTheme = themeId === 'yellow';
-  const isDarkTheme = isNeonTheme;
   const themeDeco = getThemeDecorations(themeId);
 
   const getThemeGradient = () => {
@@ -158,8 +156,6 @@ const PosterGenerator = ({ entry, userId, onClose }: PosterGeneratorProps) => {
         background: getThemeGradient(),
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
         padding: `${s(60)}px ${s(60)}px`,
         fontFamily: 'system-ui, -apple-system, "Apple Color Emoji", "Noto Color Emoji", "Segoe UI Emoji", sans-serif',
         position: 'relative',
@@ -171,59 +167,62 @@ const PosterGenerator = ({ entry, userId, onClose }: PosterGeneratorProps) => {
         <div style={{ position: 'absolute', bottom: s(30), left: s(30), fontSize: `${s(36)}px`, opacity: 0.4 }}>{themeDeco.pattern}</div>
         <div style={{ position: 'absolute', bottom: s(30), right: s(30), fontSize: `${s(36)}px`, opacity: 0.4 }}>{themeDeco.pattern}</div>
 
-        {/* Date */}
-        <div style={{ paddingBottom: s(24), textAlign: 'center' }}>
-          <div style={{ fontSize: `${s(30)}px`, fontWeight: 600, color: getSubTextColor(), letterSpacing: `${s(2)}px` }}>
-            {formatDate(entry.date)}
+        {/* === HEADER === */}
+        <div style={{ textAlign: 'center', flexShrink: 0 }}>
+          {/* Date */}
+          <div style={{ paddingBottom: s(20), paddingTop: s(10) }}>
+            <div style={{ fontSize: `${s(28)}px`, fontWeight: 600, color: getSubTextColor(), letterSpacing: `${s(2)}px` }}>
+              {formatDate(entry.date)}
+            </div>
+          </div>
+          {/* Title + Emoji */}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: `${s(8)}px` }}>
+            <div style={{ fontSize: `${s(60)}px`, fontWeight: 900, ...titleStyle }}>
+              {RATING_LABELS[entry.rating] || '嗨呀！'}
+            </div>
+            <div style={{ fontSize: `${s(64)}px` }}>
+              {RATING_EMOJIS[entry.rating] || '😊'}
+            </div>
+            <div style={{ fontSize: `${s(18)}px`, opacity: 0.5, color: getTextColor() }}>
+              {themeDeco.deco} {themeDeco.deco} {themeDeco.deco}
+            </div>
           </div>
         </div>
 
-        {/* Title + Emoji — compact, centered */}
+        {/* === MIDDLE — flex-1 centered content === */}
         <div style={{
-          display: 'flex', flexDirection: 'column',
-          alignItems: 'center', gap: `${s(12)}px`,
-          paddingBottom: s(16),
+          flex: 1,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: `${s(24)}px 0`,
         }}>
-          <div style={{ fontSize: `${s(80)}px`, fontWeight: 900, ...titleStyle }}>
-            {RATING_LABELS[entry.rating] || '嗨呀！'}
-          </div>
-          <div style={{ fontSize: `${s(72)}px` }}>
-            {RATING_EMOJIS[entry.rating] || '😊'}
-          </div>
-          <div style={{ fontSize: `${s(20)}px`, opacity: 0.5, color: getTextColor() }}>
-            {themeDeco.deco} {themeDeco.deco} {themeDeco.deco}
-          </div>
-        </div>
-
-        {/* Content box — glassmorphism, dynamic height, large text */}
-        <div style={{
-          width: '88%',
-          borderRadius: `${s(28)}px`,
-          padding: `${s(40)}px ${s(48)}px`,
-          background: getContentBoxBg(),
-          border: getContentBoxBorder(),
-          backdropFilter: 'blur(12px)',
-          WebkitBackdropFilter: 'blur(12px)',
-          boxShadow: isNeonTheme ? '0 0 30px rgba(74, 222, 128, 0.15)' : '0 8px 32px rgba(0,0,0,0.08)',
-        }}>
-          <p style={{
-            fontSize: `${s(36)}px`,
-            lineHeight: 1.9,
-            color: getContentTextColor(),
-            textAlign: 'center',
-            margin: 0,
-            wordBreak: 'break-word',
-            fontWeight: 500,
+          <div style={{
+            width: '88%',
+            borderRadius: `${s(28)}px`,
+            padding: `${s(44)}px ${s(48)}px`,
+            background: getContentBoxBg(),
+            border: getContentBoxBorder(),
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+            boxShadow: isNeonTheme ? '0 0 30px rgba(74, 222, 128, 0.15)' : '0 8px 32px rgba(0,0,0,0.08)',
           }}>
-            {entry.content || '今天没有写什么...'}
-          </p>
+            <p style={{
+              fontSize: `${s(44)}px`,
+              lineHeight: 2,
+              color: getContentTextColor(),
+              textAlign: 'center',
+              margin: 0,
+              wordBreak: 'break-word',
+              fontWeight: 500,
+            }}>
+              {entry.content || '今天没有写什么...'}
+            </p>
+          </div>
         </div>
 
-        {/* Spacer */}
-        <div style={{ flex: 1 }} />
-
-        {/* Footer */}
-        <div style={{ paddingTop: s(16), paddingBottom: s(10), textAlign: 'center' }}>
+        {/* === FOOTER === */}
+        <div style={{ flexShrink: 0, textAlign: 'center', paddingBottom: s(10) }}>
           <div style={{
             fontSize: `${s(28)}px`, fontWeight: 700,
             color: isNeonTheme ? '#F472B6' : getSubTextColor(),
@@ -285,7 +284,7 @@ const PosterGenerator = ({ entry, userId, onClose }: PosterGeneratorProps) => {
             </div>
           </div>
 
-          {/* Action buttons — dual: save + share */}
+          {/* Action buttons */}
           <div
             className="p-3 flex gap-3"
             style={{ background: isNeonTheme ? '#0F172A' : 'hsl(var(--primary))' }}

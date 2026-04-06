@@ -35,7 +35,8 @@ const SettingsPage = () => {
     const data = exportData();
     const d = new Date();
     const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-    const fileName = `haiya-backup-${dateStr}.json`;
+    const userName = settings.userId || 'HiYa';
+    const fileName = `HiYa_Backup_${userName}_${dateStr}.json`;
     
     const result = await saveFile({
       fileName,

@@ -8,6 +8,7 @@ import { AppProvider } from "@/context/AppContext";
 import { playRandomSyllable } from "@/lib/sfx";
 import { useTheme } from "@/hooks/useTheme";
 import { initStatusBar } from "@/lib/statusBar";
+import { useBackupFileListener } from "@/hooks/useBackupFileListener";
 import Index from "./pages/Index";
 import RecordPage from "./pages/RecordPage";
 import HistoryPage from "./pages/HistoryPage";
@@ -35,6 +36,8 @@ const WelcomeGuard = ({ children }: { children: React.ReactNode }) => {
   
   return <>{children}</>;
 };
+
+const BackupFileListenerSetup = () => { useBackupFileListener(); return null; };
 
 const App = () => {
   useEffect(() => {
@@ -68,6 +71,7 @@ const App = () => {
       <ThemeProvider>
         <TooltipProvider>
           <AppProvider>
+            <BackupFileListenerSetup />
             <Toaster />
             <Sonner />
             <HashRouter>
