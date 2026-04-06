@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Download, Upload, Info, Check, Eye } from 'lucide-react';
+import { ArrowLeft, Download, Upload, Info, Check, Eye, VolumeX, Volume2 } from 'lucide-react';
 import { saveFile } from '@/lib/fileSaver';
 import { useApp } from '@/context/AppContext';
 import CandyBackground from '@/components/CandyBackground';
@@ -10,6 +10,9 @@ import BubbleCard from '@/components/BubbleCard';
 import BubbleButton from '@/components/BubbleButton';
 import coffeeQrcode from '@/assets/coffee-qrcode.png';
 import { getThemeById } from '@/lib/themes';
+import { Switch } from '@/components/ui/switch';
+import { Capacitor } from '@capacitor/core';
+import { toast } from 'sonner';
 
 const SettingsPage = () => {
   const navigate = useNavigate();
