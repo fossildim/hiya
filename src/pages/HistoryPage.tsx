@@ -150,37 +150,21 @@ const HistoryPage = () => {
       const entry = getEntryByDate(dateStr);
       const isBest = weekBestDays[dateStr];
       const today = isToday(day);
-      
-      const getDayBg = () => {
-        if (entry) {
-          if (isBest) return getThemedButtonBg();
-          return `linear-gradient(135deg, hsl(var(--primary) / 0.7) 0%, hsl(var(--primary) / 0.9) 100%)`;
-        }
-        if (isNeonTheme) return 'rgba(74, 222, 128, 0.05)';
-        return 'hsl(var(--card) / 0.7)';
-      };
-      
-      const getDayShadow = () => {
-        if (isBest) {
-          if (isNeonTheme) return '0 0 25px hsl(142 71% 45% / 0.6), 0 8px 20px hsl(142 71% 45% / 0.4)';
-          return '0 0 25px hsl(var(--primary) / 0.6), 0 8px 20px hsl(var(--primary) / 0.4)';
-        }
-        if (entry) {
-          if (isNeonTheme) return '0 4px 15px hsl(142 71% 45% / 0.3)';
-          return '0 4px 15px hsl(var(--primary) / 0.3)';
-        }
-        return '0 2px 10px hsl(var(--foreground) / 0.05)';
-      };
-      
-      const getDayBorder = () => {
-        if (today) {
-          if (isNeonTheme) return '3px solid hsl(142 71% 45%)';
-          return '3px solid hsl(var(--primary))';
-        }
-        if (entry) return 'none';
-        return '2px solid hsl(var(--border) / 0.5)';
-      };
-      
+
+      const level: RatingLevel | null = entry
+        ? (Math.min(3, Math.max(1, entry.rating)) as RatingLevel)
+        : null;
+      const visuals = level ? getRatingVisuals(themeId, level) : null;
+      const empty = !entry ? getEmptyCellVisuals(themeId) : null;
+
+      const cellBackground = visuals ? visuals.background : empty!.background;
+      const cellShadow = visuals
+        ? visuals.boxShadow
+        : '0 2px 10px hsl(var(--foreground) / 0.05)';
+      const cellBorder = today
+        ? (isNeonTheme ? '3px solid hsl(142 71% 45%)' : '3px solid hsl(var(--primary))')
+        : visuals?.border ?? (entry ? 'none' : '2px solid hsl(var(--border) / 0.5)');
+
       days.push(
         <motion.button
           key={day}
@@ -201,22 +185,22 @@ const HistoryPage = () => {
           }}
           className="aspect-square rounded-2xl flex flex-col items-center justify-center relative cursor-pointer transition-all"
           style={{
-            background: getDayBg(),
-            boxShadow: getDayShadow(),
-            border: getDayBorder(),
+            background: cellBackground,
+            boxShadow: cellShadow,
+            border: cellBorder,
           }}
         >
-          {isBest && (
+          {level === 3 && (
             <motion.div
-              className="absolute inset-0 rounded-2xl"
-              style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.3) 0%, transparent 100%)' }}
-              animate={{ scale: [1, 1.05, 1], opacity: [0.5, 0.8, 0.5] }}
-              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute inset-0 rounded-2xl pointer-events-none"
+              style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.25) 0%, transparent 60%)' }}
+              animate={{ opacity: [0.4, 0.8, 0.4] }}
+              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
             />
           )}
-          
-          {isBest && (
-            <motion.span 
+
+          {(level === 3 || isBest) && (
+            <motion.span
               className="absolute -top-1 -right-1 text-xs"
               animate={{ y: [0, -2, 0], rotate: [-5, 5, -5] }}
               transition={{ duration: 1.5, repeat: Infinity }}
@@ -224,25 +208,27 @@ const HistoryPage = () => {
               👑
             </motion.span>
           )}
-          
-          <span 
+
+          <span
             className="text-xs sm:text-sm font-bold relative z-10"
-            style={{ 
-              color: entry 
-                ? (isNeonTheme ? '#0F172A' : isYellowTheme ? '#78350F' : 'white')
-                : today 
+            style={{
+              color: visuals
+                ? visuals.numberColor
+                : today
                   ? getTextColor()
-                  : 'hsl(var(--foreground) / 0.7)',
-              textShadow: entry ? '0 1px 2px rgba(0,0,0,0.2)' : 'none',
+                  : empty!.numberColor,
+              textShadow: visuals
+                ? visuals.numberShadow
+                : empty!.numberShadow || 'none',
             }}
           >
             {day}
           </span>
-          
+
           {entry && (
-            <motion.span 
+            <motion.span
               className="text-xs relative z-10"
-              animate={isBest ? { scale: [1, 1.2, 1] } : undefined}
+              animate={level === 3 ? { scale: [1, 1.2, 1] } : undefined}
               transition={{ duration: 1, repeat: Infinity }}
             >
               {getRatingEmoji(entry.rating)}
@@ -251,7 +237,7 @@ const HistoryPage = () => {
         </motion.button>
       );
     }
-    
+
     return days;
   };
 
