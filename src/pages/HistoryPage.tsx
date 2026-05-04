@@ -7,6 +7,7 @@ import BottomTabBar from '@/components/BottomTabBar';
 import CandyBackground from '@/components/CandyBackground';
 import confetti from 'canvas-confetti';
 import { getThemeById } from '@/lib/themes';
+import { getRatingVisuals, getEmptyCellVisuals, RatingLevel } from '@/lib/ratingStyles';
 
 // Persist viewed month across navigations within session
 let persistedYear: number | null = null;
