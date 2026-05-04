@@ -11,8 +11,8 @@
 ### 静音开关 → 设置页用户名下方新增开关。
 
 ## 26/5/4
-更新V1.1（Update HiYa! V1.1）:
-🛠️ 增加了不同主题下日记等级颜色的易读性，添加了发光金属圈。
-🛠️ Enhanced Readability: Improved mood level colors across all themes and added glowing metallic rings for better visual clarity.
-📱 统一了首页与动态页面的日历设计语言。
-📱 Unified Design: Synchronized the calendar UI between the Home screen and the "HiYa! Moments" page for a seamless experience.
+### 更新V1.1（Update HiYa! V1.1）:
+### 🛠️ 增加了不同主题下日记等级颜色的易读性，添加了发光金属圈。
+### 🛠️ Enhanced Readability: Improved mood level colors across all themes and added glowing metallic rings for better visual clarity.
+### 📱 统一了首页与动态页面的日历设计语言。
+### 📱 Unified Design: Synchronized the calendar UI between the Home screen and the "HiYa! Moments" page for a seamless experience.
